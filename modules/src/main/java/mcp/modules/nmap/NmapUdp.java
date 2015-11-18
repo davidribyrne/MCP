@@ -1,7 +1,5 @@
 package mcp.modules.nmap;
 
-import mcp.events.EventDispatcher;
-import mcp.events.events.ReconStartEvent;
 import mcp.modules.GeneralOptions;
 import mcp.tools.nmap.NmapFlag;
 

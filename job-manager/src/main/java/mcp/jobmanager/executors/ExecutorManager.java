@@ -70,6 +70,7 @@ public class ExecutorManager implements Runnable
 	@Override
 	public void run()
 	{
+		Object o = new Object();
 		while (running)
 		{
 			synchronized (jobs)
@@ -87,13 +88,16 @@ public class ExecutorManager implements Runnable
 					}
 				}
 			}
-			try
+			synchronized(o)
 			{
-				thread.wait(500);
-			}
-			catch (InterruptedException e)
-			{
-				logger.debug("ExecutorManager interupted");
+				try
+				{
+					o.wait(100);
+				}
+				catch (InterruptedException e)
+				{
+					logger.debug("ExecutorManager interupted");
+				}
 			}
 		}
 	}

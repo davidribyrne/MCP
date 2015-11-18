@@ -12,6 +12,7 @@
 		<module>modules</module>
 		<module>options</module>
 		<module>run</module>
+		<module>run-test</module>
 	</modules>
 	<build>
 		<plugins>
@@ -43,6 +44,11 @@
 			<dependency>
 				<groupId>net.dacce</groupId>
 				<artifactId>commons-gnu-cli</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>net.dacce</groupId>
+				<artifactId>commons-dns-client</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>

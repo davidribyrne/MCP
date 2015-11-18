@@ -86,7 +86,7 @@ public class ScopeInitializer extends Module
 		Addresses addresses = new Addresses();
 		try
 		{
-			for (String l : FileUtils.getFileAsLines(filename))
+			for (String l : FileUtils.readLines(filename))
 			{
 				String line = l.replaceAll("\\s", "");
 				if (!line.isEmpty())

@@ -58,7 +58,7 @@ public class NmapScan implements Callback
 		String content;
 		try
 		{
-			content = FileUtils.slurp(outputFileName + ".xml");
+			content = FileUtils.readFileToString(outputFileName + ".xml");
 		}
 		catch (FileNotFoundException | NoSuchFileException e)
 		{

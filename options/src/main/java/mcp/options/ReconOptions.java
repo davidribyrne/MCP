@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dacce.commons.cli.GnuParser;
-import net.dacce.commons.cli.Group;
 import net.dacce.commons.cli.HelpFormatter;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;

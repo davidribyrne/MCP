@@ -13,7 +13,8 @@ import mcp.jobmanager.executors.ExecutorManager;
 import mcp.jobmanager.jobs.JobState;
 import mcp.modules.GeneralOptions;
 import mcp.modules.nmap.NmapGeneralOptions;
-import mcp.tools.nmap.parser.OnePassParser;
+import mcp.tools.nmap.parser.NmapXmlParser;
+import net.dacce.commons.general.CollectionUtils;
 import net.dacce.commons.general.FileUtils;
 import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.netaddr.Addresses;
@@ -35,7 +36,7 @@ public class NmapScan implements Callback
 	private final static String CONSOLE_OUT_FILE_SUFFIX = "--out";
 	private final String jobName;
 	final static Logger logger = LoggerFactory.getLogger(NmapScan.class);
-
+	private String lastCommandLine;
 
 	public NmapScan(String jobName, Addresses targets)
 	{
@@ -105,12 +106,15 @@ public class NmapScan implements Callback
 		{
 			throw new UnexpectedException("Weird problem writing to nmap target file " + targetFile + ": " + e.getLocalizedMessage(), e);
 		}
+		List<String> arguments = generateCommandArguments(status);
 		CommandLineExecutor executor = new CommandLineExecutor("Nmap", jobName, NmapGeneralOptions.getInstance()
-				.getNmapPath(), generateCommandArguments(status), GeneralOptions.getInstance().getScandataDirectory(),
+				.getNmapPath(), arguments, GeneralOptions.getInstance().getScandataDirectory(),
 				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true);
+		lastCommandLine = NmapGeneralOptions.getInstance().getNmapPath() + " " + CollectionUtils.joinObjects(" ", arguments);
 		ExecutorManager.getInstance().execute(executor);
 	}
 
+	
 
 	private List<String> generateCommandArguments(ScanStatus status)
 	{
@@ -199,8 +203,7 @@ public class NmapScan implements Callback
 		{
 			throw new IllegalStateException("Output file does not exist");
 		}
-		OnePassParser opp = new OnePassParser();
-		opp.parse(f);
+		NmapXmlParser.parse(f, jobName, lastCommandLine);
 	}
 
 

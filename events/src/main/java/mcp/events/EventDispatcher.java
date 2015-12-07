@@ -1,45 +1,47 @@
 package mcp.events;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mcp.events.events.ExecutorCompleteEvent;
 import mcp.events.events.ModuleRunCompleteEvent;
 import mcp.events.events.NodeUpdateEvent;
-import mcp.events.events.ReconCompleteEvent;
-import mcp.events.events.ReconEvent;
-import mcp.events.events.ReconStartEvent;
+import mcp.events.events.McpCompleteEvent;
+import mcp.events.events.McpEvent;
+import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.ExecutorCompleteListener;
 import mcp.events.listeners.ModuleRunCompleteListener;
+import mcp.events.listeners.NodeUpdateType;
 import mcp.events.listeners.NodeUpdateListener;
-import mcp.events.listeners.ReconCompleteListener;
-import mcp.events.listeners.ReconEventListener;
-import mcp.events.listeners.ReconStartListener;
+import mcp.events.listeners.McpCompleteListener;
+import mcp.events.listeners.McpEventListener;
+import mcp.events.listeners.McpStartListener;
+import mcp.events.listeners.nodeUpdate.UpdateAction;
 import net.dacce.commons.general.MapOfLists;
+import net.dacce.commons.general.UniqueList;
 
 
 public class EventDispatcher
 {
 	private final static EventDispatcher instance = new EventDispatcher();
-	private MapOfLists<Class<? extends ReconEvent>, ReconEventListener> listeners;
-	private MapOfLists<NodeUpdateEventType, NodeUpdateListener> nodeListeners;
+	private MapOfLists<Class<? extends McpEvent>, McpEventListener> listeners;
+	private List<NodeUpdateListener> nodeListeners;
 	private MapOfLists<String, ExecutorCompleteListener> executorListeners;
 
 
 	private EventDispatcher()
 	{
-		listeners = new MapOfLists<Class<? extends ReconEvent>, ReconEventListener>();
-		nodeListeners = new MapOfLists<NodeUpdateEventType, NodeUpdateListener>();
+		listeners = new MapOfLists<Class<? extends McpEvent>, McpEventListener>();
+		nodeListeners = new ArrayList<NodeUpdateListener>();
 		executorListeners = new MapOfLists<String, ExecutorCompleteListener>();
 	}
 
 
-	public void registerListener(Class<? extends ReconEvent> eventClass, ReconEventListener listener)
+	public void registerListener(Class<? extends McpEvent> eventClass, McpEventListener listener)
 	{
 		if (eventClass == NodeUpdateEvent.class)
 		{
-			NodeUpdateListener l = (NodeUpdateListener) listener;
-			for (NodeUpdateEventType type : l.getNodeUpdateEventTypes())
-			{
-				nodeListeners.put(type, l);
-			}
+			nodeListeners.add((NodeUpdateListener) listener);
 		}
 		else if (eventClass == ExecutorCompleteEvent.class)
 		{
@@ -68,35 +70,46 @@ public class EventDispatcher
 
 	public void signalEvent(ModuleRunCompleteEvent event)
 	{
-		for (ReconEventListener listener : listeners.get(ModuleRunCompleteEvent.class))
+		for (McpEventListener listener : listeners.get(ModuleRunCompleteEvent.class))
 		{
 			((ModuleRunCompleteListener) listener).handleEvent(event);
 		}
 	}
 
 
+	// TODO: Need to make this more efficient
 	public void signalEvent(NodeUpdateEvent event)
 	{
-		for (ReconEventListener listener : listeners.get(NodeUpdateEvent.class))
+		for (NodeUpdateListener listener : nodeListeners)
 		{
-			((NodeUpdateListener) listener).handleEvent(event);
+			for(NodeUpdateType updateType: listener.getNodeUpdateEventTypes())
+			{
+				if (updateType.getUpdateAction().equals(event.getAction()))
+				{
+					if (updateType.getNodeClass().isInstance(event.getNode()))
+					{
+						listener.handleEvent(event);
+						break;
+					}
+				}
+			}
 		}
 	}
 
 
-	public void signalEvent(ReconStartEvent event)
+	public void signalEvent(McpStartEvent event)
 	{
-		for (ReconEventListener listener : listeners.get(ReconStartEvent.class))
+		for (McpEventListener listener : listeners.get(McpStartEvent.class))
 		{
-			((ReconStartListener) listener).handleEvent(event);
+			((McpStartListener) listener).handleEvent(event);
 		}
 	}
 
-	public void signalEvent(ReconCompleteEvent event)
+	public void signalEvent(McpCompleteEvent event)
 	{
-		for (ReconEventListener listener : listeners.get(ReconCompleteEvent.class))
+		for (McpEventListener listener : listeners.get(McpCompleteEvent.class))
 		{
-			((ReconCompleteListener) listener).handleEvent(event);
+			((McpCompleteListener) listener).handleEvent(event);
 		}
 	}
 

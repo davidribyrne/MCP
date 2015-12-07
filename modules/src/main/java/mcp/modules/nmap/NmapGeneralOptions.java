@@ -3,7 +3,7 @@ package mcp.modules.nmap;
 import java.io.File;
 
 import mcp.modules.Module;
-import net.dacce.commons.cli.Group;
+import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.general.BooleanFormatException;
@@ -24,7 +24,7 @@ public class NmapGeneralOptions extends Module
 	final static Logger logger = LoggerFactory.getLogger(NmapGeneralOptions.class);
 	private static final NmapGeneralOptions instance = new NmapGeneralOptions();
 
-	private Group group;
+	private OptionGroup group;
 	private Option nmapPath;
 	private Option nmapSpeed;
 	private Option nmapResume;
@@ -50,7 +50,7 @@ public class NmapGeneralOptions extends Module
 		nmapPathState.exists = Requirement.MUST;
 		nmapPath.addValidator(new PathValidator(nmapPathState));
 
-		group = new Group("nmap", "Nmap options");
+		group = new OptionGroup("nmap", "Nmap options");
 		group.addChild(nmapPath);
 		group.addChild(nmapSpeed);
 		group.addChild(nmapResume);

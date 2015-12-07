@@ -34,15 +34,23 @@
  */
 package mcp.tools.nmap.parser;
 
+import java.time.Instant;
+
 import mcp.knowledgebase.KnowledgeBase;
+import mcp.knowledgebase.attributes.host.OSGuess;
+import mcp.knowledgebase.attributes.host.OSGuessImpl;
+import mcp.knowledgebase.attributes.port.PortResponse;
+import mcp.knowledgebase.attributes.port.PortState;
+import mcp.knowledgebase.attributes.port.PortStateImpl;
+import mcp.knowledgebase.attributes.port.PortStateReason;
+import mcp.knowledgebase.attributes.port.ServiceDescription;
+import mcp.knowledgebase.attributes.port.ServiceDescriptionImpl;
+import mcp.knowledgebase.attributes.port.ServiceReason;
 import mcp.knowledgebase.nodes.Host;
 import mcp.knowledgebase.nodes.Hostname;
-import mcp.knowledgebase.nodes.OSGuess;
 import mcp.knowledgebase.nodes.Port;
-import mcp.knowledgebase.nodes.PortState;
-import mcp.knowledgebase.nodes.PortStateReason;
 import mcp.knowledgebase.nodes.PortType;
-import mcp.knowledgebase.nodes.ServiceReason;
+import mcp.knowledgebase.sources.NmapScanSource;
 import net.dacce.commons.netaddr.IPUtils;
 import net.dacce.commons.netaddr.InvalidIPAddressFormatException;
 import net.dacce.commons.netaddr.MacUtils;
@@ -68,124 +76,33 @@ public class NMapXmlHandler extends DefaultHandler
 {
 
 	final static Logger logger = LoggerFactory.getLogger(NMapXmlHandler.class);
-	private long parseStartTime = 0;
-
-	private long parseEndTime = 0;
 
 
 	private boolean isCpeData = false;
 
 	private String previousQName;
 
-	public final static String NMAPRUN_TAG = "nmaprun";
 
-	public final static String SCANNER_ATTR = "scanner";
-	public final static String ARGS_ATTR = "args";
-	public final static String START_ATTR = "start";
-	public final static String STARTSTR_ATTR = "startstr";
-	public final static String VERSION_ATTR = "version";
-	public final static String XML_OUTPUT_VERSION_ATTR = "xmloutputversion";
-	public final static String SCANINFO_TAG = "scaninfo";
-
-	public final static String TYPE_ATTR = "type";
-	public final static String PROTOCOL_ATTR = "protocol";
-	public final static String NUM_SERVICES_ATTR = "numservices";
-	public final static String SERVICES_ATTR = "services";
-	public static final String DEBUGGING_TAG = "debugging";
-	public static final String LEVEL_TAG = "level";
-	public final static String VERBOSE_TAG = "verbose";
-	public final static String LEVEL_ATTR = "level";
-	public final static String HOST_TAG = "host";
-	public final static String STARTTIME_ATTR = "starttime";
-	public final static String ENDTIME_ATTR = "endtime";
-	public final static String STATUS_TAG = "status";
-	public final static String STATE_ATTR = "state";
-	public final static String REASON_ATTR = "reason";
-	public final static String ADDRESS_TAG = "address";
-
-	public final static String ADDR_ATTR = "addr";
-	public final static String ADDRTYPE_ATTR = "addrtype";
-	public final static String HOSTNAMES_TAG = "hostnames";
-	public final static String HOSTNAME_TAG = "hostname";
-	public final static String NAME_ATTR = "name";
-	public final static String PORTS_TAG = "ports";
-	public final static String PORT_TAG = "port";
-
-	public final static String STATE_TAG = "state";
-
-	public final static String REASON_TTL_ATTR = "reason_ttl";
-	public final static String SERVICE_TAG = "service";
-
-	public final static String PRODUCT_ATTR = "product";
-	public final static String METHOD_ATTR = "method";
-	public final static String CONF_ATTR = "conf";
-	public final static String OS_TYPE_ATTR = "ostype";
-	public final static String EXTRA_INFO_ATTR = "extrainfo";
-	public final static String OS_TAG = "os";
-	public final static String PORT_USED_TAG = "portused";
-
-	public final static String PROTO_ATTR = "proto";
-	public final static String PORTID_ATTR = "portid";
-	public final static String OSCLASS_TAG = "osclass";
-
-	public final static String VENDOR_ATTR = "vendor";
-	public final static String OSFAMILY_ATTR = "osfamily";
-	public final static String OSGEN_ATTR = "osgen";
-	public final static String ACCURACY_ATTR = "accuracy";
-	public final static String OS_MATCH_TAG = "osmatch";
-
-	public final static String LINE_ATTR = "line";
-	public final static String DISTANCE_TAG = "distance";
-
-	public final static String VALUE_ATTR = "value";
-	public final static String TCP_SEQUENCE_TAG = "tcpsequence";
-
-	public final static String INDEX_ATTR = "index";
-	public final static String DIFFICULTY_ATTR = "difficulty";
-	public final static String VALUES_ATTR = "values";
-	public final static String TCP_TS_SEQUENCE_TAG = "tcptssequence";
-
-	public final static String CLASS_ATTR = "class";
-	public final static String TIMES_TAG = "times";
-
-	public final static String SRTT_ATTR = "srtt";
-	public final static String RTTVAR_ATTR = "rttvar";
-	public final static String TO_ATTR = "to";
-	public final static String UPTIME_TAG = "uptime";
-
-	public final static String SECONDS_ATTR = "seconds";
-	public final static String LASTBOOT_ATTR = "lastboot";
-	public final static String RUNSTATS_TAG = "runstats";
-	public final static String FINISHED_TAG = "finished";
-
-	public final static String TIME_ATTR = "time";
-	public final static String TIMESTR_ATTR = "timestr";
-	public final static String ELAPSED_ATTR = "elapsed";
-	public final static String HOSTS_TAG = "hosts";
-
-	public final static String UP_ATTR = "up";
-	public final static String DOWN_ATTR = "down";
-	public final static String TOTAL_ATTR = "total";
-	public final static String CPE_ATTR = "cpe";
-
-
-	public NMapXmlHandler()
-	{
-	}
-
+	private final NmapScanSource source;
 	private Host currentHost;
 	private Port currentPort;
 	private OSGuess currentOSGuess;
 	private byte[] currentMac;
 	private String currentMacVendor;
-
+	private final Instant scanTime;
 
 	// https://svn.nmap.org/nmap/docs/nmap.dtd
 
+
+	public NMapXmlHandler(Instant scanTime, NmapScanSource source)
+	{
+		this.scanTime = scanTime;
+		this.source = source;
+	}
+	
 	@Override
 	public void startDocument() throws SAXException
 	{
-		parseStartTime = System.currentTimeMillis();
 	}
 
 
@@ -193,7 +110,7 @@ public class NMapXmlHandler extends DefaultHandler
 	{
 		if (currentOSGuess == null)
 		{
-			currentOSGuess = new OSGuess();
+			currentOSGuess = new OSGuessImpl(scanTime, source );
 			currentHost.addOSGuess(currentOSGuess);
 		}
 	}
@@ -204,19 +121,19 @@ public class NMapXmlHandler extends DefaultHandler
 			Attributes attributes) throws SAXException
 	{
 
-		if (qName.equals(NMAPRUN_TAG))
+		if (qName.equals(NmapDtdStrings.NMAPRUN_TAG))
 		{
 		}
-		if (qName.equals(SCANINFO_TAG))
+		if (qName.equals(NmapDtdStrings.SCANINFO_TAG))
 		{
 		}
-		if (qName.equals(DEBUGGING_TAG))
+		if (qName.equals(NmapDtdStrings.DEBUGGING_TAG))
 		{
 		}
-		if (qName.equals(VERBOSE_TAG))
+		if (qName.equals(NmapDtdStrings.VERBOSE_TAG))
 		{
 		}
-		if (qName.equals(HOST_TAG))
+		if (qName.equals(NmapDtdStrings.HOST_TAG))
 		{
 			currentHost = null;
 			currentPort = null;
@@ -224,29 +141,29 @@ public class NMapXmlHandler extends DefaultHandler
 			currentMac = null;
 			currentMacVendor = null;
 		}
-		if (qName.equals(STATUS_TAG))
+		if (qName.equals(NmapDtdStrings.STATUS_TAG))
 		{
 		}
-		if (qName.equals(ADDRESS_TAG))
+		if (qName.equals(NmapDtdStrings.ADDRESS_TAG))
 		{
-			String type = attributes.getValue(ADDRTYPE_ATTR).toLowerCase();
+			String type = attributes.getValue(NmapDtdStrings.ADDRTYPE_ATTR).toLowerCase();
 			if (type.equals("ipv4"))
 			{
 				try
 				{
-					currentHost = KnowledgeBase.getInstance().getOrCreateHost(IPUtils.fromString(attributes.getValue(ADDR_ATTR)));
+					currentHost = KnowledgeBase.getInstance().getOrCreateHost(IPUtils.fromString(attributes.getValue(NmapDtdStrings.ADDR_ATTR)));
 					currentHost.setMacAddress(currentMac);
 					currentHost.setMacVendor(currentMacVendor);
 				}
 				catch (InvalidIPAddressFormatException e)
 				{
-					logger.warn("Nmap seems to have put an invalid IP address (" + attributes.getValue(ADDR_ATTR) + ")in a file: " + e.getLocalizedMessage(), e);
+					logger.warn("Nmap seems to have put an invalid IP address (" + attributes.getValue(NmapDtdStrings.ADDR_ATTR) + ")in a file: " + e.getLocalizedMessage(), e);
 				}
 			}
 			else if (type.equals("mac"))
 			{
-				currentMac = MacUtils.getMacFromString(attributes.getValue(ADDR_ATTR));
-				currentMacVendor = attributes.getValue(VENDOR_ATTR);
+				currentMac = MacUtils.getMacFromString(attributes.getValue(NmapDtdStrings.ADDR_ATTR));
+				currentMacVendor = attributes.getValue(NmapDtdStrings.VENDOR_ATTR);
 				if (currentHost != null)
 				{
 					currentHost.setMacAddress(currentMac);
@@ -254,77 +171,82 @@ public class NMapXmlHandler extends DefaultHandler
 				}
 			}
 		}
-		if (qName.equals(HOSTNAMES_TAG))
+		if (qName.equals(NmapDtdStrings.HOSTNAMES_TAG))
 		{
 		}
-		if (qName.equals(HOSTNAME_TAG))
+		if (qName.equals(NmapDtdStrings.HOSTNAME_TAG))
 		{
-			Hostname hostname = KnowledgeBase.getInstance().getOrCreateHostname(attributes.getValue(NAME_ATTR));
+			Hostname hostname = KnowledgeBase.getInstance().getOrCreateHostname(attributes.getValue(NmapDtdStrings.NAME_ATTR));
 			hostname.addAddress(currentHost.getAddress());
 		}
-		if (qName.equals(PORTS_TAG))
+		if (qName.equals(NmapDtdStrings.PORTS_TAG))
 		{
 		}
-		if (qName.equals(PORT_TAG))
+		if (qName.equals(NmapDtdStrings.PORT_TAG))
 		{
-			PortType type = PortType.fromNmap(attributes.getValue(PROTOCOL_ATTR));
-			int number = Integer.valueOf(attributes.getValue(PORTID_ATTR));
+			PortType type = PortType.fromNmap(attributes.getValue(NmapDtdStrings.PROTOCOL_ATTR));
+			int number = Integer.valueOf(attributes.getValue(NmapDtdStrings.PORTID_ATTR));
 			currentPort = currentHost.getOrCreatePort(type, number);
 		}
-		if (qName.equals(STATE_TAG))
+		if (qName.equals(NmapDtdStrings.STATE_TAG))
 		{
-			currentPort.setState(PortState.parseNmapText(attributes.getValue(STATE_ATTR)));
-			currentPort.setStateReason(PortStateReason.parseNmapText(attributes.getValue(REASON_ATTR)));
+			PortState state = new PortStateImpl(scanTime, source, 
+					PortResponse.parseNmapText(attributes.getValue(NmapDtdStrings.STATE_ATTR)), 
+					PortStateReason.parseNmapText(attributes.getValue(NmapDtdStrings.REASON_ATTR)));
+			currentPort.addState(state);
 		}
-		if (qName.equals(SERVICE_TAG))
+		if (qName.equals(NmapDtdStrings.SERVICE_TAG))
 		{
-			currentPort.setAppProtocolName(attributes.getValue(NAME_ATTR), ServiceReason.fromNmap(attributes.getValue(METHOD_ATTR)));
+			ServiceDescription description = new ServiceDescriptionImpl(scanTime, source, 
+					attributes.getValue(NmapDtdStrings.NAME_ATTR), 
+					ServiceReason.fromNmap(attributes.getValue(NmapDtdStrings.METHOD_ATTR)));
+			currentPort.setServiceDescription(description);
 		}
-		if (qName.equals(OS_TAG))
+		if (qName.equals(NmapDtdStrings.OS_TAG))
 		{
 		}
-		if (qName.equals(PORT_USED_TAG))
+		if (qName.equals(NmapDtdStrings.PORT_USED_TAG))
 		{
 		}
-		if (qName.equals(OSCLASS_TAG))
-		{
-			makeCurrentOSGuess();
-			currentOSGuess.setDeviceType(attributes.getValue(TYPE_ATTR));
-			currentOSGuess.setVendor(attributes.getValue(VENDOR_ATTR));
-			currentOSGuess.setVersion(attributes.getValue(VERSION_ATTR));
-			currentOSGuess.setOsFamily(attributes.getValue(OSFAMILY_ATTR));
-			currentOSGuess.setConfidence(Integer.getInteger(attributes.getValue(ACCURACY_ATTR)));
-		}
-		if (qName.equals(OS_MATCH_TAG))
+		if (qName.equals(NmapDtdStrings.OSCLASS_TAG))
 		{
 			makeCurrentOSGuess();
+			currentOSGuess.setDeviceType(attributes.getValue(NmapDtdStrings.TYPE_ATTR));
+			currentOSGuess.setVendor(attributes.getValue(NmapDtdStrings.VENDOR_ATTR));
+			currentOSGuess.setVersion(attributes.getValue(NmapDtdStrings.VERSION_ATTR));
+			currentOSGuess.setOsFamily(attributes.getValue(NmapDtdStrings.OSFAMILY_ATTR));
+			currentOSGuess.setConfidence(Integer.getInteger(attributes.getValue(NmapDtdStrings.ACCURACY_ATTR)));
 		}
-		if (qName.equals(DISTANCE_TAG))
+		if (qName.equals(NmapDtdStrings.OS_MATCH_TAG))
+		{
+			makeCurrentOSGuess();
+		}
+		if (qName.equals(NmapDtdStrings.DISTANCE_TAG))
 		{
 		}
-		if (qName.equals(TCP_SEQUENCE_TAG))
+		if (qName.equals(NmapDtdStrings.TCP_SEQUENCE_TAG))
 		{
 		}
-		if (qName.equals(TCP_TS_SEQUENCE_TAG))
+		if (qName.equals(NmapDtdStrings.TCP_TS_SEQUENCE_TAG))
 		{
 		}
-		if (qName.equals(TIMES_TAG))
+		if (qName.equals(NmapDtdStrings.TIMES_TAG))
 		{
 		}
-		if (qName.equals(UPTIME_TAG))
+		if (qName.equals(NmapDtdStrings.UPTIME_TAG))
 		{
-			currentHost.addNode("Up since " + attributes.getValue(LASTBOOT_ATTR));
+			currentHost.addNote("Up since " + attributes.getValue(NmapDtdStrings.LASTBOOT_ATTR));
 		}
-		if (qName.equals(RUNSTATS_TAG))
-		{
-		}
-		if (qName.equals(FINISHED_TAG))
+		if (qName.equals(NmapDtdStrings.RUNSTATS_TAG))
 		{
 		}
-		if (qName.equals(HOSTS_TAG))
+		if (qName.equals(NmapDtdStrings.FINISHED_TAG))
 		{
 		}
-		if (qName.equals(CPE_ATTR))
+		if (qName.equals(NmapDtdStrings.HOSTS_TAG))
+		{
+		}
+		if (qName.equals(NmapDtdStrings.CPE_ATTR))
 		{
 		}
 
@@ -349,82 +271,82 @@ public class NMapXmlHandler extends DefaultHandler
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException
 	{
-		if (qName.equals(NMAPRUN_TAG))
+		if (qName.equals(NmapDtdStrings.NMAPRUN_TAG))
 		{
 		}
-		if (qName.equals(SCANINFO_TAG))
+		if (qName.equals(NmapDtdStrings.SCANINFO_TAG))
 		{
 		}
-		if (qName.equals(DEBUGGING_TAG))
+		if (qName.equals(NmapDtdStrings.DEBUGGING_TAG))
 		{
 		}
-		if (qName.equals(VERBOSE_TAG))
+		if (qName.equals(NmapDtdStrings.VERBOSE_TAG))
 		{
 		}
-		if (qName.equals(HOST_TAG))
+		if (qName.equals(NmapDtdStrings.HOST_TAG))
 		{
 		}
-		if (qName.equals(STATUS_TAG))
+		if (qName.equals(NmapDtdStrings.STATUS_TAG))
 		{
 		}
-		if (qName.equals(ADDRESS_TAG))
+		if (qName.equals(NmapDtdStrings.ADDRESS_TAG))
 		{
 		}
-		if (qName.equals(HOSTNAME_TAG))
+		if (qName.equals(NmapDtdStrings.HOSTNAME_TAG))
 		{
 		}
-		if (qName.equals(HOSTNAMES_TAG))
+		if (qName.equals(NmapDtdStrings.HOSTNAMES_TAG))
 		{
 		}
-		if (qName.equals(PORTS_TAG))
+		if (qName.equals(NmapDtdStrings.PORTS_TAG))
 		{
 		}
-		if (qName.equals(PORT_TAG))
+		if (qName.equals(NmapDtdStrings.PORT_TAG))
 		{
 		}
-		if (qName.equals(STATE_TAG))
+		if (qName.equals(NmapDtdStrings.STATE_TAG))
 		{
 		}
-		if (qName.equals(SERVICE_TAG))
+		if (qName.equals(NmapDtdStrings.SERVICE_TAG))
 		{
 		}
-		if (qName.equals(OS_TAG))
+		if (qName.equals(NmapDtdStrings.OS_TAG))
 		{
 		}
-		if (qName.equals(PORT_USED_TAG))
+		if (qName.equals(NmapDtdStrings.PORT_USED_TAG))
 		{
 		}
-		if (qName.equals(OSCLASS_TAG))
+		if (qName.equals(NmapDtdStrings.OSCLASS_TAG))
 		{
 		}
-		if (qName.equals(OS_MATCH_TAG))
+		if (qName.equals(NmapDtdStrings.OS_MATCH_TAG))
 		{
 		}
-		if (qName.equals(DISTANCE_TAG))
+		if (qName.equals(NmapDtdStrings.DISTANCE_TAG))
 		{
 		}
-		if (qName.equals(TCP_SEQUENCE_TAG))
+		if (qName.equals(NmapDtdStrings.TCP_SEQUENCE_TAG))
 		{
 		}
-		if (qName.equals(TCP_TS_SEQUENCE_TAG))
+		if (qName.equals(NmapDtdStrings.TCP_TS_SEQUENCE_TAG))
 		{
 		}
-		if (qName.equals(TIMES_TAG))
+		if (qName.equals(NmapDtdStrings.TIMES_TAG))
 		{
 		}
-		if (qName.equals(UPTIME_TAG))
+		if (qName.equals(NmapDtdStrings.UPTIME_TAG))
 		{
 		}
-		if (qName.equals(RUNSTATS_TAG))
+		if (qName.equals(NmapDtdStrings.RUNSTATS_TAG))
 		{
 		}
-		if (qName.equals(FINISHED_TAG))
+		if (qName.equals(NmapDtdStrings.FINISHED_TAG))
 		{
 		}
-		if (qName.equals(HOSTS_TAG))
+		if (qName.equals(NmapDtdStrings.HOSTS_TAG))
 		{
 		}
-		if (qName.equals(CPE_ATTR))
+		if (qName.equals(NmapDtdStrings.CPE_ATTR))
 		{
 		}
 	}
@@ -433,13 +355,8 @@ public class NMapXmlHandler extends DefaultHandler
 	@Override
 	public void endDocument() throws SAXException
 	{
-		parseEndTime = System.currentTimeMillis();
 	}
 
 
-	public long getExecTime()
-	{
-		return parseEndTime - parseStartTime;
-	}
 
 }

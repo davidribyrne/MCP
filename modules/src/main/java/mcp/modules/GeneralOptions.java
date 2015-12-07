@@ -2,7 +2,7 @@ package mcp.modules;
 
 import java.io.File;
 
-import net.dacce.commons.cli.Group;
+import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.general.FileUtils;
@@ -17,7 +17,7 @@ public class GeneralOptions extends Module
 
 	private final static String SCAN_DATA_DIRECTORY = "scandata";
 	private final static GeneralOptions instance = new GeneralOptions();
-	private static Group group;
+	private static OptionGroup group;
 	private int verbose;
 	private Option verboseOption;
 	private Option workingDirectoryOption;
@@ -30,7 +30,9 @@ public class GeneralOptions extends Module
 		workingDirectoryOption = new Option(null, "workingDirectory", "Working directory for Recon Master.", true, true, ".",
 				"directory path");
 		continueAfterErrorOption = new Option(null, "continueAfterError", "Continue trying to run scans if something goes wrong.");
-		basicReconOption = new Option("b", "basicRecon", "Run with basic recon options. Equivalent to: --icmpEchoScan --topTcpScan --udpPorts 53,67,68,69,111,123,135,137,138,139,161,162,445,500,514,520,631,1434,1604,4500,5353,10000");
+		basicReconOption = new Option("b", "basicRecon", "Run with basic recon options. Equivalent to: "
+				+ "--hostnameDiscovery --icmpEchoScan --topTcpScan "
+				+ "--udpPorts 53,67,68,69,111,123,135,137,138,139,161,162,445,500,514,520,631,1434,1604,4500,5353,10000");
 
 		verboseOption.addValidator(new NumericValidator(false, 0, 6));
 		PathState workingDirState = new PathState();
@@ -39,7 +41,7 @@ public class GeneralOptions extends Module
 		workingDirState.readable = Requirement.MUST;
 		workingDirectoryOption.addValidator(new PathValidator(workingDirState));
 
-		group = new Group("General", "General options");
+		group = new OptionGroup("General", "General options");
 		group.addChild(verboseOption);
 		group.addChild(workingDirectoryOption);
 		group.addChild(continueAfterErrorOption);

@@ -1,23 +1,23 @@
 package mcp.modules.nmap;
 
 import mcp.events.EventDispatcher;
-import mcp.events.events.ReconStartEvent;
-import mcp.events.listeners.ReconStartListener;
+import mcp.events.events.McpStartEvent;
+import mcp.events.listeners.McpStartListener;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Module;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
-import net.dacce.commons.cli.Group;
+import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
 
 
-public class NmapIcmp extends Module implements ReconStartListener
+public class NmapIcmp extends Module implements McpStartListener
 {
 	private static final NmapIcmp instance = new NmapIcmp();
 
-	private Group group;
+	private OptionGroup group;
 	private Option icmpEchoScan;
 	private Option icmpMaskScan;
 	private Option icmpTimeScan;
@@ -32,7 +32,7 @@ public class NmapIcmp extends Module implements ReconStartListener
 		icmpTimeScan = new Option(null, "icmpTimeScan", "Run nmap ICMP timestamp scan.");
 		protocolScan = new Option(null, "protocolScan", "Run nmap IP protocol scans.");
 		
-		group = new Group("ICMP", "Nmap ICMP scans");
+		group = new OptionGroup("ICMP", "Nmap ICMP scans");
 		group.addChild(icmpEchoScan);
 		group.addChild(icmpMaskScan);
 		group.addChild(icmpTimeScan);
@@ -51,7 +51,7 @@ public class NmapIcmp extends Module implements ReconStartListener
 	@Override
 	public void initialize()
 	{
-		EventDispatcher.getInstance().registerListener(ReconStartEvent.class, this);
+		EventDispatcher.getInstance().registerListener(McpStartEvent.class, this);
 		
 		if (GeneralOptions.getInstance().getBasicReconOption().isEnabled())
 		{
@@ -62,7 +62,7 @@ public class NmapIcmp extends Module implements ReconStartListener
 
 
 	@Override
-	public void handleEvent(ReconStartEvent event)
+	public void handleEvent(McpStartEvent event)
 	{
 		if (icmpEchoScan.isEnabled())
 		{

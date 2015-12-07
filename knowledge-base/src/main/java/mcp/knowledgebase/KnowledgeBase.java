@@ -2,8 +2,12 @@ package mcp.knowledgebase;
 
 import java.util.Collection;
 
+import mcp.knowledgebase.nodes.Domain;
+import mcp.knowledgebase.nodes.DomainImpl;
 import mcp.knowledgebase.nodes.Host;
+import mcp.knowledgebase.nodes.HostImpl;
 import mcp.knowledgebase.nodes.Hostname;
+import mcp.knowledgebase.nodes.HostnameImpl;
 import mcp.knowledgebase.scope.Scope;
 import net.dacce.commons.general.IndexedCache;
 import net.dacce.commons.general.UniqueList;
@@ -17,13 +21,14 @@ public class KnowledgeBase
 	private final Scope scope;
 	private final IndexedCache<Host> hosts;
 	private final IndexedCache<Hostname> hostnames;
-
+	private final IndexedCache<Domain> domains;
 
 	private KnowledgeBase()
 	{
 		scope = new Scope();
 		hosts = new IndexedCache<Host>();
 		hostnames = new IndexedCache<Hostname>();
+		domains = new IndexedCache<Domain>();
 	}
 
 
@@ -54,10 +59,10 @@ public class KnowledgeBase
 
 	public Host getOrCreateHost(SimpleInetAddress address)
 	{
-		Host host = (Host) hosts.getMember(Host.ADDRESS_FIELD(), address);
+		Host host = (Host) hosts.getMember(HostImpl.ADDRESS_FIELD(), address);
 		if (host == null)
 		{
-			host = new Host(address);
+			host = new HostImpl(address);
 			hosts.add(host);
 		}
 		return host;
@@ -66,10 +71,10 @@ public class KnowledgeBase
 
 	public Hostname getOrCreateHostname(String name)
 	{
-		Hostname hostname = (Hostname) hostnames.getMember(Hostname.NAME_FIELD(), name);
+		Hostname hostname = (Hostname) hostnames.getMember(HostnameImpl.NAME_FIELD(), name);
 		if (hostname == null)
 		{
-			hostname = new Hostname(name);
+			hostname = new HostnameImpl(name);
 			hostnames.add(hostname);
 		}
 		return hostname;
@@ -85,5 +90,11 @@ public class KnowledgeBase
 	public IndexedCache<Hostname> getHostnames()
 	{
 		return hostnames;
+	}
+
+
+	public IndexedCache<Domain> getDomains()
+	{
+		return domains;
 	}
 }

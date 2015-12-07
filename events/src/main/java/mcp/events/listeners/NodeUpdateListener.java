@@ -2,14 +2,14 @@ package mcp.events.listeners;
 
 import java.util.Collection;
 
-import mcp.events.NodeUpdateEventType;
 import mcp.events.events.NodeUpdateEvent;
 
 
-public interface NodeUpdateListener extends ReconEventListener
+
+public interface NodeUpdateListener extends McpEventListener
 {
 	public void handleEvent(NodeUpdateEvent reconEvent);
 
 
-	public Collection<NodeUpdateEventType> getNodeUpdateEventTypes();
+	public Collection<NodeUpdateType> getNodeUpdateEventTypes();
 }

@@ -1,11 +1,12 @@
 package mcp.modules;
 
+import mcp.modules.hostnames.HostnameDiscoveryGeneralOptions;
 import mcp.modules.nmap.NmapGeneralOptions;
 import mcp.modules.nmap.NmapIcmp;
 import mcp.modules.nmap.NmapTcp;
 import mcp.modules.nmap.NmapUdp;
 import mcp.options.ReconOptions;
-import net.dacce.commons.cli.Group;
+import net.dacce.commons.cli.OptionGroup;
 
 
 public class Modules
@@ -16,11 +17,12 @@ public class Modules
 		ReconOptions.getInstance().addOptionContainer(GeneralOptions.getInstance().getOptions());
 		ReconOptions.getInstance().addOptionContainer(ScopeInitializer.getInstance().getOptions());
 
-		((Group) NmapGeneralOptions.getInstance().getOptions()).addChild(NmapIcmp.getInstance().getOptions());
-		((Group) NmapGeneralOptions.getInstance().getOptions()).addChild(NmapTcp.getInstance().getOptions());
-		((Group) NmapGeneralOptions.getInstance().getOptions()).addChild(NmapUdp.getInstance().getOptions());
+		((OptionGroup) NmapGeneralOptions.getInstance().getOptions()).addChild(NmapIcmp.getInstance().getOptions());
+		((OptionGroup) NmapGeneralOptions.getInstance().getOptions()).addChild(NmapTcp.getInstance().getOptions());
+		((OptionGroup) NmapGeneralOptions.getInstance().getOptions()).addChild(NmapUdp.getInstance().getOptions());
 		ReconOptions.getInstance().addOptionContainer(NmapGeneralOptions.getInstance().getOptions());
 		
+		ReconOptions.getInstance().addOptionContainer(HostnameDiscoveryGeneralOptions.getInstance().getOptions());
 	}
 
 
@@ -37,6 +39,8 @@ public class Modules
 		NmapIcmp.getInstance().initialize();
 		NmapTcp.getInstance().initialize();
 		NmapUdp.getInstance().initialize();
+		
+		HostnameDiscoveryGeneralOptions.getInstance().initialize();
 		
 		SimpleKbDumper.getInstance().initialize();
 	}

@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.scope.Scope;
-import net.dacce.commons.cli.Group;
+import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.general.FileUtils;
@@ -28,7 +28,7 @@ public class ScopeInitializer extends Module
 	private final static Logger logger = LoggerFactory.getLogger(ScopeInitializer.class);
 	private final static ScopeInitializer instance = new ScopeInitializer();
 
-	private Group group;
+	private OptionGroup group;
 	private Option targetIPFile;
 	private Option targetIP;
 	private Option excludeIPFile;
@@ -66,7 +66,7 @@ public class ScopeInitializer extends Module
 		targetIP.addValidator(ipValidator);
 		excludeIP.addValidator(ipValidator);
 
-		group = new Group("Scope", "Scope definition");
+		group = new OptionGroup("Scope", "Scope definition");
 		group.addChild(targetIPFile);
 		group.addChild(targetIP);
 		group.addChild(excludeIPFile);

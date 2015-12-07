@@ -2,8 +2,8 @@ package mcp;
 
 
 import mcp.events.EventDispatcher;
-import mcp.events.events.ReconCompleteEvent;
-import mcp.events.events.ReconStartEvent;
+import mcp.events.events.McpCompleteEvent;
+import mcp.events.events.McpStartEvent;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Modules;
 import mcp.options.ReconOptions;
@@ -35,8 +35,8 @@ public class MCP
 		Modules.initializePrescanModules();
 		setupLogger();
 		Modules.initializeOtherModules();
-		EventDispatcher.getInstance().signalEvent(new ReconStartEvent());
-		EventDispatcher.getInstance().signalEvent(new ReconCompleteEvent());
+		EventDispatcher.getInstance().signalEvent(new McpStartEvent());
+		EventDispatcher.getInstance().signalEvent(new McpCompleteEvent());
 		
 		
 	}

@@ -88,7 +88,7 @@ public class ReconOptions
 
 	private void printHelp()
 	{
-		System.out.println(HelpFormatter.makeHelp(80, "java -jar reconmaster.jar [options]", "", options, 3, 10, ""));
+		System.out.println(HelpFormatter.makeHelp(80, "java -jar reconmaster.jar [options]", "", options, 3, ""));
 	}
 
 

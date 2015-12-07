@@ -1,22 +1,22 @@
 package mcp.modules.nmap;
 
 import mcp.events.EventDispatcher;
-import mcp.events.events.ReconStartEvent;
-import mcp.events.listeners.ReconStartListener;
+import mcp.events.events.McpStartEvent;
+import mcp.events.listeners.McpStartListener;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.modules.Module;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
-import net.dacce.commons.cli.Group;
+import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.validators.NumericListValidator;
 import net.dacce.commons.validators.NumericValidator;
 
 
-public abstract class NmapPortScan extends Module implements ReconStartListener
+public abstract class NmapPortScan extends Module implements McpStartListener
 {
-	private static Group group;
+	private static OptionGroup group;
 
 	protected Option topScan;
 	protected Option topPorts;
@@ -47,7 +47,7 @@ public abstract class NmapPortScan extends Module implements ReconStartListener
 		topFocusedPorts.addValidator(new NumericValidator(false, 1, 65536));
 		ports.addValidator(new NumericListValidator(",", false, 0, 65535));
 
-		group = new Group(allCapsProtocol, "Nmap " + allCapsProtocol + " scan options");
+		group = new OptionGroup(allCapsProtocol, "Nmap " + allCapsProtocol + " scan options");
 		group.addChild(ports);
 		group.addChild(topScan);
 		group.addChild(topPorts);
@@ -62,13 +62,13 @@ public abstract class NmapPortScan extends Module implements ReconStartListener
 	@Override
 	public void initialize()
 	{
-		EventDispatcher.getInstance().registerListener(ReconStartEvent.class, this);
+		EventDispatcher.getInstance().registerListener(McpStartEvent.class, this);
 	}
 
 	protected abstract NmapFlag getProtocolFlag();
 
 	@Override
-	public void handleEvent(ReconStartEvent event)
+	public void handleEvent(McpStartEvent event)
 	{
 		if (ports.isValueSet(true))
 		{

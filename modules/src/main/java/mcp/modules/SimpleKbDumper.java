@@ -1,8 +1,8 @@
 package mcp.modules;
 
 import mcp.events.EventDispatcher;
-import mcp.events.events.ReconCompleteEvent;
-import mcp.events.listeners.ReconCompleteListener;
+import mcp.events.events.McpCompleteEvent;
+import mcp.events.listeners.McpCompleteListener;
 import mcp.knowledgebase.KnowledgeBase;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.general.CollectionUtils;
@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class SimpleKbDumper extends Module implements ReconCompleteListener
+public class SimpleKbDumper extends Module implements McpCompleteListener
 {
 	final static Logger logger = LoggerFactory.getLogger(SimpleKbDumper.class);
 	private static SimpleKbDumper instance = new SimpleKbDumper();
@@ -29,12 +29,12 @@ public class SimpleKbDumper extends Module implements ReconCompleteListener
 	@Override
 	public void initialize()
 	{
-		EventDispatcher.getInstance().registerListener(ReconCompleteEvent.class, this);
+		EventDispatcher.getInstance().registerListener(McpCompleteEvent.class, this);
 	}
 
 
 	@Override
-	public void handleEvent(ReconCompleteEvent reconEvent)
+	public void handleEvent(McpCompleteEvent reconEvent)
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("Scope:\n");

@@ -1,6 +1,6 @@
 package mcp.events.events;
 
-public class ExecutorCompleteEvent extends ReconEvent
+public class ExecutorCompleteEvent extends McpEvent
 {
 	private final Boolean success;
 	private final String program;

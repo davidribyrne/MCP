@@ -1,6 +1,6 @@
 package mcp.events.events;
 
-public class ModuleRunCompleteEvent extends ReconEvent
+public class ModuleRunCompleteEvent extends McpEvent
 {
 
 }

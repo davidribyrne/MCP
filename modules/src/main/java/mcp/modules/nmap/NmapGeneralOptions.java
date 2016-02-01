@@ -1,11 +1,10 @@
 package mcp.modules.nmap;
 
 import java.io.File;
-
 import mcp.modules.Module;
-import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
+import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.general.BooleanFormatException;
 import net.dacce.commons.general.BooleanUtils;
 import net.dacce.commons.general.FileUtils;
@@ -14,7 +13,6 @@ import net.dacce.commons.validators.NumericValidator;
 import net.dacce.commons.validators.PathState;
 import net.dacce.commons.validators.PathValidator;
 import net.dacce.commons.validators.Requirement;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

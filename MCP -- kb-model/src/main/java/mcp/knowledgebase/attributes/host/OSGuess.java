@@ -2,11 +2,7 @@ package mcp.knowledgebase.attributes.host;
 
 
 import mcp.knowledgebase.attributes.ScoredNodeAttribute;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
+import mcp.knowledgebase.nodes.Host;
 
 
 public interface OSGuess extends ScoredNodeAttribute
@@ -43,5 +39,7 @@ public interface OSGuess extends ScoredNodeAttribute
 
 
 	public void setLongName(String longName);
-
+	
+	@Override
+	public Host getParent();
 }

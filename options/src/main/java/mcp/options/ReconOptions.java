@@ -2,7 +2,6 @@ package mcp.options;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.dacce.commons.cli.GnuParser;
 import net.dacce.commons.cli.HelpFormatter;
 import net.dacce.commons.cli.Option;

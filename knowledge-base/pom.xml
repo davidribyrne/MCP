@@ -1,13 +1,18 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>mcp</groupId>
-    <artifactId>parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-  <artifactId>knowledge-base</artifactId>
-  <name>MCP -- knowledge-base</name>
-  <dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>mcp</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>knowledge-base</artifactId>
+	<name>MCP -- knowledge-base</name>
+	<dependencies>
+		<dependency>
+			<groupId>net.dacce</groupId>
+			<artifactId>commons-general</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>net.dacce</groupId>
 			<artifactId>commons-netaddr</artifactId>
@@ -18,7 +23,11 @@
 		</dependency>
 		<dependency>
 			<groupId>mcp</groupId>
+			<artifactId>commons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mcp</groupId>
 			<artifactId>kb-model</artifactId>
 		</dependency>
-  </dependencies>
+	</dependencies>
 </project>

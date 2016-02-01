@@ -1,13 +1,8 @@
 package mcp.knowledgebase.attributes.port;
 
 
-import mcp.knowledgebase.attributes.NodeAttribute;
 import mcp.knowledgebase.attributes.ScoredNodeAttribute;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
+import mcp.knowledgebase.nodes.Port;
 
 
 public interface ServiceDescription extends ScoredNodeAttribute
@@ -17,5 +12,7 @@ public interface ServiceDescription extends ScoredNodeAttribute
 
 
 	public ServiceReason getReason();
-
+	
+	@Override
+	public Port getParent();
 }

@@ -1,10 +1,10 @@
 package mcp.modules;
 
 import java.io.File;
-
-import net.dacce.commons.cli.OptionGroup;
+import mcp.commons.WorkingDirectories;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
+import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.general.FileUtils;
 import net.dacce.commons.validators.NumericValidator;
 import net.dacce.commons.validators.PathState;
@@ -16,12 +16,13 @@ public class GeneralOptions extends Module
 {
 
 	private final static String SCAN_DATA_DIRECTORY = "scandata";
+	private final static String RESUME_DIRECTORY = "resume";
 	private final static GeneralOptions instance = new GeneralOptions();
 	private static OptionGroup group;
 	private int verbose;
 	private Option verboseOption;
 	private Option workingDirectoryOption;
-	private Option continueAfterErrorOption;
+//	private Option continueAfterErrorOption;
 	private Option basicReconOption;
 
 	private GeneralOptions()
@@ -29,7 +30,7 @@ public class GeneralOptions extends Module
 		verboseOption = new Option("v", "verbose", "Output verbosity (0-6).", true, false, "2", "n");
 		workingDirectoryOption = new Option(null, "workingDirectory", "Working directory for Recon Master.", true, true, ".",
 				"directory path");
-		continueAfterErrorOption = new Option(null, "continueAfterError", "Continue trying to run scans if something goes wrong.");
+//		continueAfterErrorOption = new Option(null, "continueAfterError", "Continue trying to run scans if something goes wrong.");
 		basicReconOption = new Option("b", "basicRecon", "Run with basic recon options. Equivalent to: "
 				+ "--hostnameDiscovery --icmpEchoScan --topTcpScan "
 				+ "--udpPorts 53,67,68,69,111,123,135,137,138,139,161,162,445,500,514,520,631,1434,1604,4500,5353,10000");
@@ -44,14 +45,10 @@ public class GeneralOptions extends Module
 		group = new OptionGroup("General", "General options");
 		group.addChild(verboseOption);
 		group.addChild(workingDirectoryOption);
-		group.addChild(continueAfterErrorOption);
+//		group.addChild(continueAfterErrorOption);
 		group.addChild(basicReconOption);
 
 	}
-
-	private File workingDirectory;
-	private File scanDataDirectory;
-
 
 
 
@@ -64,11 +61,18 @@ public class GeneralOptions extends Module
 	@Override
 	public void initialize() throws IllegalArgumentException
 	{
-		workingDirectory = new File(workingDirectoryOption.getValue());
+		
+		File workingDirectory = new File(workingDirectoryOption.getValue());
 		FileUtils.createDirectory(workingDirectory);
+		WorkingDirectories.setWorkingDirectory(workingDirectory.toString() + File.separator);
 
-		scanDataDirectory = new File(workingDirectory, SCAN_DATA_DIRECTORY);
+		File scanDataDirectory = new File(workingDirectory, SCAN_DATA_DIRECTORY);
 		FileUtils.createDirectory(scanDataDirectory);
+		WorkingDirectories.setScanDataDirectory(scanDataDirectory.toString() + File.separator);
+
+		File resumeDirectory = new File(workingDirectory, RESUME_DIRECTORY);
+		FileUtils.createDirectory(resumeDirectory);
+		WorkingDirectories.setResumeDirectory(resumeDirectory.toString() + File.separator);
 
 		try
 		{
@@ -97,22 +101,11 @@ public class GeneralOptions extends Module
 	}
 
 
-	public String getScandataDirectory()
-	{
-		return scanDataDirectory.toString() + File.separator;
-	}
 
-
-	public String getWorkingDirectory()
-	{
-		return workingDirectory.toString() + File.separator;
-	}
-
-
-	public Option getContinueAfterError()
-	{
-		return continueAfterErrorOption;
-	}
+//	public Option getContinueAfterError()
+//	{
+//		return continueAfterErrorOption;
+//	}
 
 
 	public Option getBasicReconOption()

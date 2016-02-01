@@ -2,9 +2,7 @@ package mcp.knowledgebase.attributes.port;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import mcp.knowledgebase.nodes.PortType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,14 +1,15 @@
 package mcp.knowledgebase.attributes.host;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.util.*;
+import mcp.knowledgebase.attributes.NodeAttribute;
+import mcp.knowledgebase.nodes.Host;
 
 
-public interface IcmpResponse
+public interface IcmpResponse extends NodeAttribute
 {
 
 	public byte[] getData();
-
+	
+	@Override
+	public Host getParent();
 }

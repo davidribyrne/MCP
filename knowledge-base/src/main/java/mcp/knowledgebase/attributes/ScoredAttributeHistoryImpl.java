@@ -1,6 +1,5 @@
 package mcp.knowledgebase.attributes;
 
-import java.util.*;
 
 public class ScoredAttributeHistoryImpl<Attribute extends ScoredNodeAttribute> extends AttributeHistoryImpl<Attribute> implements ScoredAttributeHistory<Attribute>
 {

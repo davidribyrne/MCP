@@ -3,14 +3,14 @@ package mcp.modules.nmap;
 import mcp.events.EventDispatcher;
 import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
-import mcp.knowledgebase.KnowledgeBase;
+import mcp.knowledgebase.scope.Scope;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Module;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
-import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
+import net.dacce.commons.cli.OptionGroup;
 
 
 public class NmapIcmp extends Module implements McpStartListener
@@ -66,7 +66,7 @@ public class NmapIcmp extends Module implements McpStartListener
 	{
 		if (icmpEchoScan.isEnabled())
 		{
-			NmapScan echoScan = new NmapScan("ICMP Echo", KnowledgeBase.getInstance().getScope().getTargetAddresses());
+			NmapScan echoScan = new NmapScan("ICMP Echo", Scope.instance.getTargetAddresses());
 			echoScan.setResolve(false);
 			echoScan.addFlag(NmapFlag.ICMP_ECHO_DISCOVERY);
 			echoScan.addFlag(NmapFlag.PING_SCAN);
@@ -75,7 +75,7 @@ public class NmapIcmp extends Module implements McpStartListener
 
 		if (icmpMaskScan.isEnabled())
 		{
-			NmapScan echoScan = new NmapScan("ICMP Netmask", KnowledgeBase.getInstance().getScope().getTargetAddresses());
+			NmapScan echoScan = new NmapScan("ICMP Netmask", Scope.instance.getTargetAddresses());
 			echoScan.setResolve(false);
 			echoScan.addFlag(NmapFlag.NETMASK_REQUEST_DISCOVERY);
 			echoScan.addFlag(NmapFlag.PING_SCAN);
@@ -84,7 +84,7 @@ public class NmapIcmp extends Module implements McpStartListener
 
 		if (icmpTimeScan.isEnabled())
 		{
-			NmapScan echoScan = new NmapScan("ICMP Timestamp", KnowledgeBase.getInstance().getScope().getTargetAddresses());
+			NmapScan echoScan = new NmapScan("ICMP Timestamp", Scope.instance.getTargetAddresses());
 			echoScan.setResolve(false);
 			echoScan.addFlag(NmapFlag.TIMESTAMP_DISCOVERY);
 			echoScan.addFlag(NmapFlag.PING_SCAN);

@@ -14,8 +14,9 @@ public class Scope
 	private boolean changed;
 	private Addresses targetAddresses;
 
-
-	public Scope()
+	public static final Scope instance = new Scope();
+	
+	private Scope()
 	{
 		includeAddresses = new Addresses();
 		excludeAddresses = new Addresses();

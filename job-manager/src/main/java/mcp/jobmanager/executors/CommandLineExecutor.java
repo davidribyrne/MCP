@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 import java.util.List;
-
 import mcp.jobmanager.jobs.JobState;
 import net.dacce.commons.general.CollectionUtils;
 import net.dacce.commons.general.FileUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

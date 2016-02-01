@@ -2,10 +2,8 @@ package mcp;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-
 import net.dacce.commons.dns.client.DnsTransaction;
 import net.dacce.commons.dns.client.Resolver;
 import net.dacce.commons.dns.exceptions.DnsClientConnectException;
@@ -16,7 +14,6 @@ import net.dacce.commons.dns.records.RecordType;
 import net.dacce.commons.dns.records.ResourceRecord;
 import net.dacce.commons.general.CollectionUtils;
 import net.dacce.commons.general.FileUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

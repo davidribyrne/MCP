@@ -1,22 +1,19 @@
 package mcp.knowledgebase.attributes.other;
 
+import java.time.Instant;
 import mcp.knowledgebase.attributes.NodeAttributeImpl;
+import mcp.knowledgebase.attributes.hostname.ResolvedAddress;
+import mcp.knowledgebase.nodes.Node;
 import mcp.knowledgebase.sources.Source;
 import net.dacce.commons.netaddr.SimpleInetAddress;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.Instant;
-import java.util.*;
 
 public class ResolvedAddressImpl extends NodeAttributeImpl implements ResolvedAddress
 {
 	private final SimpleInetAddress address;
 
-	public ResolvedAddressImpl(Instant time, Source source, SimpleInetAddress address)
+	public ResolvedAddressImpl(Node parent, Instant time, Source source, SimpleInetAddress address)
 	{
-		super(time, source);
+		super(time, source, parent);
 		this.address = address;
 	}
 

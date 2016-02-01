@@ -3,11 +3,11 @@ package mcp.modules;
 import mcp.events.EventDispatcher;
 import mcp.events.events.McpCompleteEvent;
 import mcp.events.listeners.McpCompleteListener;
-import mcp.knowledgebase.KnowledgeBase;
+import mcp.knowledgebase.KnowledgeBaseImpl;
+import mcp.knowledgebase.scope.Scope;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.general.CollectionUtils;
 import net.dacce.commons.general.StringUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +38,13 @@ public class SimpleKbDumper extends Module implements McpCompleteListener
 	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("Scope:\n");
-		sb.append(StringUtils.indentText(1, true, KnowledgeBase.getInstance().getScope().toString()));
+		sb.append(StringUtils.indentText(1, true, Scope.instance.toString()));
 		
 		sb.append("\n\nHosts:\n");
-		sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects("\n", KnowledgeBase.getInstance().getHosts())));
+		sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects("\n", KnowledgeBaseImpl.getInstance().getHosts())));
 		
 		sb.append("\n\nAll hostnames:\n");
-		sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects("\n", KnowledgeBase.getInstance().getHostnames())));
+		sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects("\n", KnowledgeBaseImpl.getInstance().getHostnames())));
 		
 		System.out.println(sb.toString());
 	}

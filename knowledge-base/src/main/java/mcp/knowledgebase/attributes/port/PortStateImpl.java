@@ -1,22 +1,18 @@
 package mcp.knowledgebase.attributes.port;
 
-import mcp.knowledgebase.attributes.NodeAttributeImpl;
-import mcp.knowledgebase.sources.Source;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.Instant;
-import java.util.*;
+import mcp.knowledgebase.attributes.NodeAttributeImpl;
+import mcp.knowledgebase.nodes.Port;
+import mcp.knowledgebase.sources.Source;
 
 public class PortStateImpl extends NodeAttributeImpl implements PortState
 {
 	private final PortResponse response;
 	private final PortStateReason reason;
 
-	public PortStateImpl(Instant time, Source source, PortResponse response, PortStateReason reason)
+	public PortStateImpl(Port parent, Instant time, Source source, PortResponse response, PortStateReason reason)
 	{
-		super(time, source);
+		super(time, source, parent);
 		this.reason = reason;
 		this.response = response;
 	}
@@ -37,5 +33,11 @@ public class PortStateImpl extends NodeAttributeImpl implements PortState
 	public PortStateReason getReason()
 	{
 		return reason;
+	}
+	
+	@Override
+	public Port getParent()
+	{
+		return (Port) super.getParent();
 	}
 }

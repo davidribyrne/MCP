@@ -7,11 +7,6 @@ import mcp.knowledgebase.attributes.port.PortState;
 import mcp.knowledgebase.attributes.port.ServiceDescription;
 import mcp.knowledgebase.attributes.port.SoftwareGuess;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-
 
 public interface Port extends Node
 {
@@ -28,7 +23,7 @@ public interface Port extends Node
 	public int getNumber();
 
 
-	public Host getHost();
+	public AddressNode getAddressNode();
 
 
 	public AttributeHistory<PortState> getStateHistory();

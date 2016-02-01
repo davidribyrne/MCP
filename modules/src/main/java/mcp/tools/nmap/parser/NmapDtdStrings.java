@@ -1,9 +1,5 @@
 package mcp.tools.nmap.parser;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 public class NmapDtdStrings
 {

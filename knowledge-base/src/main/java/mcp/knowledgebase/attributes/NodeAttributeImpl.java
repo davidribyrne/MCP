@@ -1,23 +1,18 @@
 package mcp.knowledgebase.attributes;
 
+import java.time.Instant;
+import mcp.knowledgebase.KbElementImpl;
+import mcp.knowledgebase.nodes.Node;
 import mcp.knowledgebase.sources.Source;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.Instant;
-import java.util.*;
-
-public abstract class NodeAttributeImpl implements NodeAttribute
+public abstract class NodeAttributeImpl extends KbElementImpl implements NodeAttribute
 {
-	private final static Logger logger = LoggerFactory.getLogger(NodeAttributeImpl.class);
-
 	private final Instant time;
 	private final Source source;
 
-
-	public NodeAttributeImpl(Instant time, Source source)
+	public NodeAttributeImpl(Instant time, Source source, Node parent)
 	{
+		super(parent);
 		this.time = time;
 		this.source = source;
 	}
@@ -43,30 +38,5 @@ public abstract class NodeAttributeImpl implements NodeAttribute
 	{
 		return source;
 	}
-
-
-	
-	@Override
-	public String toString()
-	{
-		StringBuilder sb = new StringBuilder();
-
-		return sb.toString();
-	}
-
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
-	}
-
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		return super.equals(obj);
-	}
-
 
 }

@@ -3,13 +3,13 @@ package mcp.modules.nmap;
 import mcp.events.EventDispatcher;
 import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
-import mcp.knowledgebase.KnowledgeBase;
+import mcp.knowledgebase.scope.Scope;
 import mcp.modules.Module;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
-import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
+import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.validators.NumericListValidator;
 import net.dacce.commons.validators.NumericValidator;
 
@@ -72,7 +72,7 @@ public abstract class NmapPortScan extends Module implements McpStartListener
 	{
 		if (ports.isValueSet(true))
 		{
-			NmapScan definedPortsScanJob = new NmapScan("Defined " + allCapsProtocol + " ports", KnowledgeBase.getInstance().getScope().getTargetAddresses());
+			NmapScan definedPortsScanJob = new NmapScan("Defined " + allCapsProtocol + " ports", Scope.instance.getTargetAddresses());
 			definedPortsScanJob.setResolve(false);
 			definedPortsScanJob.addFlag(NmapFlag.NO_PING);
 			definedPortsScanJob.addFlag(getProtocolFlag());
@@ -81,7 +81,7 @@ public abstract class NmapPortScan extends Module implements McpStartListener
 		}
 		if (topScan.isEnabled())
 		{
-			NmapScan topScanJob = new NmapScan("Top " + allCapsProtocol + " ports", KnowledgeBase.getInstance().getScope().getTargetAddresses());
+			NmapScan topScanJob = new NmapScan("Top " + allCapsProtocol + " ports", Scope.instance.getTargetAddresses());
 			topScanJob.setResolve(false);
 			topScanJob.addFlag(NmapFlag.NO_PING);
 			topScanJob.addFlag(getProtocolFlag());

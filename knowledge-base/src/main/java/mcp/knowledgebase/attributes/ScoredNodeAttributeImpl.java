@@ -1,16 +1,16 @@
 package mcp.knowledgebase.attributes;
 
 import java.time.Instant;
-
+import mcp.knowledgebase.nodes.Node;
 import mcp.knowledgebase.sources.Source;
 
 public abstract class ScoredNodeAttributeImpl extends NodeAttributeImpl implements ScoredNodeAttribute
 {
 	private int confidence;
 	
-	public ScoredNodeAttributeImpl(Instant time, Source source)
+	public ScoredNodeAttributeImpl(Instant time, Source source, Node parent)
 	{
-		super(time, source);
+		super(time, source, parent);
 	}
 
 	/* (non-Javadoc)

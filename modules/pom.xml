@@ -10,6 +10,10 @@
 	<name>MCP -- modules</name>
 	<dependencies>
 		<dependency>
+			<groupId>net.dacce</groupId>
+			<artifactId>commons-dns-client</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>mcp</groupId>
 			<artifactId>options</artifactId>
 		</dependency>

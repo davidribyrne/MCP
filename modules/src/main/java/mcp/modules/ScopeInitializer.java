@@ -2,12 +2,11 @@ package mcp.modules;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import mcp.knowledgebase.KnowledgeBase;
+import mcp.commons.WorkingDirectories;
 import mcp.knowledgebase.scope.Scope;
-import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
+import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.general.FileUtils;
 import net.dacce.commons.general.InitializationException;
 import net.dacce.commons.general.StringUtils;
@@ -17,7 +16,6 @@ import net.dacce.commons.validators.IPAddressValidator;
 import net.dacce.commons.validators.PathState;
 import net.dacce.commons.validators.PathValidator;
 import net.dacce.commons.validators.Requirement;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,7 +124,6 @@ public class ScopeInitializer extends Module
 	@Override
 	public void initialize()
 	{
-		Scope scope = KnowledgeBase.getInstance().getScope();
 
 		String targetIPFileName;
 		
@@ -134,12 +131,12 @@ public class ScopeInitializer extends Module
 		if (targetIPFile.isValueSet(false))
 			targetIPFileName = targetIPFile.getValue();
 		else
-			targetIPFileName = GeneralOptions.getInstance().getWorkingDirectory() + targetIPFile.getValue();
+			targetIPFileName = WorkingDirectories.getWorkingDirectory() + targetIPFile.getValue();
 
 
 		if (!StringUtils.isEmptyOrNull(targetIPFileName))
 		{
-			scope.setIncludeAddresses(parseTargetFile(targetIPFileName, "target", targetIPFile));
+			Scope.instance.setIncludeAddresses(parseTargetFile(targetIPFileName, "target", targetIPFile));
 		}
 
 		String excludeIPFileName;
@@ -147,18 +144,18 @@ public class ScopeInitializer extends Module
 		if (excludeIPFile.isValueSet(false))
 			excludeIPFileName = excludeIPFile.getValue();
 		else
-			excludeIPFileName = GeneralOptions.getInstance().getWorkingDirectory() + excludeIPFile.getValue();
+			excludeIPFileName = WorkingDirectories.getWorkingDirectory() + excludeIPFile.getValue();
 
 		if (!StringUtils.isEmptyOrNull(excludeIPFileName))
 		{
-			scope.setExcludeAddresses(parseTargetFile(excludeIPFileName, "target", excludeIPFile));
+			Scope.instance.setExcludeAddresses(parseTargetFile(excludeIPFileName, "target", excludeIPFile));
 		}
 
 		for (String addressBlock : targetIP.getValues())
 		{
 			try
 			{
-				scope.addIncludeAddressBlock(addressBlock);
+				Scope.instance.addIncludeAddressBlock(addressBlock);
 			}
 			catch (InvalidIPAddressFormatException e)
 			{
@@ -170,7 +167,7 @@ public class ScopeInitializer extends Module
 		{
 			try
 			{
-				scope.addExcludeAddressBlock(addressBlock);
+				Scope.instance.addExcludeAddressBlock(addressBlock);
 			}
 			catch (InvalidIPAddressFormatException e)
 			{

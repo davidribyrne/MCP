@@ -6,19 +6,17 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
-
+import mcp.commons.WorkingDirectories;
 import mcp.jobmanager.executors.Callback;
 import mcp.jobmanager.executors.CommandLineExecutor;
 import mcp.jobmanager.executors.ExecutorManager;
 import mcp.jobmanager.jobs.JobState;
-import mcp.modules.GeneralOptions;
 import mcp.modules.nmap.NmapGeneralOptions;
 import mcp.tools.nmap.parser.NmapXmlParser;
 import net.dacce.commons.general.CollectionUtils;
 import net.dacce.commons.general.FileUtils;
 import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.netaddr.Addresses;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +43,7 @@ public class NmapScan implements Callback
 		speed = NmapGeneralOptions.getInstance().getSpeed();
 		resume = NmapGeneralOptions.getInstance().isResume();
 		flags = new ArrayList<FlagPair>();
-		outputFileName = GeneralOptions.getInstance().getScandataDirectory() + "nmap-" + jobName.replaceAll("[^a-zA-Z0-9\\-]", "-");
+		outputFileName = WorkingDirectories.getScanDataDirectory() + "nmap-" + jobName.replaceAll("[^a-zA-Z0-9\\-]", "-");
 	}
 
 	private enum ScanStatus
@@ -108,7 +106,7 @@ public class NmapScan implements Callback
 		}
 		List<String> arguments = generateCommandArguments(status);
 		CommandLineExecutor executor = new CommandLineExecutor("Nmap", jobName, NmapGeneralOptions.getInstance()
-				.getNmapPath(), arguments, GeneralOptions.getInstance().getScandataDirectory(),
+				.getNmapPath(), arguments, WorkingDirectories.getScanDataDirectory(),
 				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true);
 		lastCommandLine = NmapGeneralOptions.getInstance().getNmapPath() + " " + CollectionUtils.joinObjects(" ", arguments);
 		ExecutorManager.getInstance().execute(executor);

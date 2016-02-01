@@ -14,6 +14,7 @@
 		<module>run</module>
 		<module>run-test</module>
 		<module>MCP -- kb-model</module>
+		<module>mcp-commons</module>
 	</modules>
 	<build>
 		<plugins>
@@ -33,6 +34,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -45,6 +47,11 @@
 			<dependency>
 				<groupId>net.dacce</groupId>
 				<artifactId>commons-gnu-cli</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>net.dacce</groupId>
+				<artifactId>commons-persistence</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
@@ -105,6 +112,11 @@
 			<dependency>
 				<groupId>mcp</groupId>
 				<artifactId>run</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>mcp</groupId>
+				<artifactId>commons</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>

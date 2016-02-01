@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import mcp.events.EventDispatcher;
 import mcp.events.events.ExecutorCompleteEvent;
 import mcp.jobmanager.jobs.JobState;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

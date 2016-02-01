@@ -1,44 +1,34 @@
 package mcp.modules.hostnames;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import mcp.events.EventDispatcher;
-import mcp.events.events.NodeUpdateEvent;
-import mcp.events.listeners.NodeUpdateListener;
-import mcp.events.listeners.NodeUpdateType;
+import mcp.events.events.ElementCreationEvent;
+import mcp.events.listeners.NodeCreationListener;
+import mcp.knowledgebase.nodes.Domain;
+import mcp.knowledgebase.nodes.Node;
 import mcp.modules.Module;
 import net.dacce.commons.cli.OptionContainer;
-
+import net.dacce.commons.dns.client.DnsTransaction;
+import net.dacce.commons.dns.exceptions.DnsClientConnectException;
+import net.dacce.commons.dns.exceptions.DnsResponseTimeoutException;
+import net.dacce.commons.dns.messages.QuestionRecord;
+import net.dacce.commons.dns.records.RecordType;
+import net.dacce.commons.general.FileUtils;
+import net.dacce.commons.general.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
-import java.util.*;
-
-public class CommonHostnames extends Module implements NodeUpdateListener
+public class CommonHostnames extends Module implements NodeCreationListener
 {
 	private final static Logger logger = LoggerFactory.getLogger(CommonHostnames.class);
 
-
-	@Override
-	public String toString()
-	{
-		StringBuilder sb = new StringBuilder();
-
-		return sb.toString();
-	}
-
-
-	@Override
-	public int hashCode()
-	{
-		return super.hashCode();
-	}
-
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		return super.equals(obj);
-	}
+	private List<String> commonNames;
+	private final static Collection nodeTypes = Collections.singletonList(Domain.class); 
 
 
 	public CommonHostnames()
@@ -51,37 +41,78 @@ public class CommonHostnames extends Module implements NodeUpdateListener
 	{
 		if (HostnameDiscoveryGeneralOptions.getInstance().getTestCommonHostnamesOption().isEnabled())
 		{
-			EventDispatcher.getInstance().registerListener(NodeUpdateEvent.class, this);
+			EventDispatcher.getInstance().registerListener(ElementCreationEvent.class, this);
+			loadHostnames();
 		}
-		URL url = HostnameDiscoveryGeneralOptions.class.getResource("/common-host-names.txt");
-		
 	}
 
 	private void loadHostnames()
 	{
-		
+		if (HostnameDiscoveryGeneralOptions.getInstance().getCommonHostnamesFileOption().isValueSet(false))
+		{
+			String filename = HostnameDiscoveryGeneralOptions.getInstance().getCommonHostnamesFileOption().getValue();
+			try
+			{
+				commonNames = StringUtils.trim(FileUtils.readConfigFileLines(filename));
+			}
+			catch (IOException e)
+			{
+				logger.warn("Failed to read common hostnames from " + filename + " (default list will be used): " + e.getLocalizedMessage(), e);
+			}
+		}
+		if (commonNames.isEmpty())
+		{
+			URL url = HostnameDiscoveryGeneralOptions.class.getResource("/common-host-names.txt");
+			try
+			{
+				commonNames = StringUtils.trim(FileUtils.readConfigFileLines(url));
+			}
+			catch (IOException e)
+			{
+				logger.warn("Failed to read built-in common hostname list: " + e.getLocalizedMessage(), e);
+				commonNames = Collections.EMPTY_LIST;
+			}
+		}
 	}
 
 	@Override
 	public OptionContainer getOptions()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public void handleEvent(NodeUpdateEvent reconEvent)
+	public void handleEvent(ElementCreationEvent reconEvent)
 	{
-		// TODO Auto-generated method stub
+		Domain domain = (Domain) reconEvent.getElement();
+		String domainName = domain.getName();
+		List<DnsTransaction> transactions = new ArrayList<DnsTransaction>(commonNames.size());
+		for (String name: commonNames)
+		{
+			transactions.add(new DnsTransaction(new QuestionRecord(name + "." + domainName, RecordType.A), true));
+		}
+		try
+		{
+			HostnameDiscoveryGeneralOptions.getInstance().getResolver().bulkQuery(transactions, true, true);
+		}
+		catch (DnsClientConnectException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (DnsResponseTimeoutException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
 
 	@Override
-	public Collection<NodeUpdateType> getNodeUpdateEventTypes()
+	public Collection<Class<? extends Node>> getNodeMonitorClasses()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return nodeTypes;
 	}
 }

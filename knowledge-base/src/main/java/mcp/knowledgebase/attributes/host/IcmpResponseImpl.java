@@ -1,21 +1,17 @@
 package mcp.knowledgebase.attributes.host;
 
-import mcp.knowledgebase.attributes.NodeAttributeImpl;
-import mcp.knowledgebase.sources.Source;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.Instant;
-import java.util.*;
+import mcp.knowledgebase.attributes.NodeAttributeImpl;
+import mcp.knowledgebase.nodes.Host;
+import mcp.knowledgebase.sources.Source;
 
 public class IcmpResponseImpl extends NodeAttributeImpl implements IcmpResponse
 {
 	private final byte[] data;
 	
-	public IcmpResponseImpl(Instant time, Source source, byte[] data)
+	public IcmpResponseImpl(Instant time, Source source, Host parent, byte[] data)
 	{
-		super(time, source);
+		super(time, source, parent);
 		this.data = data;
 	}
 
@@ -28,6 +24,10 @@ public class IcmpResponseImpl extends NodeAttributeImpl implements IcmpResponse
 		return data;
 	}
 
-
+	@Override
+	public Host getParent()
+	{
+		return (Host) super.getParent();
+	}
 
 }

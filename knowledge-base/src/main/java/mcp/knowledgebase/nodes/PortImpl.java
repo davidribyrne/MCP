@@ -1,22 +1,13 @@
 package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
-
 import mcp.knowledgebase.attributes.AttributeHistory;
 import mcp.knowledgebase.attributes.AttributeHistoryImpl;
 import mcp.knowledgebase.attributes.ScoredAttributeHistory;
 import mcp.knowledgebase.attributes.ScoredAttributeHistoryImpl;
-import mcp.knowledgebase.attributes.port.PortResponse;
 import mcp.knowledgebase.attributes.port.PortState;
-import mcp.knowledgebase.attributes.port.PortStateImpl;
-import mcp.knowledgebase.attributes.port.PortStateReason;
 import mcp.knowledgebase.attributes.port.ServiceDescription;
-import mcp.knowledgebase.attributes.port.ServiceDescriptionImpl;
 import mcp.knowledgebase.attributes.port.SoftwareGuess;
-import mcp.knowledgebase.attributes.port.SoftwareGuessImpl;
-import mcp.knowledgebase.nodes.Host;
-import mcp.knowledgebase.nodes.Port;
-import mcp.knowledgebase.nodes.PortType;
 import net.dacce.commons.general.UnexpectedException;
 
 
@@ -24,20 +15,22 @@ public class PortImpl extends NodeImpl implements Port
 {
 	private final PortType type;
 	private final int number;
-	private final Host host;
+	private final AddressNode address;
 
 	private final AttributeHistory<PortState> stateHistory;
 	private final ScoredAttributeHistory<ServiceDescription> serviceDescriptionHistory;
 	private final ScoredAttributeHistory<SoftwareGuess> softwareGuessHistory;
 
-	public PortImpl(Host host, PortType type, int number)
+	public PortImpl(AddressNode address, PortType type, int number)
 	{
-		this.host = host;
+		super(address);
+		this.address = address;
 		this.type = type;
 		this.number = number;
 		stateHistory = new AttributeHistoryImpl<PortState>();
 		serviceDescriptionHistory = new ScoredAttributeHistoryImpl<ServiceDescription>();
 		softwareGuessHistory = new ScoredAttributeHistoryImpl<SoftwareGuess>();
+		signalCreation();
 	}
 
 
@@ -126,15 +119,6 @@ public class PortImpl extends NodeImpl implements Port
 	}
 
 
-	/* (non-Javadoc)
-	 * @see mcp.knowledgebase.nodes.impl.Port#getHost()
-	 */
-	@Override
-	public Host getHost()
-	{
-		return host;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see mcp.knowledgebase.nodes.impl.Port#getState()
@@ -171,4 +155,13 @@ public class PortImpl extends NodeImpl implements Port
 	{
 		this.stateHistory.addValue(state);
 	}
+
+
+	@Override
+	public AddressNode getAddressNode()
+	{
+		return address;
+	}
+
+
 }

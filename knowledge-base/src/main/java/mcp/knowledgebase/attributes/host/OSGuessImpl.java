@@ -1,10 +1,8 @@
 package mcp.knowledgebase.attributes.host;
 
 import java.time.Instant;
-
-import mcp.knowledgebase.attributes.NodeAttributeImpl;
 import mcp.knowledgebase.attributes.ScoredNodeAttributeImpl;
-import mcp.knowledgebase.attributes.host.OSGuess;
+import mcp.knowledgebase.nodes.Host;
 import mcp.knowledgebase.sources.Source;
 import net.dacce.commons.general.StringUtils;
 
@@ -19,10 +17,12 @@ public class OSGuessImpl extends ScoredNodeAttributeImpl implements OSGuess
 	private String longName;
 
 
-	public OSGuessImpl(Instant time, Source source)
+	public OSGuessImpl(Instant time, Source source, Host parent)
 	{
-		super(time, source);
+		super(time, source, parent);
 	}
+	
+	
 	/* (non-Javadoc)
 	 * @see mcp.knowledgebase.nodes.attributes.host.OSGuess#getVendor()
 	 */
@@ -144,6 +144,13 @@ public class OSGuessImpl extends ScoredNodeAttributeImpl implements OSGuess
 		sb.append("\nConfidence: " + getConfidence());
 
 		return sb.toString().trim();
+	}
+
+
+	@Override
+	public Host getParent()
+	{
+		return (Host) super.getParent();
 	}
 	
 }

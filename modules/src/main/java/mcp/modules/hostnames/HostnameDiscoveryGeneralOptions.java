@@ -1,27 +1,21 @@
 package mcp.modules.hostnames;
 
+import mcp.commons.WorkingDirectories;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Module;
-import mcp.modules.nmap.NmapGeneralOptions;
-import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
+import net.dacce.commons.cli.OptionGroup;
+import net.dacce.commons.dns.client.Resolver;
+import net.dacce.commons.dns.client.cache.DnsDiskCache;
 import net.dacce.commons.validators.IPAddressValidator;
 import net.dacce.commons.validators.NumericValidator;
 import net.dacce.commons.validators.PathState;
 import net.dacce.commons.validators.PathValidator;
 import net.dacce.commons.validators.Requirement;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.net.URL;
-import java.util.*;
-
 public class HostnameDiscoveryGeneralOptions extends Module
 {
-	private final static Logger logger = LoggerFactory.getLogger(HostnameDiscoveryGeneralOptions.class);
-
 	private static final HostnameDiscoveryGeneralOptions instance = new HostnameDiscoveryGeneralOptions();
 
 	private OptionGroup group;
@@ -46,6 +40,7 @@ public class HostnameDiscoveryGeneralOptions extends Module
 	private Option knownHostnamesOption;
 	private Option bannedDomainsOption;
 
+	private Resolver resolver;
 
 	
 	public HostnameDiscoveryGeneralOptions()
@@ -151,6 +146,16 @@ public class HostnameDiscoveryGeneralOptions extends Module
 			testRootPagesOption.forceEnabled();
 			testZoneTransfersOption.forceEnabled();
 		}
+		
+		if (dnsServersOption.isValueSet(true))
+		{
+			resolver = new Resolver(dnsServersOption.getValues(), true);
+		}
+		else
+		{
+			resolver = new Resolver();
+		}
+		resolver.setCache(new DnsDiskCache(getDnsCacheFilename()));
 	}
 
 
@@ -261,4 +266,16 @@ public class HostnameDiscoveryGeneralOptions extends Module
 	{
 		return bannedDomainsOption;
 	}
+	
+	public static String getDnsCacheFilename()
+	{
+		return WorkingDirectories.getResumeDirectory() + "dns-cache";
+	}
+
+
+	public Resolver getResolver()
+	{
+		return resolver;
+	}
+
 }

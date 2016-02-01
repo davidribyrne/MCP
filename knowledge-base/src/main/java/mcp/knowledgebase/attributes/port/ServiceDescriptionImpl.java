@@ -1,14 +1,9 @@
 package mcp.knowledgebase.attributes.port;
 
-import mcp.knowledgebase.attributes.NodeAttributeImpl;
-import mcp.knowledgebase.attributes.ScoredNodeAttributeImpl;
-import mcp.knowledgebase.sources.Source;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.time.Instant;
-import java.util.*;
+import mcp.knowledgebase.attributes.ScoredNodeAttributeImpl;
+import mcp.knowledgebase.nodes.Port;
+import mcp.knowledgebase.sources.Source;
 
 public class ServiceDescriptionImpl extends ScoredNodeAttributeImpl implements ServiceDescription
 {
@@ -17,9 +12,9 @@ public class ServiceDescriptionImpl extends ScoredNodeAttributeImpl implements S
 	private final ServiceReason reason;
 
 
-	public ServiceDescriptionImpl(Instant time, Source source, String appProtocolName, ServiceReason serviceReason)
+	public ServiceDescriptionImpl(Port parent, Instant time, Source source, String appProtocolName, ServiceReason serviceReason)
 	{
-		super(time, source);
+		super(time, source, parent);
 		this.appProtocolName = appProtocolName;
 		this.reason = serviceReason;
 	}
@@ -44,5 +39,8 @@ public class ServiceDescriptionImpl extends ScoredNodeAttributeImpl implements S
 		return reason;
 	}
 
-
+	public Port getParent()
+	{
+		return (Port) super.getParent();
+	}
 }

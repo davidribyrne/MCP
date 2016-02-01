@@ -1,9 +1,8 @@
 package mcp.knowledgebase.attributes.port;
 
 import java.time.Instant;
-
-import mcp.knowledgebase.attributes.NodeAttributeImpl;
 import mcp.knowledgebase.attributes.ScoredNodeAttributeImpl;
+import mcp.knowledgebase.nodes.Port;
 import mcp.knowledgebase.sources.Source;
 
 
@@ -14,9 +13,9 @@ public class SoftwareGuessImpl extends ScoredNodeAttributeImpl implements Softwa
 	private final String version;
 	
 	
-	public SoftwareGuessImpl(Instant time, Source source, String product, String vendor, String version)
+	public SoftwareGuessImpl(Port parent, Instant time, Source source, String product, String vendor, String version)
 	{
-		super(time, source);
+		super(time, source, parent);
 		this.product = product;
 		this.vendor = vendor;
 		this.version = version;
@@ -50,6 +49,13 @@ public class SoftwareGuessImpl extends ScoredNodeAttributeImpl implements Softwa
 	public String getVersion()
 	{
 		return version;
+	}
+
+
+	@Override
+	public Port getParent()
+	{
+		return (Port) super.getParent();
 	}
 
 

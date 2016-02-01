@@ -2,46 +2,42 @@ package mcp.events;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import mcp.events.events.ElementCreationEvent;
 import mcp.events.events.ExecutorCompleteEvent;
-import mcp.events.events.ModuleRunCompleteEvent;
-import mcp.events.events.NodeUpdateEvent;
 import mcp.events.events.McpCompleteEvent;
 import mcp.events.events.McpEvent;
 import mcp.events.events.McpStartEvent;
+import mcp.events.events.ModuleRunCompleteEvent;
 import mcp.events.listeners.ExecutorCompleteListener;
-import mcp.events.listeners.ModuleRunCompleteListener;
-import mcp.events.listeners.NodeUpdateType;
-import mcp.events.listeners.NodeUpdateListener;
 import mcp.events.listeners.McpCompleteListener;
 import mcp.events.listeners.McpEventListener;
 import mcp.events.listeners.McpStartListener;
-import mcp.events.listeners.nodeUpdate.UpdateAction;
+import mcp.events.listeners.ModuleRunCompleteListener;
+import mcp.events.listeners.NodeCreationListener;
 import net.dacce.commons.general.MapOfLists;
-import net.dacce.commons.general.UniqueList;
 
 
 public class EventDispatcher
 {
 	private final static EventDispatcher instance = new EventDispatcher();
 	private MapOfLists<Class<? extends McpEvent>, McpEventListener> listeners;
-	private List<NodeUpdateListener> nodeListeners;
+	private List<NodeCreationListener> nodeListeners;
 	private MapOfLists<String, ExecutorCompleteListener> executorListeners;
 
 
 	private EventDispatcher()
 	{
 		listeners = new MapOfLists<Class<? extends McpEvent>, McpEventListener>();
-		nodeListeners = new ArrayList<NodeUpdateListener>();
+		nodeListeners = new ArrayList<NodeCreationListener>();
 		executorListeners = new MapOfLists<String, ExecutorCompleteListener>();
 	}
 
 
 	public void registerListener(Class<? extends McpEvent> eventClass, McpEventListener listener)
 	{
-		if (eventClass == NodeUpdateEvent.class)
+		if (eventClass == ElementCreationEvent.class)
 		{
-			nodeListeners.add((NodeUpdateListener) listener);
+			nodeListeners.add((NodeCreationListener) listener);
 		}
 		else if (eventClass == ExecutorCompleteEvent.class)
 		{
@@ -78,21 +74,21 @@ public class EventDispatcher
 
 
 	// TODO: Need to make this more efficient
-	public void signalEvent(NodeUpdateEvent event)
+	public void signalEvent(ElementCreationEvent event)
 	{
-		for (NodeUpdateListener listener : nodeListeners)
+		for (NodeCreationListener listener : nodeListeners)
 		{
-			for(NodeUpdateType updateType: listener.getNodeUpdateEventTypes())
-			{
-				if (updateType.getUpdateAction().equals(event.getAction()))
-				{
-					if (updateType.getNodeClass().isInstance(event.getNode()))
-					{
-						listener.handleEvent(event);
-						break;
-					}
-				}
-			}
+//			for(NodeUpdateType updateType: listener.getNodeMonitorClasses())
+//			{
+//				if (updateType.getUpdateAction().equals(event.getAction()))
+//				{
+//					if (updateType.getNodeClass().isInstance(event.getNode()))
+//					{
+//						listener.handleEvent(event);
+//						break;
+//					}
+//				}
+//			}
 		}
 	}
 

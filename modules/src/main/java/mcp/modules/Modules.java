@@ -1,5 +1,6 @@
 package mcp.modules;
 
+import mcp.modules.hostnames.CommonHostnames;
 import mcp.modules.hostnames.HostnameDiscoveryGeneralOptions;
 import mcp.modules.nmap.NmapGeneralOptions;
 import mcp.modules.nmap.NmapIcmp;
@@ -41,6 +42,7 @@ public class Modules
 		NmapUdp.getInstance().initialize();
 		
 		HostnameDiscoveryGeneralOptions.getInstance().initialize();
+		CommonHostnames.getInstance().initialize();
 		
 		SimpleKbDumper.getInstance().initialize();
 	}

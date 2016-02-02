@@ -23,7 +23,7 @@ public interface Port extends Node
 	public int getNumber();
 
 
-	public AddressNode getAddressNode();
+	public Address getAddressNode();
 
 
 	public AttributeHistory<PortState> getStateHistory();

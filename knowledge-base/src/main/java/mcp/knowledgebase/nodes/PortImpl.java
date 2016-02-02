@@ -15,13 +15,13 @@ public class PortImpl extends NodeImpl implements Port
 {
 	private final PortType type;
 	private final int number;
-	private final AddressNode address;
+	private final Address address;
 
 	private final AttributeHistory<PortState> stateHistory;
 	private final ScoredAttributeHistory<ServiceDescription> serviceDescriptionHistory;
 	private final ScoredAttributeHistory<SoftwareGuess> softwareGuessHistory;
 
-	public PortImpl(AddressNode address, PortType type, int number)
+	public PortImpl(Address address, PortType type, int number)
 	{
 		super(address);
 		this.address = address;
@@ -158,7 +158,7 @@ public class PortImpl extends NodeImpl implements Port
 
 
 	@Override
-	public AddressNode getAddressNode()
+	public Address getAddressNode()
 	{
 		return address;
 	}

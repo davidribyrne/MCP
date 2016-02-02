@@ -9,7 +9,7 @@ public interface Host extends Node
 
 	public void addOSGuess(OSGuess guess);
 
-	public List<AddressNode> getAddresses();
+	public List<Address> getAddresses();
 
 	public boolean isUp();
 

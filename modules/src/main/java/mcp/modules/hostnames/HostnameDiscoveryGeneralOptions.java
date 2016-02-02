@@ -1,6 +1,14 @@
 package mcp.modules.hostnames;
 
+import java.io.IOException;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
+import mcp.events.EventDispatcher;
+import mcp.events.events.McpStartEvent;
+import mcp.events.listeners.McpStartListener;
+import mcp.knowledgebase.KnowledgeBaseImpl;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Module;
 import net.dacce.commons.cli.Option;
@@ -8,14 +16,17 @@ import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.dns.client.Resolver;
 import net.dacce.commons.dns.client.cache.DnsDiskCache;
+import net.dacce.commons.general.FileUtils;
 import net.dacce.commons.validators.IPAddressValidator;
 import net.dacce.commons.validators.NumericValidator;
 import net.dacce.commons.validators.PathState;
 import net.dacce.commons.validators.PathValidator;
 import net.dacce.commons.validators.Requirement;
 
-public class HostnameDiscoveryGeneralOptions extends Module
+public class HostnameDiscoveryGeneralOptions extends Module implements McpStartListener
 {
+	private final static Logger logger = LoggerFactory.getLogger(HostnameDiscoveryGeneralOptions.class);
+
 	private static final HostnameDiscoveryGeneralOptions instance = new HostnameDiscoveryGeneralOptions();
 
 	private OptionGroup group;
@@ -40,8 +51,8 @@ public class HostnameDiscoveryGeneralOptions extends Module
 	private Option knownHostnamesOption;
 	private Option bannedDomainsOption;
 
-	private Resolver resolver;
-
+	private int maxAutoAddDomains;
+	private int maxAutoAddSubDomains;
 	
 	public HostnameDiscoveryGeneralOptions()
 	{
@@ -118,9 +129,9 @@ public class HostnameDiscoveryGeneralOptions extends Module
 		group.addChild(maxAutoAddDomainOption);
 		group.addChild(autoAddSubDomainsOption);
 		group.addChild(maxAutoAddSubDomainOption);
-		group.addChild(testSslCertsOption);
-		group.addChild(testRootPagesOption);
-		group.addChild(testZoneTransfersOption);
+//		group.addChild(testSslCertsOption);
+//		group.addChild(testRootPagesOption);
+//		group.addChild(testZoneTransfersOption);
 		group.addChild(knownDomainsFileOption);
 		group.addChild(knownDomainsOption);
 		group.addChild(knownHostnamesFileOption);
@@ -132,6 +143,19 @@ public class HostnameDiscoveryGeneralOptions extends Module
 	@Override
 	public void initialize()
 	{
+		EventDispatcher.getInstance().registerListener(McpStartEvent.class, this);
+		if (dnsServersOption.isValueSet(true))
+		{
+			HostnameDiscoveryUtils.resolver = new Resolver(dnsServersOption.getValues(), true);
+		}
+		else
+		{
+			HostnameDiscoveryUtils.resolver = new Resolver();
+		}
+		HostnameDiscoveryUtils.resolver.setCache(new DnsDiskCache(getDnsCacheFilename()));
+
+		
+		
 		if (GeneralOptions.getInstance().getBasicReconOption().isEnabled())
 		{
 			enableHostnameDiscoveryOption.forceEnabled();
@@ -147,17 +171,73 @@ public class HostnameDiscoveryGeneralOptions extends Module
 			testZoneTransfersOption.forceEnabled();
 		}
 		
-		if (dnsServersOption.isValueSet(true))
+		
+		maxAutoAddDomains = Integer.valueOf(maxAutoAddDomainOption.getValue());
+		maxAutoAddSubDomains = Integer.valueOf(maxAutoAddSubDomainOption.getValue());
+	}
+	
+	private void handleKnownHostnames()
+	{
+		logger.info("Handling known hostnames.");
+		String hostnamesPath;
+		if (knownHostnamesFileOption.isValueSet(false))
 		{
-			resolver = new Resolver(dnsServersOption.getValues(), true);
+			hostnamesPath = knownHostnamesFileOption.getValue();
 		}
 		else
 		{
-			resolver = new Resolver();
+			hostnamesPath = WorkingDirectories.getWorkingDirectory() + knownHostnamesFileOption.getValue();
 		}
-		resolver.setCache(new DnsDiskCache(getDnsCacheFilename()));
+		
+		for (String hostname: knownHostnamesOption.getValues())
+		{
+			HostnameDiscoveryUtils.resolveAndReviewHostname(hostname);
+		}
+		try
+		{
+			for (String hostname: FileUtils.readLines(hostnamesPath))
+			{
+				HostnameDiscoveryUtils.resolveAndReviewHostname(hostname);
+			}
+		}
+		catch (IOException e)
+		{
+			logger.debug("Failed to read known hostnames file (" + hostnamesPath + "). "
+					+ "This is only a problem if you expected data to be there.", e);
+		}
 	}
 
+	private void handleKnownDomains()
+	{
+		logger.info("Handling known domains.");
+		String knownDomainsPath;
+		if (knownDomainsFileOption.isValueSet(false))
+		{
+			knownDomainsPath = knownDomainsFileOption.getValue();
+		}
+		else
+		{
+			knownDomainsPath = WorkingDirectories.getWorkingDirectory() + knownDomainsFileOption.getValue();
+		}
+		
+		try
+		{
+			for (String domain: FileUtils.readLines(knownDomainsPath))
+			{
+				KnowledgeBaseImpl.getInstance().addDomain(domain);
+			}
+		}
+		catch (IOException e)
+		{
+			logger.debug("Failed to read known domains file (" + knownDomainsPath + "). "
+					+ "This is only a problem if you expected data to be there.", e);
+		}
+		for (String domain: knownDomainsOption.getValues())
+		{
+			KnowledgeBaseImpl.getInstance().addDomain(domain);
+		}
+
+	}
 
 	@Override
 	public OptionContainer getOptions()
@@ -273,9 +353,25 @@ public class HostnameDiscoveryGeneralOptions extends Module
 	}
 
 
-	public Resolver getResolver()
+	public int getMaxAutoAddDomains()
 	{
-		return resolver;
+		return maxAutoAddDomains;
 	}
+
+
+	public int getMaxAutoAddSubDomains()
+	{
+		return maxAutoAddSubDomains;
+	}
+
+
+	@Override
+	public void handleEvent(McpStartEvent event)
+	{
+		handleKnownDomains();
+		handleKnownHostnames();
+
+	}
+
 
 }

@@ -7,20 +7,22 @@ import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.netaddr.MacUtils;
 import net.dacce.commons.netaddr.SimpleInetAddress;
 
-public class AddressNodeImpl extends NodeImpl implements AddressNode
+public class AddressImpl extends NodeImpl implements Address
 {
 	private final SimpleInetAddress address;
 	final private IndexedCache<Port> tcpPorts;
 	final private IndexedCache<Port> udpPorts;
 	private byte[] macAddress;
 	private String macVendor;
+	private Host host;
+	
 
 	/**
 	 * ONLY THE KB SHOULD CALL THIS
 	 * @param parent
 	 * @param address
 	 */
-	public AddressNodeImpl(SimpleInetAddress address)
+	public AddressImpl(SimpleInetAddress address)
 	{
 		super(null);
 		this.address = address;
@@ -35,7 +37,7 @@ public class AddressNodeImpl extends NodeImpl implements AddressNode
 	{
 		try
 		{
-			addressField = HostImpl.class.getDeclaredField("address");
+			addressField = AddressImpl.class.getDeclaredField("address");
 			addressField.setAccessible(true);
 		}
 		catch (NoSuchFieldException e)
@@ -141,6 +143,16 @@ public class AddressNodeImpl extends NodeImpl implements AddressNode
 	public IndexedCache<Port> getUdpPorts()
 	{
 		return udpPorts;
+	}
+
+	public Host getHost()
+	{
+		return host;
+	}
+
+	public void setHost(Host host)
+	{
+		this.host = host;
 	}
 
 }

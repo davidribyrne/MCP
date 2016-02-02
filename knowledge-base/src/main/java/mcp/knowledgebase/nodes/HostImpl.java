@@ -13,14 +13,14 @@ import net.dacce.commons.general.UniqueList;
 
 public class HostImpl extends NodeImpl implements Host
 {
-	final private List<AddressNode> addresses;
+	final private List<Address> addresses;
 	private boolean up = false;
 	private final ScoredAttributeHistory<OSGuess> osGuess;
 
-	public HostImpl(AddressNode address)
+	public HostImpl(Address address)
 	{
 		super(null);
-		addresses = new UniqueList<AddressNode>(1);
+		addresses = new UniqueList<Address>(1);
 		osGuess = new ScoredAttributeHistoryImpl<OSGuess>();
 		addresses.add(address);
 		signalCreation();
@@ -111,7 +111,7 @@ public class HostImpl extends NodeImpl implements Host
 	}
 
 	@Override
-	public List<AddressNode> getAddresses()
+	public List<Address> getAddresses()
 	{
 		return addresses;
 	}

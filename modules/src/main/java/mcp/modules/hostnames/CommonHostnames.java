@@ -28,11 +28,20 @@ public class CommonHostnames extends Module implements NodeCreationListener
 	private final static Logger logger = LoggerFactory.getLogger(CommonHostnames.class);
 
 	private List<String> commonNames;
+	@SuppressWarnings("rawtypes")
 	private final static Collection nodeTypes = Collections.singletonList(Domain.class); 
+	private final static CommonHostnames instance = new CommonHostnames();
 
-
-	public CommonHostnames()
+	private CommonHostnames()
 	{
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Collection<Class<? extends Node>> getNodeMonitorClasses()
+	{
+		return nodeTypes;
 	}
 
 
@@ -60,7 +69,7 @@ public class CommonHostnames extends Module implements NodeCreationListener
 				logger.warn("Failed to read common hostnames from " + filename + " (default list will be used): " + e.getLocalizedMessage(), e);
 			}
 		}
-		if (commonNames.isEmpty())
+		if (commonNames == null)
 		{
 			URL url = HostnameDiscoveryGeneralOptions.class.getResource("/common-host-names.txt");
 			try
@@ -70,7 +79,7 @@ public class CommonHostnames extends Module implements NodeCreationListener
 			catch (IOException e)
 			{
 				logger.warn("Failed to read built-in common hostname list: " + e.getLocalizedMessage(), e);
-				commonNames = Collections.EMPTY_LIST;
+				commonNames = Collections.emptyList();
 			}
 		}
 	}
@@ -85,8 +94,7 @@ public class CommonHostnames extends Module implements NodeCreationListener
 	@Override
 	public void handleEvent(ElementCreationEvent reconEvent)
 	{
-		Domain domain = (Domain) reconEvent.getElement();
-		String domainName = domain.getName();
+		String domainName = ((Domain) reconEvent.getElement()).getName();
 		List<DnsTransaction> transactions = new ArrayList<DnsTransaction>(commonNames.size());
 		for (String name: commonNames)
 		{
@@ -94,25 +102,23 @@ public class CommonHostnames extends Module implements NodeCreationListener
 		}
 		try
 		{
-			HostnameDiscoveryGeneralOptions.getInstance().getResolver().bulkQuery(transactions, true, true);
+			HostnameDiscoveryUtils.resolver.bulkQuery(transactions, true, true);
 		}
 		catch (DnsClientConnectException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn("DNS connection timeout, which is very odd: " + e.getLocalizedMessage(), e);
 		}
 		catch (DnsResponseTimeoutException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warn("DNS response timeout. Proceeding with recieved responses in common hostname test for " + domainName + ": " + e.getLocalizedMessage(), e);
 		}
 		
+		HostnameDiscoveryUtils.reviewDnsTransactions(transactions);
 	}
 
 
-	@Override
-	public Collection<Class<? extends Node>> getNodeMonitorClasses()
+	public static CommonHostnames getInstance()
 	{
-		return nodeTypes;
+		return instance;
 	}
 }

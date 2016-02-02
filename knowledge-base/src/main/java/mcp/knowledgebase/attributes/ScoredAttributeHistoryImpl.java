@@ -15,7 +15,7 @@ public class ScoredAttributeHistoryImpl<Attribute extends ScoredNodeAttribute> e
 	@Override
 	public void addValue(Attribute attribute)
 	{
-		addValue(attribute);
+		super.addValue(attribute);
 		if(aggregate == null || attribute.getConfidence() > aggregate.getConfidence())
 			this.aggregate = attribute;
 	}

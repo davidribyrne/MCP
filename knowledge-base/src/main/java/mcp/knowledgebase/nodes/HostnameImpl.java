@@ -11,14 +11,14 @@ import net.dacce.commons.netaddr.SimpleInetAddress;
 public class HostnameImpl extends NodeImpl implements Hostname
 {
 	private final String name;
-	private final UniqueList<AddressNode> addresses;
+	private final UniqueList<Address> addresses;
 
 
 	public HostnameImpl(String name)
 	{
 		super(null);
 		this.name = name;
-		addresses = new UniqueList<AddressNode>(1);
+		addresses = new UniqueList<Address>(1);
 		signalCreation();
 	}
 
@@ -27,7 +27,7 @@ public class HostnameImpl extends NodeImpl implements Hostname
 	 * @see mcp.knowledgebase.nodes.impl.Hostname#addAddress(net.dacce.commons.netaddr.SimpleInetAddress)
 	 */
 	@Override
-	public void addAddress(AddressNode address)
+	public void addAddress(Address address)
 	{
 		addresses.add(address);
 	}
@@ -86,7 +86,7 @@ public class HostnameImpl extends NodeImpl implements Hostname
 
 
 	@Override
-	public List<AddressNode> getAddresses()
+	public List<Address> getAddresses()
 	{
 		return addresses;
 	}

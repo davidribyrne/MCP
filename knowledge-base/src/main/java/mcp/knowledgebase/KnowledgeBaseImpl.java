@@ -2,11 +2,14 @@ package mcp.knowledgebase;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import javax.naming.event.EventDirContext;
 import mcp.commons.PersistedObject;
 import mcp.commons.UniqueFilenameRegistrar;
 import mcp.commons.WorkingDirectories;
-import mcp.knowledgebase.nodes.AddressNode;
-import mcp.knowledgebase.nodes.AddressNodeImpl;
+import mcp.events.EventDispatcher;
+import mcp.events.events.ElementCreationEvent;
+import mcp.knowledgebase.nodes.Address;
+import mcp.knowledgebase.nodes.AddressImpl;
 import mcp.knowledgebase.nodes.Domain;
 import mcp.knowledgebase.nodes.DomainImpl;
 import mcp.knowledgebase.nodes.Host;
@@ -73,59 +76,54 @@ public class KnowledgeBaseImpl extends MultiClassIndexedCache implements Knowled
 	}
 	
 	
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see mcp.knowledgebase.Kb#getOrCreateHostname(java.lang.String)
 	 */
 	@Override
-	public Hostname getOrCreateHostname(String name)
+	public synchronized Hostname getOrCreateHostname(String name)
 	{
 		Hostname hostname = (Hostname) getMember(Hostname.class, HostnameImpl.NAME_FIELD(), name);
 		if (hostname == null)
 		{
+			logger.trace(name + " was added to the KB as a new hostname.");
 			hostname = new HostnameImpl(name);
 			add(Hostname.class, hostname);
 		}
 		return hostname;
 	}
 
+	
 	@Override
-	public Domain getOrCreateDomain(String name)
+	public synchronized void addDomain(String name)
 	{
 		Domain domain = (Domain) getMember(Domain.class, DomainImpl.NAME_FIELD(), name);
 		if (domain == null)
 		{
+			logger.trace(name + " was added to the KB as a new domain.");
 			domain = new DomainImpl(name);
 			add(Domain.class, domain);
 		}
-		return domain;
 	}
 
 
 	@Override
-	public synchronized AddressNode getOrCreateAddressNode(SimpleInetAddress address)
+	public synchronized Address getOrCreateAddressNode(SimpleInetAddress address)
 	{
-		AddressNode addressNode = (AddressNode) getMember(AddressNode.class, AddressNodeImpl.ADDRESS_FIELD(), address);
+		Address addressNode = (Address) getMember(Address.class, AddressImpl.ADDRESS_FIELD(), address);
 		if (addressNode == null)
 		{
-			addressNode = new AddressNodeImpl(address);
-			add(AddressNode.class, addressNode);
+			logger.trace(address.toString() + " was added to the KB as a new address.");
+			addressNode = new AddressImpl(address);
+			add(Address.class, addressNode);
+			addressNode.setHost(new HostImpl(addressNode));
 		}
 		return addressNode;
 	}
 
-	@Override
-	public Host getOrCreateHost(AddressNode address)
-	{
-		Host host = (Host) getMember(Host.class, HostImpl.ADDRESSES_FIELD(), address);
-		if (host == null)
-		{
-			host = new HostImpl(address);
-			add(Host.class, host);
-		}
-		return host;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -161,14 +159,21 @@ public class KnowledgeBaseImpl extends MultiClassIndexedCache implements Knowled
 	}
 
 	@Override
-	public IndexedCache<AddressNode> getAddressNodes()
+	public IndexedCache<Address> getAddressNodes()
 	{
-		return (IndexedCache<AddressNode>) getMembers(AddressNode.class);
+		return (IndexedCache<Address>) getMembers(Address.class);
 	}
 
 
 	public static String getOutputFilename()
 	{
 		return WorkingDirectories.getResumeDirectory() + "knowledge-base";
+	}
+
+	@Override
+	public void add(Class clazz, Object object) throws IllegalArgumentException
+	{
+		super.add(clazz, object);
+		EventDispatcher.getInstance().signalEvent(new ElementCreationEvent((KbElement) object));
 	}
 }

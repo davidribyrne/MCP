@@ -23,6 +23,10 @@ public class Scope
 		changed = false;
 	}
 
+	public boolean isInScope(SimpleInetAddress address)
+	{
+		return includeAddresses.contains(address) && !excludeAddresses.contains(address);
+	}
 
 	public Addresses getTargetAddresses()
 	{

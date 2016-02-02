@@ -14,6 +14,7 @@ import mcp.events.listeners.McpEventListener;
 import mcp.events.listeners.McpStartListener;
 import mcp.events.listeners.ModuleRunCompleteListener;
 import mcp.events.listeners.NodeCreationListener;
+import mcp.knowledgebase.nodes.Node;
 import net.dacce.commons.general.MapOfLists;
 
 
@@ -73,22 +74,17 @@ public class EventDispatcher
 	}
 
 
-	// TODO: Need to make this more efficient
 	public void signalEvent(ElementCreationEvent event)
 	{
 		for (NodeCreationListener listener : nodeListeners)
 		{
-//			for(NodeUpdateType updateType: listener.getNodeMonitorClasses())
-//			{
-//				if (updateType.getUpdateAction().equals(event.getAction()))
-//				{
-//					if (updateType.getNodeClass().isInstance(event.getNode()))
-//					{
-//						listener.handleEvent(event);
-//						break;
-//					}
-//				}
-//			}
+			for(Class<? extends Node> clazz: listener.getNodeMonitorClasses())
+			{
+				if (clazz.isInstance(event.getElement()))
+				{
+					listener.handleEvent(event);
+				}
+			}
 		}
 	}
 

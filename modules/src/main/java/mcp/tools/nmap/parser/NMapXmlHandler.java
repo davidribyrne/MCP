@@ -45,7 +45,7 @@ import mcp.knowledgebase.attributes.port.PortStateReason;
 import mcp.knowledgebase.attributes.port.ServiceDescription;
 import mcp.knowledgebase.attributes.port.ServiceDescriptionImpl;
 import mcp.knowledgebase.attributes.port.ServiceReason;
-import mcp.knowledgebase.nodes.AddressNode;
+import mcp.knowledgebase.nodes.Address;
 import mcp.knowledgebase.nodes.Host;
 import mcp.knowledgebase.nodes.Hostname;
 import mcp.knowledgebase.nodes.Port;
@@ -79,8 +79,8 @@ public class NMapXmlHandler extends DefaultHandler
 
 	private boolean isCpeData = false;
 	private final NmapScanSource source;
-	private AddressNode currentAddressNode;
-	private Host currentHost;
+	private Address currentAddress;
+//	private Host currentHost;
 	private Port currentPort;
 	private OSGuess currentOSGuess;
 	private byte[] currentMac;
@@ -106,8 +106,8 @@ public class NMapXmlHandler extends DefaultHandler
 	{
 		if (currentOSGuess == null)
 		{
-			currentOSGuess = new OSGuessImpl(scanTime, source, currentHost );
-			currentHost.addOSGuess(currentOSGuess);
+			currentOSGuess = new OSGuessImpl(scanTime, source, currentAddress.getHost() );
+			currentAddress.getHost().addOSGuess(currentOSGuess);
 		}
 	}
 
@@ -131,8 +131,7 @@ public class NMapXmlHandler extends DefaultHandler
 		}
 		if (qName.equals(NmapDtdStrings.HOST_TAG))
 		{
-			currentAddressNode = null;
-			currentHost = null;
+			currentAddress = null;
 			currentPort = null;
 			currentOSGuess = null;
 			currentMac = null;
@@ -148,10 +147,9 @@ public class NMapXmlHandler extends DefaultHandler
 			{
 				try
 				{
-					currentAddressNode = KnowledgeBaseImpl.getInstance().getOrCreateAddressNode(IPUtils.fromString(attributes.getValue(NmapDtdStrings.ADDR_ATTR)));
-					currentHost = KnowledgeBaseImpl.getInstance().getOrCreateHost(currentAddressNode);
-					currentAddressNode.setMacAddress(currentMac);
-					currentAddressNode.setMacVendor(currentMacVendor);
+					currentAddress = KnowledgeBaseImpl.getInstance().getOrCreateAddressNode(IPUtils.fromString(attributes.getValue(NmapDtdStrings.ADDR_ATTR)));
+					currentAddress.setMacAddress(currentMac);
+					currentAddress.setMacVendor(currentMacVendor);
 				}
 				catch (InvalidIPAddressFormatException e)
 				{
@@ -162,8 +160,8 @@ public class NMapXmlHandler extends DefaultHandler
 			{
 				currentMac = MacUtils.getMacFromString(attributes.getValue(NmapDtdStrings.ADDR_ATTR));
 				currentMacVendor = attributes.getValue(NmapDtdStrings.VENDOR_ATTR);
-				currentAddressNode.setMacAddress(currentMac);
-				currentAddressNode.setMacVendor(currentMacVendor);
+				currentAddress.setMacAddress(currentMac);
+				currentAddress.setMacVendor(currentMacVendor);
 			}
 		}
 		if (qName.equals(NmapDtdStrings.HOSTNAMES_TAG))
@@ -172,7 +170,7 @@ public class NMapXmlHandler extends DefaultHandler
 		if (qName.equals(NmapDtdStrings.HOSTNAME_TAG))
 		{
 			Hostname hostname = KnowledgeBaseImpl.getInstance().getOrCreateHostname(attributes.getValue(NmapDtdStrings.NAME_ATTR));
-			hostname.addAddress(currentAddressNode);
+			hostname.addAddress(currentAddress);
 		}
 		if (qName.equals(NmapDtdStrings.PORTS_TAG))
 		{
@@ -181,7 +179,7 @@ public class NMapXmlHandler extends DefaultHandler
 		{
 			PortType type = PortType.fromNmap(attributes.getValue(NmapDtdStrings.PROTOCOL_ATTR));
 			int number = Integer.valueOf(attributes.getValue(NmapDtdStrings.PORTID_ATTR));
-			currentPort = currentAddressNode.getOrCreatePort(type, number);
+			currentPort = currentAddress.getOrCreatePort(type, number);
 		}
 		if (qName.equals(NmapDtdStrings.STATE_TAG))
 		{
@@ -230,7 +228,7 @@ public class NMapXmlHandler extends DefaultHandler
 		}
 		if (qName.equals(NmapDtdStrings.UPTIME_TAG))
 		{
-			currentHost.addNote("Up since " + attributes.getValue(NmapDtdStrings.LASTBOOT_ATTR));
+			currentAddress.getHost().addNote("Up since " + attributes.getValue(NmapDtdStrings.LASTBOOT_ATTR));
 		}
 		if (qName.equals(NmapDtdStrings.RUNSTATS_TAG))
 		{

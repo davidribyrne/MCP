@@ -1,12 +1,14 @@
 package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
 import net.dacce.commons.general.UnexpectedException;
 
 
 public class DomainImpl extends NodeImpl implements Domain
 {
-
+	
 	private final String name;
 	public DomainImpl(String name)
 	{
@@ -42,7 +44,7 @@ public class DomainImpl extends NodeImpl implements Domain
 	{
 		try
 		{
-			nameField = HostImpl.class.getDeclaredField("name");
+			nameField = DomainImpl.class.getDeclaredField("name");
 			nameField.setAccessible(true);
 		}
 		catch (NoSuchFieldException e)
@@ -73,4 +75,5 @@ public class DomainImpl extends NodeImpl implements Domain
 	{
 		return name;
 	}
+
 }

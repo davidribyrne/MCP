@@ -4,7 +4,7 @@ import net.dacce.commons.general.IndexedCache;
 import net.dacce.commons.netaddr.SimpleInetAddress;
 
 
-public interface AddressNode extends Node
+public interface Address extends Node
 {
 	public Port getOrCreatePort(PortType type, int number);
 
@@ -21,4 +21,8 @@ public interface AddressNode extends Node
 	public void setMacVendor(String macVendor);
 
 	public SimpleInetAddress getAddress();
+	
+	public Host getHost();
+
+	public void setHost(Host host);
 }

@@ -1,6 +1,9 @@
 package mcp.knowledgebase.attributes.port;
 
 import java.time.Instant;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import mcp.knowledgebase.attributes.NodeAttributeImpl;
 import mcp.knowledgebase.nodes.Port;
 import mcp.knowledgebase.sources.Source;
@@ -40,4 +43,31 @@ public class PortStateImpl extends NodeAttributeImpl implements PortState
 	{
 		return (Port) super.getParent();
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder().appendSuper(super.hashCode()).append(response)
+				.append(reason).toHashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof PortStateImpl))
+			return false;
+		if (obj == this)
+			return true;
+		PortStateImpl psi = (PortStateImpl) obj;
+		return new EqualsBuilder().appendSuper(super.equals(obj)).append(response, psi.response)
+				.append(reason, psi.reason).isEquals();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).appendSuper(super.toString()).append("response", response)
+				.append("reason", reason).build();
+	}
+
 }

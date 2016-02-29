@@ -5,11 +5,12 @@ import java.io.IOException;
 import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import mcp.jobmanager.jobs.JobState;
 import net.dacce.commons.general.CollectionUtils;
 import net.dacce.commons.general.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class CommandLineExecutor extends Executor
@@ -137,5 +138,16 @@ public class CommandLineExecutor extends Executor
 		return programName;
 	}
 
+	
+	@Override
+	public String toString()
+	{
+		ToStringBuilder tsb = new ToStringBuilder(this).appendSuper(super.toString()).append("executable", executable)
+				.append("executable", executable).append("startingDirectory", startingDirectory).append("stdoutFilename", stdoutFilename)
+				.append("stderrFilename", stderrFilename).append("appendOutput", appendOutput)
+				.append("programName", programName).append("state", state)
+				.append("arguments", CollectionUtils.joinObjects(", ", arguments));
+		return tsb.build();
+	}
 
 }

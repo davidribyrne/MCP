@@ -1,5 +1,6 @@
 package mcp.knowledgebase.sources;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class NmapScanSourceImpl implements NmapScanSource
 {
@@ -42,4 +43,10 @@ public class NmapScanSourceImpl implements NmapScanSource
 		return commandLine;
 	}
 
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).append("outputPath", outputPath).append("description", description)
+				.append("commandLine", commandLine).build();
+	}
 }

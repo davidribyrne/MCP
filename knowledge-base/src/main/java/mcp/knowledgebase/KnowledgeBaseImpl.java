@@ -2,9 +2,9 @@ package mcp.knowledgebase;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import javax.naming.event.EventDirContext;
-import mcp.commons.PersistedObject;
-import mcp.commons.UniqueFilenameRegistrar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.esotericsoftware.yamlbeans.YamlException;
 import mcp.commons.WorkingDirectories;
 import mcp.events.EventDispatcher;
 import mcp.events.events.ElementCreationEvent;
@@ -16,14 +16,10 @@ import mcp.knowledgebase.nodes.Host;
 import mcp.knowledgebase.nodes.HostImpl;
 import mcp.knowledgebase.nodes.Hostname;
 import mcp.knowledgebase.nodes.HostnameImpl;
-import mcp.knowledgebase.nodes.Node;
 import net.dacce.commons.general.IndexedCache;
 import net.dacce.commons.general.MultiClassIndexedCache;
 import net.dacce.commons.general.YamlUtils;
 import net.dacce.commons.netaddr.SimpleInetAddress;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.esotericsoftware.yamlbeans.YamlException;
 
 
 public class KnowledgeBaseImpl extends MultiClassIndexedCache implements KnowledgeBase
@@ -98,15 +94,16 @@ public class KnowledgeBaseImpl extends MultiClassIndexedCache implements Knowled
 
 	
 	@Override
-	public synchronized void addDomain(String name)
+	public synchronized boolean addDomain(String name)
 	{
 		Domain domain = (Domain) getMember(Domain.class, DomainImpl.NAME_FIELD(), name);
-		if (domain == null)
-		{
-			logger.trace(name + " was added to the KB as a new domain.");
-			domain = new DomainImpl(name);
-			add(Domain.class, domain);
-		}
+		if (domain != null)
+			return false;
+
+		logger.trace(name + " was added to the KB as a new domain.");
+		domain = new DomainImpl(name);
+		add(Domain.class, domain);
+		return true;
 	}
 
 

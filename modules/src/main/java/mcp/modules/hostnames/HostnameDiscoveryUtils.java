@@ -1,5 +1,8 @@
 package mcp.modules.hostnames;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import mcp.knowledgebase.KnowledgeBaseImpl;
@@ -9,17 +12,13 @@ import mcp.knowledgebase.scope.Scope;
 import net.dacce.commons.dns.client.DnsTransaction;
 import net.dacce.commons.dns.client.Resolver;
 import net.dacce.commons.dns.exceptions.DnsClientConnectException;
-import net.dacce.commons.dns.exceptions.DnsClientException;
 import net.dacce.commons.dns.exceptions.DnsNoRecordFoundException;
 import net.dacce.commons.dns.exceptions.DnsResponseTimeoutException;
-import net.dacce.commons.dns.records.ARecord;
 import net.dacce.commons.dns.records.AbstractAddressRecord;
 import net.dacce.commons.dns.records.AbstractHostnameRecord;
-import net.dacce.commons.dns.records.MxRecord;
 import net.dacce.commons.dns.records.ResourceRecord;
 import net.dacce.commons.dns.utils.DomainUtils;
 import net.dacce.commons.netaddr.SimpleInetAddress;
-import java.util.*;
 
 
 public class HostnameDiscoveryUtils
@@ -139,8 +138,8 @@ public class HostnameDiscoveryUtils
 				int limit = HostnameDiscoveryGeneralOptions.getInstance().getMaxAutoAddDomains();
 				if (autoRegisteredDomains < limit)
 				{
-					autoRegisteredDomains++;
-					KnowledgeBaseImpl.getInstance().addDomain(domain);
+					if (KnowledgeBaseImpl.getInstance().addDomain(domain))
+						autoRegisteredDomains++;
 				}
 				else
 				{
@@ -151,13 +150,17 @@ public class HostnameDiscoveryUtils
 			if (HostnameDiscoveryGeneralOptions.getInstance().getAutoAddSubDomainsOption().isEnabled())
 			{
 				int limit = HostnameDiscoveryGeneralOptions.getInstance().getMaxAutoAddSubDomains();
-				int count = autoRegisteredSubDomains.get(domain);
+				int count = 0;
+				if (autoRegisteredSubDomains.containsKey(domain))
+				{
+					count = autoRegisteredSubDomains.get(domain);
+				}
 				if (count < limit )
 				{
-					autoRegisteredSubDomains.put(domain, count + 1);
 					for (String subdomain : DomainUtils.getSubdomains(hostname))
 					{
-						KnowledgeBaseImpl.getInstance().addDomain(subdomain);
+						if (KnowledgeBaseImpl.getInstance().addDomain(subdomain))
+							autoRegisteredSubDomains.put(domain, count + 1);
 					}
 				}
 				else

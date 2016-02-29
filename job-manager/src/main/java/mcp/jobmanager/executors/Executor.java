@@ -1,5 +1,6 @@
 package mcp.jobmanager.executors;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import mcp.jobmanager.jobs.JobState;
 
 
@@ -46,5 +47,11 @@ public abstract class Executor
 	public void setCallback(Callback callbackObject)
 	{
 		this.callbackObject = callbackObject;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).append("name", name).build();
 	}
 }

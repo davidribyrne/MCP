@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import mcp.events.EventDispatcher;
 import mcp.events.events.ElementCreationEvent;
 import mcp.events.listeners.NodeCreationListener;
@@ -20,8 +22,6 @@ import net.dacce.commons.dns.messages.QuestionRecord;
 import net.dacce.commons.dns.records.RecordType;
 import net.dacce.commons.general.FileUtils;
 import net.dacce.commons.general.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CommonHostnames extends Module implements NodeCreationListener
 {

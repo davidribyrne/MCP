@@ -1,8 +1,7 @@
 package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import net.dacce.commons.general.UnexpectedException;
 
 
@@ -14,13 +13,6 @@ public class DomainImpl extends NodeImpl implements Domain
 	{
 		super(null);
 		this.name = name;
-		signalCreation();
-	}
-
-	@Override
-	public String toString()
-	{
-		return name;
 	}
 
 
@@ -74,6 +66,12 @@ public class DomainImpl extends NodeImpl implements Domain
 	public String getName()
 	{
 		return name;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).appendSuper(super.toString()).append("domainName", name).build();
 	}
 
 }

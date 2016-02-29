@@ -1,7 +1,7 @@
 package mcp.commons;
 
+import java.util.List;
 import net.dacce.commons.general.UniqueList;
-import java.util.*;
 
 public class PersistedObjects
 {

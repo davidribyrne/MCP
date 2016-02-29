@@ -35,6 +35,11 @@
 package mcp.tools.nmap.parser;
 
 import java.time.Instant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 import mcp.knowledgebase.KnowledgeBaseImpl;
 import mcp.knowledgebase.attributes.host.OSGuess;
 import mcp.knowledgebase.attributes.host.OSGuessImpl;
@@ -46,7 +51,6 @@ import mcp.knowledgebase.attributes.port.ServiceDescription;
 import mcp.knowledgebase.attributes.port.ServiceDescriptionImpl;
 import mcp.knowledgebase.attributes.port.ServiceReason;
 import mcp.knowledgebase.nodes.Address;
-import mcp.knowledgebase.nodes.Host;
 import mcp.knowledgebase.nodes.Hostname;
 import mcp.knowledgebase.nodes.Port;
 import mcp.knowledgebase.nodes.PortType;
@@ -54,11 +58,6 @@ import mcp.knowledgebase.sources.NmapScanSource;
 import net.dacce.commons.netaddr.IPUtils;
 import net.dacce.commons.netaddr.InvalidIPAddressFormatException;
 import net.dacce.commons.netaddr.MacUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 
 /**

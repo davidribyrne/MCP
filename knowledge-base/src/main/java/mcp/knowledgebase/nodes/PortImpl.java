@@ -1,6 +1,7 @@
 package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import mcp.knowledgebase.attributes.AttributeHistory;
 import mcp.knowledgebase.attributes.AttributeHistoryImpl;
 import mcp.knowledgebase.attributes.ScoredAttributeHistory;
@@ -20,7 +21,7 @@ public class PortImpl extends NodeImpl implements Port
 	private final AttributeHistory<PortState> stateHistory;
 	private final ScoredAttributeHistory<ServiceDescription> serviceDescriptionHistory;
 	private final ScoredAttributeHistory<SoftwareGuess> softwareGuessHistory;
-
+ 
 	public PortImpl(Address address, PortType type, int number)
 	{
 		super(address);
@@ -30,7 +31,6 @@ public class PortImpl extends NodeImpl implements Port
 		stateHistory = new AttributeHistoryImpl<PortState>();
 		serviceDescriptionHistory = new ScoredAttributeHistoryImpl<ServiceDescription>();
 		softwareGuessHistory = new ScoredAttributeHistoryImpl<SoftwareGuess>();
-		signalCreation();
 	}
 
 
@@ -107,15 +107,12 @@ public class PortImpl extends NodeImpl implements Port
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append(number);
-		sb.append('/');
-		sb.append(type.toString());
-		sb.append(" - ");
-		sb.append(stateHistory.getLastAttribute().toString());
-		sb.append(" - ");
-		sb.append(serviceDescriptionHistory.getAggregate().toString());
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder(this);
+		tsb.append("number", number);
+		tsb.append("type", type);
+		tsb.append("stateHistory", stateHistory.getLastAttribute());
+		tsb.append("serviceDescriptionHistory", serviceDescriptionHistory.getAggregate());
+		return tsb.toString();
 	}
 
 
@@ -162,6 +159,36 @@ public class PortImpl extends NodeImpl implements Port
 	{
 		return address;
 	}
+
+
+//	@Override
+//	public int hashCode()
+//	{
+//		return new HashCodeBuilder()
+//				.append(type.hashCode())
+//				.append(number)
+//				.append(address.hashCode())
+//				.append(stateHistory.hashCode())
+//				.append(serviceDescriptionHistory.hashCode())
+//				.append(softwareGuessHistory.hashCode())
+//				.appendSuper(super.hashCode())
+//				.toHashCode();
+//	}
+//
+//
+//	@Override
+//	public boolean equals(Object obj)
+//	{
+//		PortImpl o = (PortImpl) obj; 
+//		return new EqualsBuilder()
+//				.append(type, o.type)
+//				.append(number, o.number)
+//				.append(address, o.address)
+//				.append(stateHistory, o.stateHistory)
+//				.append(serviceDescriptionHistory, o.serviceDescriptionHistory)
+//				.append(softwareGuessHistory, o.softwareGuessHistory)
+//				.isEquals();
+//	}
 
 
 }

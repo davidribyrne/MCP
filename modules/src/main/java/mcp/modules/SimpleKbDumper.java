@@ -1,5 +1,7 @@
 package mcp.modules;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import mcp.events.EventDispatcher;
 import mcp.events.events.McpCompleteEvent;
 import mcp.events.listeners.McpCompleteListener;
@@ -8,8 +10,6 @@ import mcp.knowledgebase.scope.Scope;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.general.CollectionUtils;
 import net.dacce.commons.general.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class SimpleKbDumper extends Module implements McpCompleteListener

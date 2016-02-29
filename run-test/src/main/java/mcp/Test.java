@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import net.dacce.commons.dns.client.DnsTransaction;
 import net.dacce.commons.dns.client.Resolver;
 import net.dacce.commons.dns.exceptions.DnsClientConnectException;
@@ -14,8 +16,6 @@ import net.dacce.commons.dns.records.RecordType;
 import net.dacce.commons.dns.records.ResourceRecord;
 import net.dacce.commons.general.CollectionUtils;
 import net.dacce.commons.general.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Test
 {
@@ -25,7 +25,7 @@ public class Test
 	static Resolver r;
 
 
-	public static void main(String[] args) throws DnsClientConnectException, FileNotFoundException, IOException
+	public static void main(String[] args) throws DnsClientConnectException
 	{
 		List<String> servers = new ArrayList<String>();
 		logger.info("Starting");

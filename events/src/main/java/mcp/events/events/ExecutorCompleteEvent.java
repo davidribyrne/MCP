@@ -1,5 +1,7 @@
 package mcp.events.events;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class ExecutorCompleteEvent extends McpEvent
 {
 	private final Boolean success;
@@ -32,5 +34,11 @@ public class ExecutorCompleteEvent extends McpEvent
 		return jobName;
 	}
 
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).appendSuper(super.toString()).append("success", success)
+				.append("program", program).append("jobName", jobName).build();
+	}
 
 }

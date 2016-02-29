@@ -1,13 +1,6 @@
 package mcp;
 
 
-import mcp.commons.WorkingDirectories;
-import mcp.events.EventDispatcher;
-import mcp.events.events.McpCompleteEvent;
-import mcp.events.events.McpStartEvent;
-import mcp.modules.GeneralOptions;
-import mcp.modules.Modules;
-import mcp.options.ReconOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -16,6 +9,13 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
+import mcp.commons.WorkingDirectories;
+import mcp.events.EventDispatcher;
+import mcp.events.events.McpCompleteEvent;
+import mcp.events.events.McpStartEvent;
+import mcp.modules.GeneralOptions;
+import mcp.modules.Modules;
+import mcp.options.ReconOptions;
 
 
 public class MCP
@@ -25,6 +25,7 @@ public class MCP
 
 	public static void main(String[] args)
 	{
+		@SuppressWarnings("unused")
 		MCP rm = new MCP(args);
 	}
 	

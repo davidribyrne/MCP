@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import mcp.events.EventDispatcher;
 import mcp.events.events.ExecutorCompleteEvent;
 import mcp.jobmanager.jobs.JobState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class ExecutorManager implements Runnable
@@ -100,4 +101,9 @@ public class ExecutorManager implements Runnable
 		}
 	}
 
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).append("running", running).build();
+	}
 }

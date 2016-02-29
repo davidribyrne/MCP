@@ -1,6 +1,9 @@
 package mcp.knowledgebase.attributes.port;
 
 import java.time.Instant;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import mcp.knowledgebase.attributes.ScoredNodeAttributeImpl;
 import mcp.knowledgebase.nodes.Port;
 import mcp.knowledgebase.sources.Source;
@@ -58,5 +61,31 @@ public class SoftwareGuessImpl extends ScoredNodeAttributeImpl implements Softwa
 		return (Port) super.getParent();
 	}
 
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder().appendSuper(super.hashCode()).append(product)
+				.append(vendor).append(version).toHashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof SoftwareGuessImpl))
+			return false;
+		if (obj == this)
+			return true;
+		
+		SoftwareGuessImpl o = (SoftwareGuessImpl) obj;
+		return new EqualsBuilder().appendSuper(super.equals(obj)).append(product, o.product)
+				.append(vendor, o.vendor).append(version, o.version).isEquals();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).appendSuper(super.toString()).append("product", product)
+				.append("vendor", vendor).append("version", version).build();
+	}
 
 }

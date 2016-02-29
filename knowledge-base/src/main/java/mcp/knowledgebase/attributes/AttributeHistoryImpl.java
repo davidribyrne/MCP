@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import net.dacce.commons.general.CollectionUtils;
 
 
 public class AttributeHistoryImpl<Attribute extends NodeAttribute> implements AttributeHistory<Attribute>
@@ -69,4 +71,12 @@ public class AttributeHistoryImpl<Attribute extends NodeAttribute> implements At
 	{
 		return history.get(history.size() - 1);
 	}
+	
+	
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).appendSuper(super.toString()).append("history", CollectionUtils.joinObjects(", ", history)).build();
+	}
+
 }

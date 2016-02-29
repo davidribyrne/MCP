@@ -1,10 +1,12 @@
 package mcp.knowledgebase.attributes.host;
 
 import java.time.Instant;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import mcp.knowledgebase.attributes.ScoredNodeAttributeImpl;
 import mcp.knowledgebase.nodes.Host;
 import mcp.knowledgebase.sources.Source;
-import net.dacce.commons.general.StringUtils;
 
 
 public class OSGuessImpl extends ScoredNodeAttributeImpl implements OSGuess
@@ -122,30 +124,6 @@ public class OSGuessImpl extends ScoredNodeAttributeImpl implements OSGuess
 		this.longName = longName;
 	}
 
-	@Override
-	public String toString()
-	{
-		StringBuilder sb = new StringBuilder();
-		if (!StringUtils.isEmptyOrNull(vendor))
-			sb.append("\nVendor: " + vendor);
-
-		if (!StringUtils.isEmptyOrNull(osFamily))
-			sb.append("\nOS Family: " + osFamily);
-
-		if (!StringUtils.isEmptyOrNull(version))
-			sb.append("\nVersion: " + version);
-
-		if (!StringUtils.isEmptyOrNull(longName))
-			sb.append("\nLong name: " + longName);
-
-		if (!StringUtils.isEmptyOrNull(deviceType))
-			sb.append("\nDevice type: " + deviceType);
-
-		sb.append("\nConfidence: " + getConfidence());
-
-		return sb.toString().trim();
-	}
-
 
 	@Override
 	public Host getParent()
@@ -153,5 +131,34 @@ public class OSGuessImpl extends ScoredNodeAttributeImpl implements OSGuess
 		return (Host) super.getParent();
 	}
 	
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder().appendSuper(super.hashCode()).append(vendor)
+				.append(osFamily).append(version).append(deviceType).append(longName).toHashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof OSGuessImpl))
+			return false;
+		if (obj == this)
+			return true;
+		
+		OSGuessImpl o = (OSGuessImpl) obj;
+		return new EqualsBuilder().appendSuper(super.equals(obj)).append(vendor, o.vendor)
+				.append(osFamily, o.osFamily).append(version, o.version)
+				.append(deviceType, o.deviceType).append(longName, o.longName).isEquals();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).appendSuper(super.toString()).append("vendor", vendor)
+				.append("osFamily", osFamily).append("version", version)
+				.append("deviceType", deviceType).append("longName", longName).build();
+	}
+
 }
 

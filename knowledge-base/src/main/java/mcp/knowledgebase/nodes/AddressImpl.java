@@ -1,8 +1,8 @@
 package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import net.dacce.commons.general.IndexedCache;
-import net.dacce.commons.general.StringUtils;
 import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.netaddr.MacUtils;
 import net.dacce.commons.netaddr.SimpleInetAddress;
@@ -121,16 +121,12 @@ public class AddressImpl extends NodeImpl implements Address
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("\nMAC address: ");
-		sb.append(MacUtils.getHexString(macAddress));
-		if (!StringUtils.isEmptyOrNull(macVendor))
-			sb.append(" (" + macVendor + ")");
-		sb.append("\nPort status:\n");
-		sb.append(StringUtils.indentText(1, true, tcpPorts.toString()));
-		sb.append(StringUtils.indentText(1, true, udpPorts.toString()));
-		
-		return sb.toString();
+		ToStringBuilder tsb = new ToStringBuilder(this);
+		tsb.append("MAC address", MacUtils.getHexString(macAddress));
+		tsb.append("macVendor", macVendor);
+		tsb.append("tcpPorts", tcpPorts);
+		tsb.append("udpPorts", udpPorts);
+		return tsb.build();
 	}
 
 	@Override

@@ -25,7 +25,12 @@ public interface KnowledgeBase
 
 	public IndexedCache<Domain> getDomains();
 
-	public void addDomain(String name);
+	/**
+	 * 
+	 * @param name
+	 * @return True if this is a new domain
+	 */
+	public boolean addDomain(String name);
 
 	/**
 	 * This will also create the host node if it isn't yet created.

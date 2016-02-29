@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
 import mcp.jobmanager.executors.Callback;
 import mcp.jobmanager.executors.CommandLineExecutor;
@@ -17,8 +20,6 @@ import net.dacce.commons.general.CollectionUtils;
 import net.dacce.commons.general.FileUtils;
 import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.netaddr.Addresses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class NmapScan implements Callback
@@ -217,4 +218,12 @@ public class NmapScan implements Callback
 		this.resolve = resolve;
 	}
 
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).append("resume", resume).append("speed", speed)
+				.append("outputFileName", outputFileName).append("resolve", resolve)
+				.append("flags", flags).append("targets", targets).append("jobName", jobName)
+				.append("lastCommandLine", lastCommandLine).build();
+	}
 }

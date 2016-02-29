@@ -42,13 +42,13 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import mcp.knowledgebase.sources.NmapScanSource;
-import mcp.knowledgebase.sources.NmapScanSourceImpl;
-import net.dacce.commons.general.UnexpectedException;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+import mcp.knowledgebase.sources.NmapScanSource;
+import mcp.knowledgebase.sources.NmapScanSourceImpl;
+import net.dacce.commons.general.UnexpectedException;
 
 
 /**
@@ -69,13 +69,9 @@ public class NmapXmlParser
 {
 	final static Logger logger = LoggerFactory.getLogger(NmapXmlParser.class);
 
-
-
 	private NmapXmlParser()
 	{
-		
 	}
-
 
 	public static void parse(File xmlResultsFile, String scanDescription, String commandLine)
 	{

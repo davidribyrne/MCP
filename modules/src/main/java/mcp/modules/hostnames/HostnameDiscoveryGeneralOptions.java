@@ -1,7 +1,6 @@
 package mcp.modules.hostnames;
 
 import java.io.IOException;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
@@ -31,6 +30,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 
 	private OptionGroup group;
 	private Option dnsServersOption;
+	private Option publicDnsServersOption;
 	
 	private Option enableHostnameDiscoveryOption;
 	
@@ -61,6 +61,8 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 				+ "If no servers are provided, an attempt will be made to detect the system servers. This feature isn't built into Java, "
 				+ "so unusual systems may fail.", 
 				true, true, null, "IP address");
+		publicDnsServersOption = new Option(null, "publicDnsServers", "Use a built-in pool of public DNS servers (Google, Level 3, etc).");
+
 
 		enableHostnameDiscoveryOption = new Option("d", "hostnameDiscovery", "Enable typical hostname discovery options. Currently equivalent to "
 				+ "--testCommonHostnames --autoAddDomains --autoAddSubDomains --testSSLCerts --testRootPages --testZoneTransfers");
@@ -122,6 +124,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		
 		group = new OptionGroup("Hostname discovery", "Hostname discovery.");
 		group.addChild(dnsServersOption);
+		group.addChild(publicDnsServersOption);
 		group.addChild(enableHostnameDiscoveryOption);
 		group.addChild(testCommonHostnamesOption);
 		group.addChild(commonHostnamesFileOption);
@@ -147,6 +150,11 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		if (dnsServersOption.isValueSet(true))
 		{
 			HostnameDiscoveryUtils.resolver = new Resolver(dnsServersOption.getValues(), true);
+		}
+		else if (publicDnsServersOption.isEnabled())
+		{
+			HostnameDiscoveryUtils.resolver = Resolver.createPublicServersResolver();
+			HostnameDiscoveryUtils.resolver.setRoundRobinDuplicateCount(2);
 		}
 		else
 		{
@@ -203,7 +211,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		catch (IOException e)
 		{
 			logger.debug("Failed to read known hostnames file (" + hostnamesPath + "). "
-					+ "This is only a problem if you expected data to be there.", e);
+					+ "This is only a problem if you expected data to be there.");
 		}
 	}
 

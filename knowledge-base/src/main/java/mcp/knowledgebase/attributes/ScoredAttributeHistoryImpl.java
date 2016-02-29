@@ -1,5 +1,6 @@
 package mcp.knowledgebase.attributes;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class ScoredAttributeHistoryImpl<Attribute extends ScoredNodeAttribute> extends AttributeHistoryImpl<Attribute> implements ScoredAttributeHistory<Attribute>
 {
@@ -27,7 +28,18 @@ public class ScoredAttributeHistoryImpl<Attribute extends ScoredNodeAttribute> e
 	@Override
 	public Attribute getAggregate()
 	{
+//		if (aggregate == null)
+//		{
+//			throw new IllegalStateException("No value has been added, so there is no aggregate.");
+//		}
 		return aggregate;
+	}
+
+	
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).appendSuper(super.toString()).append("aggregate", aggregate).build();
 	}
 
 }

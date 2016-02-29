@@ -1,6 +1,8 @@
 package mcp.modules.nmap;
 
 import java.io.File;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import mcp.modules.Module;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
@@ -13,8 +15,6 @@ import net.dacce.commons.validators.NumericValidator;
 import net.dacce.commons.validators.PathState;
 import net.dacce.commons.validators.PathValidator;
 import net.dacce.commons.validators.Requirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class NmapGeneralOptions extends Module

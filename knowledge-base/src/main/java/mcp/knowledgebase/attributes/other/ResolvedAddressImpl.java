@@ -1,6 +1,9 @@
 package mcp.knowledgebase.attributes.other;
 
 import java.time.Instant;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import mcp.knowledgebase.attributes.NodeAttributeImpl;
 import mcp.knowledgebase.attributes.hostname.ResolvedAddress;
 import mcp.knowledgebase.nodes.Node;
@@ -25,4 +28,28 @@ public class ResolvedAddressImpl extends NodeAttributeImpl implements ResolvedAd
 	{
 		return address;
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder().appendSuper(super.hashCode()).append(address).toHashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (!(obj instanceof ResolvedAddressImpl))
+			return false;
+		if (obj == this)
+			return true;
+		
+		return new EqualsBuilder().appendSuper(super.equals(obj)).append(address, ((ResolvedAddressImpl) obj).address).isEquals();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).appendSuper(super.toString()).append(address).build();
+	}
+
 }

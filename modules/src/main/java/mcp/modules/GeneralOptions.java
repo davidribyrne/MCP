@@ -24,6 +24,7 @@ public class GeneralOptions extends Module
 	private Option workingDirectoryOption;
 //	private Option continueAfterErrorOption;
 	private Option basicReconOption;
+	private Option threadCount;
 
 	private GeneralOptions()
 	{
@@ -34,7 +35,8 @@ public class GeneralOptions extends Module
 		basicReconOption = new Option("b", "basicRecon", "Run with basic recon options. Equivalent to: "
 				+ "--hostnameDiscovery --icmpEchoScan --topTcpScan "
 				+ "--udpPorts 53,67,68,69,111,123,135,137,138,139,161,162,445,500,514,520,631,1434,1604,4500,5353,10000");
-
+		threadCount = new Option("t", "threads", "Working thread count.", true, true, "3", "n");
+		
 		verboseOption.addValidator(new NumericValidator(false, 0, 6));
 		PathState workingDirState = new PathState();
 		workingDirState.directory = Requirement.MUST;
@@ -47,6 +49,7 @@ public class GeneralOptions extends Module
 		group.addChild(workingDirectoryOption);
 //		group.addChild(continueAfterErrorOption);
 		group.addChild(basicReconOption);
+		group.addChild(threadCount);
 
 	}
 
@@ -118,6 +121,13 @@ public class GeneralOptions extends Module
 	public OptionContainer getOptions()
 	{
 		return group;
+	}
+
+
+
+	public Option getThreadCount()
+	{
+		return threadCount;
 	}
 
 }

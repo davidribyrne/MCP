@@ -1,8 +1,6 @@
 package mcp.knowledgebase;
 
 import java.util.List;
-import mcp.events.EventDispatcher;
-import mcp.events.events.ElementCreationEvent;
 import mcp.knowledgebase.nodes.Node;
 import net.dacce.commons.general.SlimList;
 
@@ -21,11 +19,6 @@ public class KbElementImpl implements KbElement
 		secondaryParents = new SlimList<Node>();
 	}
 
-	protected void signalCreation()
-	{
-		ElementCreationEvent event = new ElementCreationEvent(this);
-		EventDispatcher.getInstance().signalEvent(event);
-	}
 
 	@Override
 	public List<String> getNotes()
@@ -47,9 +40,9 @@ public class KbElementImpl implements KbElement
 	}
 
 	@Override
-	public void addSecondaryParent(Node parent)
+	public void addSecondaryParent(Node secondaryParent)
 	{
-		secondaryParents.add(parent);		
+		secondaryParents.add(secondaryParent);		
 	}
 
 	@Override

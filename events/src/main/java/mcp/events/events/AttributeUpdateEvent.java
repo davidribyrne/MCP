@@ -1,5 +1,6 @@
 package mcp.events.events;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import mcp.knowledgebase.attributes.NodeAttribute;
 
 public class AttributeUpdateEvent extends McpEvent
@@ -16,4 +17,9 @@ public class AttributeUpdateEvent extends McpEvent
 		return attribute;
 	}
 
+	@Override
+	public String toString()
+	{
+		return new ToStringBuilder(this).appendSuper(super.toString()).append(attribute.toString()).build();
+	}
 }

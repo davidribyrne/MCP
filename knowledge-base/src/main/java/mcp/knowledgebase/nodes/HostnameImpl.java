@@ -2,10 +2,9 @@ package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import net.dacce.commons.general.CollectionUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.general.UniqueList;
-import net.dacce.commons.netaddr.SimpleInetAddress;
 
 
 public class HostnameImpl extends NodeImpl implements Hostname
@@ -19,7 +18,6 @@ public class HostnameImpl extends NodeImpl implements Hostname
 		super(null);
 		this.name = name;
 		addresses = new UniqueList<Address>(1);
-		signalCreation();
 	}
 
 
@@ -75,13 +73,8 @@ public class HostnameImpl extends NodeImpl implements Hostname
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append(name);
-		sb.append(" (");
-		sb.append(CollectionUtils.joinObjects(", ", addresses));
-		sb.append(")");
-		
-		return sb.toString();
+		return new ToStringBuilder(this).appendSuper(super.toString()).append("name", name)
+				.append("addresses", addresses).build();
 	}
 
 

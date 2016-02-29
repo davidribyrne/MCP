@@ -2,11 +2,10 @@ package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import mcp.knowledgebase.attributes.ScoredAttributeHistory;
 import mcp.knowledgebase.attributes.ScoredAttributeHistoryImpl;
 import mcp.knowledgebase.attributes.host.OSGuess;
-import net.dacce.commons.general.CollectionUtils;
-import net.dacce.commons.general.StringUtils;
 import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.general.UniqueList;
 
@@ -23,7 +22,6 @@ public class HostImpl extends NodeImpl implements Host
 		addresses = new UniqueList<Address>(1);
 		osGuess = new ScoredAttributeHistoryImpl<OSGuess>();
 		addresses.add(address);
-		signalCreation();
 	}
 
 	/*
@@ -90,24 +88,8 @@ public class HostImpl extends NodeImpl implements Host
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("IP address(es): ");
-		sb.append(CollectionUtils.joinObjects(", ", addresses));
-		sb.append("\nActive: ");
-		sb.append(up ? "yes" : "no");
-		if (!osGuess.isEmpty())
-		{
-			sb.append("\nOS Guesses:\n");
-			int i = 0;
-			for (OSGuess guess : osGuess)
-			{
-				sb.append("\tGuess #" + i + "\n");
-				sb.append(StringUtils.indentText(1, true, guess.toString()));
-				sb.append("\n");
-			}
-		}
-
-		return sb.toString();
+		return new ToStringBuilder(this).appendSuper(super.toString()).append("addresses", addresses)
+				.append("active", up).append("osGuesses", osGuess).build();
 	}
 
 	@Override

@@ -2,6 +2,8 @@ package mcp.modules;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
 import mcp.knowledgebase.scope.Scope;
 import net.dacce.commons.cli.Option;
@@ -16,8 +18,6 @@ import net.dacce.commons.validators.IPAddressValidator;
 import net.dacce.commons.validators.PathState;
 import net.dacce.commons.validators.PathValidator;
 import net.dacce.commons.validators.Requirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class ScopeInitializer extends Module

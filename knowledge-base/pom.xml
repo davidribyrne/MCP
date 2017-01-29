@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>mcp</groupId>
-			<artifactId>events</artifactId>
+			<artifactId>job-manager</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>mcp</groupId>

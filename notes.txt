@@ -1,2 +1,4 @@
 check into how .wait() is being used
 for example, Thread.currentThread().interrupt();
+
+Check logger.error for proper exiting

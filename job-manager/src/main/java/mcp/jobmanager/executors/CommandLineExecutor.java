@@ -13,7 +13,7 @@ import net.dacce.commons.general.CollectionUtils;
 import net.dacce.commons.general.FileUtils;
 
 
-public class CommandLineExecutor extends Executor
+public class CommandLineExecutor extends Executor<Process>
 {
 	private String executable;
 	private List<String> arguments;
@@ -28,33 +28,19 @@ public class CommandLineExecutor extends Executor
 	final static Logger logger = LoggerFactory.getLogger(CommandLineExecutor.class);
 
 
-	public CommandLineExecutor(String programName, String jobName, String executable, List<String> arguments, String startingDirectory)
-	{
-		this(programName, jobName, executable, arguments, startingDirectory, null, null, false);
-	}
 
 
-	public CommandLineExecutor(String programName, String jobName, String executable, List<String> arguments, String startingDirectory,
-			String stdoutFilename)
-	{
-		this(programName, jobName, executable, arguments, startingDirectory, stdoutFilename, null, false);
-	}
-
-
-	public CommandLineExecutor(String programName, String jobName, String executable, List<String> arguments, String startingDirectory,
-			String stdoutFilename, String stderrFilename)
-	{
-		this(programName, jobName, executable, arguments, startingDirectory, stdoutFilename, stderrFilename, false);
-	}
-
-
-	public CommandLineExecutor(String programName, String jobName, String executable, List<String> arguments, String startingDirectory,
-			String stdoutFilename, boolean appendOutput)
-	{
-		this(programName, jobName, executable, arguments, startingDirectory, stdoutFilename, null, appendOutput);
-	}
-
-
+	/**
+	 * 
+	 * @param programName
+	 * @param jobName
+	 * @param executable
+	 * @param arguments
+	 * @param startingDirectory
+	 * @param stdoutFilename
+	 * @param stderrFilename
+	 * @param appendOutput
+	 */
 	public CommandLineExecutor(String programName, String jobName, String executable, List<String> arguments, String startingDirectory,
 			String stdoutFilename, String stderrFilename, boolean appendOutput)
 	{
@@ -70,13 +56,13 @@ public class CommandLineExecutor extends Executor
 
 
 	@Override
-	public void run()
+	public Process call()
 	{
 		List<String> args = new ArrayList<String>(arguments.size() + 1);
 		args.add(executable);
 		args.addAll(arguments);
-		ProcessBuilder pb = new ProcessBuilder(args);
-		pb.directory(new File(startingDirectory));
+		ProcessBuilder processBuilder = new ProcessBuilder(args);
+		processBuilder.directory(new File(startingDirectory));
 		if (stdoutFilename != null)
 		{
 			Redirect stdRedirect;
@@ -88,27 +74,27 @@ public class CommandLineExecutor extends Executor
 			{
 				stdRedirect = Redirect.to(new File(stdoutFilename));
 			}
-			pb.redirectOutput(stdRedirect);
+			processBuilder.redirectOutput(stdRedirect);
 			if (stdoutFilename == stderrFilename)
 			{
-				pb.redirectErrorStream(true);
+				processBuilder.redirectErrorStream(true);
 			}
 			else if (stderrFilename != null)
 			{
 				if (appendOutput)
 				{
-					pb.redirectError(Redirect.appendTo(new File(stderrFilename)));
+					processBuilder.redirectError(Redirect.appendTo(new File(stderrFilename)));
 				}
 				else
 				{
-					pb.redirectError(new File(stderrFilename));
+					processBuilder.redirectError(new File(stderrFilename));
 				}
 			}
 		}
 		logger.debug("Starting command: " + FileUtils.formatFileName(executable) + CollectionUtils.joinObjects(" ", arguments));
 		try
 		{
-			process = pb.start();
+			process = processBuilder.start();
 			state = JobState.RUNNING;
 		}
 		catch (IOException e)
@@ -117,7 +103,7 @@ public class CommandLineExecutor extends Executor
 			logger.error(message, e);
 			state = JobState.FAILED;
 		}
-
+		return process;
 	}
 
 

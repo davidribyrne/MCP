@@ -6,7 +6,7 @@ public class WorkingDirectories
 	private static String workingDirectory;
 	private static String scanDataDirectory;
 	private static String resumeDirectory;
-	
+	private static String inputFileDirectory;
 
 	private WorkingDirectories()
 	{
@@ -46,5 +46,17 @@ public class WorkingDirectories
 	public static void setResumeDirectory(String resumeDirectory)
 	{
 		WorkingDirectories.resumeDirectory = resumeDirectory;
+	}
+
+
+	public static String getInputFileDirectory()
+	{
+		return inputFileDirectory;
+	}
+
+
+	public static void setInputFileDirectory(String inputFileDirectory)
+	{
+		WorkingDirectories.inputFileDirectory = inputFileDirectory;
 	}
 }

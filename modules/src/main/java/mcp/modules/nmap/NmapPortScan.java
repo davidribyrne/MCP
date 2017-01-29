@@ -1,8 +1,8 @@
 package mcp.modules.nmap;
 
-import mcp.events.EventDispatcher;
 import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
+import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.scope.Scope;
 import mcp.modules.Module;
 import mcp.tools.nmap.NmapFlag;
@@ -14,9 +14,9 @@ import net.dacce.commons.validators.NumericListValidator;
 import net.dacce.commons.validators.NumericValidator;
 
 
-public abstract class NmapPortScan extends Module implements McpStartListener
+public abstract class NmapPortScan extends NmapModule implements McpStartListener
 {
-	private static OptionGroup group;
+	private OptionGroup group;
 
 	protected Option topScan;
 	protected Option topPorts;
@@ -29,6 +29,7 @@ public abstract class NmapPortScan extends Module implements McpStartListener
 	
 	protected NmapPortScan(String protocol)
 	{
+		super(protocol);
 		allLowerProtocol = protocol.toLowerCase();
 		allCapsProtocol = protocol.toUpperCase();
 		titleProcotol = allCapsProtocol.substring(0, 1) + allLowerProtocol.substring(1);
@@ -54,6 +55,7 @@ public abstract class NmapPortScan extends Module implements McpStartListener
 		group.addChild(topFocusedPorts);
 		group.addChild(topFocusedScan);
 		
+		NmapGeneralOptions.getInstance().getOptions().addChild(group);
 	}
 
 	protected abstract String getDefaultTopPorts();
@@ -62,7 +64,7 @@ public abstract class NmapPortScan extends Module implements McpStartListener
 	@Override
 	public void initialize()
 	{
-		EventDispatcher.getInstance().registerListener(McpStartEvent.class, this);
+		ExecutionScheduler.getInstance().registerListener(McpStartEvent.class, this);
 	}
 
 	protected abstract NmapFlag getProtocolFlag();
@@ -92,7 +94,7 @@ public abstract class NmapPortScan extends Module implements McpStartListener
 
 
 	@Override
-	public OptionContainer getOptions()
+	protected OptionGroup getOptionGroup()
 	{
 		return group;
 	}

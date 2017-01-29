@@ -4,9 +4,9 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
-import mcp.events.EventDispatcher;
 import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
+import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.KnowledgeBaseImpl;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Module;
@@ -54,9 +54,10 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 	private int maxAutoAddDomains;
 	private int maxAutoAddSubDomains;
 	
+	
 	public HostnameDiscoveryGeneralOptions()
 	{
-
+		super("Hostname discovery general options");
 		dnsServersOption = new Option(null, "dnsServer", "DNS servers to use for hostname discovery. Seperate multiple values with commas.  "
 				+ "If no servers are provided, an attempt will be made to detect the system servers. This feature isn't built into Java, "
 				+ "so unusual systems may fail.", 
@@ -146,7 +147,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 	@Override
 	public void initialize()
 	{
-		EventDispatcher.getInstance().registerListener(McpStartEvent.class, this);
+		ExecutionScheduler.getInstance().registerListener(McpStartEvent.class, this);
 		if (dnsServersOption.isValueSet(true))
 		{
 			HostnameDiscoveryUtils.resolver = new Resolver(dnsServersOption.getValues(), true);
@@ -248,7 +249,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 	}
 
 	@Override
-	public OptionContainer getOptions()
+	public OptionGroup getOptions()
 	{
 		return group;
 	}

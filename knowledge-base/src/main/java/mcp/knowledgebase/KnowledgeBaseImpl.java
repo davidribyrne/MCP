@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.esotericsoftware.yamlbeans.YamlException;
 import mcp.commons.WorkingDirectories;
-import mcp.events.EventDispatcher;
 import mcp.events.events.ElementCreationEvent;
+import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.nodes.Address;
 import mcp.knowledgebase.nodes.AddressImpl;
 import mcp.knowledgebase.nodes.Domain;
@@ -171,6 +171,6 @@ public class KnowledgeBaseImpl extends MultiClassIndexedCache implements Knowled
 	public void add(Class clazz, Object object) throws IllegalArgumentException
 	{
 		super.add(clazz, object);
-		EventDispatcher.getInstance().signalEvent(new ElementCreationEvent((KbElement) object));
+		ExecutionScheduler.getInstance().signalEvent(new ElementCreationEvent((KbElement) object));
 	}
 }

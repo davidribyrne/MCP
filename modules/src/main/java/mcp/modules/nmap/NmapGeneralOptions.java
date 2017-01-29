@@ -35,7 +35,7 @@ public class NmapGeneralOptions extends Module
 
 	private NmapGeneralOptions()
 	{
-
+		super("Nmap general options");
 		nmapPath = new Option(null, "nmapPath", "Path to nmap binary. Defaults to environment path.", true, true, null, "filepath");
 		nmapSpeed = new Option(null, "nmapSpeed", "Nmap speed.", true, true, "4", "0-5");
 		nmapResume = new Option(null, "nmapResume", "Attempt to resume previously aborted nmap scans.", true, true, "true", "true/false");
@@ -139,7 +139,7 @@ public class NmapGeneralOptions extends Module
 	}
 
 	@Override
-	public OptionContainer getOptions()
+	public OptionGroup getOptions()
 	{
 		return group;
 	}

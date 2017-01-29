@@ -26,10 +26,6 @@
 			<artifactId>job-manager</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>mcp</groupId>
-			<artifactId>events</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>net.dacce</groupId>
 			<artifactId>commons-gnu-cli</artifactId>
 		</dependency>

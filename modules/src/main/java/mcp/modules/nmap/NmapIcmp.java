@@ -1,8 +1,8 @@
 package mcp.modules.nmap;
 
-import mcp.events.EventDispatcher;
 import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
+import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.scope.Scope;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Module;
@@ -13,9 +13,8 @@ import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.cli.OptionGroup;
 
 
-public class NmapIcmp extends Module implements McpStartListener
+public class NmapIcmp extends NmapModule implements McpStartListener
 {
-	private static final NmapIcmp instance = new NmapIcmp();
 
 	private OptionGroup group;
 	private Option icmpEchoScan;
@@ -24,9 +23,9 @@ public class NmapIcmp extends Module implements McpStartListener
 	private Option protocolScan;
 
 
-	private NmapIcmp()
+	public NmapIcmp()
 	{
-		
+		super("Nmap ICMP");
 		icmpEchoScan = new Option(null, "icmpEchoScan", "Run nmap ICMP echo (ping) scan.");
 		icmpMaskScan = new Option(null, "icmpMaskScan", "Run nmap ICMP netmask scan.");
 		icmpTimeScan = new Option(null, "icmpTimeScan", "Run nmap ICMP timestamp scan.");
@@ -37,21 +36,14 @@ public class NmapIcmp extends Module implements McpStartListener
 		group.addChild(icmpMaskScan);
 		group.addChild(icmpTimeScan);
 		group.addChild(protocolScan);
-
 	}
 	
-
-
-	public static NmapIcmp getInstance()
-	{
-		return instance;
-	}
 
 
 	@Override
 	public void initialize()
 	{
-		EventDispatcher.getInstance().registerListener(McpStartEvent.class, this);
+		ExecutionScheduler.getInstance().registerListener(McpStartEvent.class, this);
 		
 		if (GeneralOptions.getInstance().getBasicReconOption().isEnabled())
 		{
@@ -96,9 +88,12 @@ public class NmapIcmp extends Module implements McpStartListener
 
 
 	@Override
-	public OptionContainer getOptions()
+	protected OptionGroup getOptionGroup()
 	{
 		return group;
 	}
+
+
+
 
 }

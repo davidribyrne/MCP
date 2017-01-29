@@ -6,7 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
-		<module>events</module>
+<!-- 		<module>events</module> -->
 		<module>job-manager</module>
 		<module>knowledge-base</module>
 		<module>modules</module>
@@ -85,11 +85,13 @@
 				<artifactId>slf4j-api</artifactId>
 				<version>1.7.12</version>
 			</dependency>
+<!-- 
 			<dependency>
 				<groupId>mcp</groupId>
 				<artifactId>events</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+ -->
 			<dependency>
 				<groupId>mcp</groupId>
 				<artifactId>kb-model</artifactId>

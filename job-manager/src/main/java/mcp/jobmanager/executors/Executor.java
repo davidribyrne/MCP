@@ -1,14 +1,17 @@
 package mcp.jobmanager.executors;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import mcp.jobmanager.jobs.JobState;
 
 
-public abstract class Executor
+public abstract class Executor<T> implements Callable<T>
 {
 	private final String name;
-	private Callback callbackObject;
-
+	private JobCompleteCallback callbackObject;
+	private Future<T> future;
 
 	public Executor(String name)
 	{
@@ -16,8 +19,8 @@ public abstract class Executor
 	}
 
 
-	public abstract void run();
 
+	public abstract T call();
 
 	
 	public boolean isRunning()
@@ -38,13 +41,13 @@ public abstract class Executor
 	public abstract JobState getState();
 
 
-	public Callback getCallbackObject()
+	public JobCompleteCallback getCallbackObject()
 	{
 		return callbackObject;
 	}
 
 
-	public void setCallback(Callback callbackObject)
+	public void setCallback(JobCompleteCallback callbackObject)
 	{
 		this.callbackObject = callbackObject;
 	}
@@ -53,5 +56,17 @@ public abstract class Executor
 	public String toString()
 	{
 		return new ToStringBuilder(this).append("name", name).build();
+	}
+
+
+	public Future getFuture()
+	{
+		return future;
+	}
+
+
+	public void setFuture(Future future)
+	{
+		this.future = future;
 	}
 }

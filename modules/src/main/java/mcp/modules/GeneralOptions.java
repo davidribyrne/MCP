@@ -1,6 +1,9 @@
 package mcp.modules;
 
 import java.io.File;
+import java.nio.file.FileAlreadyExistsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
@@ -14,13 +17,19 @@ import net.dacce.commons.validators.Requirement;
 
 public class GeneralOptions extends Module
 {
+	private final static Logger logger = LoggerFactory.getLogger(GeneralOptions.class);
 
 	private final static String SCAN_DATA_DIRECTORY = "scandata";
 	private final static String RESUME_DIRECTORY = "resume";
 	private final static GeneralOptions instance = new GeneralOptions();
 	private static OptionGroup group;
 	private int verbose;
+	private boolean interactive;
+
+
+
 	private Option verboseOption;
+	private Option interactiveOption;
 	private Option workingDirectoryOption;
 //	private Option continueAfterErrorOption;
 	private Option basicReconOption;
@@ -28,7 +37,9 @@ public class GeneralOptions extends Module
 
 	private GeneralOptions()
 	{
+		super("General options");
 		verboseOption = new Option("v", "verbose", "Output verbosity (0-6).", true, false, "2", "n");
+		interactiveOption = new Option("i", "interactive", "Run in interactive mode.");
 		workingDirectoryOption = new Option(null, "workingDirectory", "Working directory for Recon Master.", true, true, ".",
 				"directory path");
 //		continueAfterErrorOption = new Option(null, "continueAfterError", "Continue trying to run scans if something goes wrong.");
@@ -46,6 +57,7 @@ public class GeneralOptions extends Module
 
 		group = new OptionGroup("General", "General options");
 		group.addChild(verboseOption);
+		group.addChild(interactiveOption);
 		group.addChild(workingDirectoryOption);
 //		group.addChild(continueAfterErrorOption);
 		group.addChild(basicReconOption);
@@ -62,20 +74,27 @@ public class GeneralOptions extends Module
 	 *             thrown if a target directory already exists as a file
 	 */
 	@Override
-	public void initialize() throws IllegalArgumentException
+	public void initialize()
 	{
 		
-		File workingDirectory = new File(workingDirectoryOption.getValue());
-		FileUtils.createDirectory(workingDirectory);
-		WorkingDirectories.setWorkingDirectory(workingDirectory.toString() + File.separator);
+		try
+		{
+			File workingDirectory = new File(workingDirectoryOption.getValue());
+			FileUtils.createDirectory(workingDirectory);
+			WorkingDirectories.setWorkingDirectory(workingDirectory.toString() + File.separator);
 
-		File scanDataDirectory = new File(workingDirectory, SCAN_DATA_DIRECTORY);
-		FileUtils.createDirectory(scanDataDirectory);
-		WorkingDirectories.setScanDataDirectory(scanDataDirectory.toString() + File.separator);
+			File scanDataDirectory = new File(workingDirectory, SCAN_DATA_DIRECTORY);
+			FileUtils.createDirectory(scanDataDirectory);
+			WorkingDirectories.setScanDataDirectory(scanDataDirectory.toString() + File.separator);
 
-		File resumeDirectory = new File(workingDirectory, RESUME_DIRECTORY);
-		FileUtils.createDirectory(resumeDirectory);
-		WorkingDirectories.setResumeDirectory(resumeDirectory.toString() + File.separator);
+			File resumeDirectory = new File(workingDirectory, RESUME_DIRECTORY);
+			FileUtils.createDirectory(resumeDirectory);
+			WorkingDirectories.setResumeDirectory(resumeDirectory.toString() + File.separator);
+		}
+		catch (FileAlreadyExistsException e1)
+		{
+			logger.error("Failed to create working directory: " + e1.toString());
+		}
 
 		try
 		{
@@ -89,6 +108,8 @@ public class GeneralOptions extends Module
 		{
 			throw new IllegalArgumentException("Verbose option out of range.");
 		}
+		
+		interactive = interactiveOption.isEnabled();
 	}
 
 
@@ -129,5 +150,11 @@ public class GeneralOptions extends Module
 	{
 		return threadCount;
 	}
+	
+	public boolean isInteractive()
+	{
+		return interactive;
+	}
+
 
 }

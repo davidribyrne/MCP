@@ -89,8 +89,9 @@ public class Scope
 		{
 			sb.append(StringUtils.indentText(1, true, excludeAddresses.toString()));
 		}
+		
 		sb.append("\n\nCalculated targets:\n");
-		sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects("\n", targetAddresses.getAddresses())));
+		sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects("\n", getTargetAddresses().getAddresses())));
 		return sb.toString();
 	}
 }

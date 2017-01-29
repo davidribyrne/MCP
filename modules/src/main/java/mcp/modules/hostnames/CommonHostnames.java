@@ -8,13 +8,14 @@ import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import mcp.events.EventDispatcher;
 import mcp.events.events.ElementCreationEvent;
 import mcp.events.listeners.NodeCreationListener;
+import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.nodes.Domain;
 import mcp.knowledgebase.nodes.Node;
 import mcp.modules.Module;
 import net.dacce.commons.cli.OptionContainer;
+import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.dns.client.DnsTransaction;
 import net.dacce.commons.dns.exceptions.DnsClientConnectException;
 import net.dacce.commons.dns.exceptions.DnsResponseTimeoutException;
@@ -23,17 +24,17 @@ import net.dacce.commons.dns.records.RecordType;
 import net.dacce.commons.general.FileUtils;
 import net.dacce.commons.general.StringUtils;
 
-public class CommonHostnames extends Module implements NodeCreationListener
+public class CommonHostnames extends HostnameDiscoveryModule implements NodeCreationListener
 {
 	private final static Logger logger = LoggerFactory.getLogger(CommonHostnames.class);
 
 	private List<String> commonNames;
 	@SuppressWarnings("rawtypes")
-	private final static Collection nodeTypes = Collections.singletonList(Domain.class); 
-	private final static CommonHostnames instance = new CommonHostnames();
+	private final Collection nodeTypes = Collections.singletonList(Domain.class); 
 
-	private CommonHostnames()
+	public CommonHostnames()
 	{
+		super("Common hostnames");
 	}
 
 
@@ -50,7 +51,7 @@ public class CommonHostnames extends Module implements NodeCreationListener
 	{
 		if (HostnameDiscoveryGeneralOptions.getInstance().getTestCommonHostnamesOption().isEnabled())
 		{
-			EventDispatcher.getInstance().registerListener(ElementCreationEvent.class, this);
+			ExecutionScheduler.getInstance().registerListener(ElementCreationEvent.class, this);
 			loadHostnames();
 		}
 	}
@@ -84,12 +85,6 @@ public class CommonHostnames extends Module implements NodeCreationListener
 		}
 	}
 
-	@Override
-	public OptionContainer getOptions()
-	{
-		return null;
-	}
-
 
 	@Override
 	public void handleEvent(ElementCreationEvent reconEvent)
@@ -117,8 +112,9 @@ public class CommonHostnames extends Module implements NodeCreationListener
 	}
 
 
-	public static CommonHostnames getInstance()
+	@Override
+	protected OptionGroup getOptionGroup()
 	{
-		return instance;
+		return null;
 	}
 }

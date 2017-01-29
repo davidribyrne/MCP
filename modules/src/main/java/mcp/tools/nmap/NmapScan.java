@@ -10,9 +10,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
-import mcp.jobmanager.executors.Callback;
+import mcp.jobmanager.executors.JobCompleteCallback;
 import mcp.jobmanager.executors.CommandLineExecutor;
-import mcp.jobmanager.executors.ExecutorManager;
+import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.jobmanager.jobs.JobState;
 import mcp.modules.nmap.NmapGeneralOptions;
 import mcp.tools.nmap.parser.NmapXmlParser;
@@ -22,7 +22,7 @@ import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.netaddr.Addresses;
 
 
-public class NmapScan implements Callback
+public class NmapScan implements JobCompleteCallback
 {
 
 	private boolean resume;
@@ -110,7 +110,7 @@ public class NmapScan implements Callback
 				.getNmapPath(), arguments, WorkingDirectories.getScanDataDirectory(),
 				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true);
 		lastCommandLine = NmapGeneralOptions.getInstance().getNmapPath() + " " + CollectionUtils.joinObjects(" ", arguments);
-		ExecutorManager.getInstance().execute(executor);
+		ExecutionScheduler.getInstance().executeImmediately(executor);
 	}
 
 	

@@ -1,6 +1,10 @@
 package mcp;
 
 
+
+import org.crsh.cli.impl.SyntaxException;
+import org.crsh.cli.impl.descriptor.IntrospectionException;
+import org.crsh.cli.impl.invocation.InvocationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
@@ -10,12 +14,13 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import mcp.commons.WorkingDirectories;
-import mcp.events.EventDispatcher;
 import mcp.events.events.McpCompleteEvent;
 import mcp.events.events.McpStartEvent;
+import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Modules;
-import mcp.options.ReconOptions;
+import mcp.options.MCPOptions;
+import mcp.shell.MCPShell;
 
 
 public class MCP
@@ -28,24 +33,58 @@ public class MCP
 		@SuppressWarnings("unused")
 		MCP rm = new MCP(args);
 	}
-	
+
+
 	private MCP(String[] args)
 	{
 		setupOptions(args);
-		Modules.initializePrescanModules();
+		Modules.getInstance().initializeCoreModules();
 		setupLogger();
-		Modules.initializeOtherModules();
-		EventDispatcher.getInstance().signalEvent(new McpStartEvent());
-		EventDispatcher.getInstance().signalEvent(new McpCompleteEvent());
+		Modules.getInstance().initializeOtherModules();
+		ExecutionScheduler.getInstance().signalEvent(new McpStartEvent());
+
+		if (GeneralOptions.getInstance().isInteractive())
+		{
+			try
+			{
+				MCPShell shell = new MCPShell();
+				shell.start();
+			}
+			catch (IntrospectionException | InvocationException | SyntaxException | InstantiationException | IllegalAccessException e)
+			{
+				logger.error("Problem with shell", e);
+			}
+		}
+		waitForQueue();
+		ExecutionScheduler.getInstance().signalEvent(new McpCompleteEvent());
 		
-		
+		waitForQueue();
 	}
 
+	private void waitForQueue()
+	{
+		while(!ExecutionScheduler.getInstance().isQueueEmpty())
+		{
+			Object o = new Object();
+			synchronized(o)
+			{
+				try
+				{
+					o.wait(100);
+				}
+				catch (InterruptedException e)
+				{
+					logger.debug("Main thread interrupted", e);
+				}
+			}
+		}
 
+	}
+	
 	private void setupOptions(String[] args)
 	{
-		Modules.PopulateOptions();
-		ReconOptions.getInstance().parseCommandline(args);
+		Modules.getInstance().populateOptions();
+		MCPOptions.getInstance().parseCommandline(args);
 	}
 
 
@@ -74,6 +113,7 @@ public class MCP
 				break;
 			case 6:
 				level = Level.ALL;
+				break;
 			default:
 				level = Level.WARN;
 		}
@@ -109,10 +149,10 @@ public class MCP
 		fa.setFile(WorkingDirectories.getWorkingDirectory() + "mcp.log");
 		fa.start();
 		rootFileLogger.addAppender(fa);
-		
+
 
 		logger.debug("Running configuration:");
-		for (String line: ReconOptions.getInstance().getOptionSummary())
+		for (String line : MCPOptions.getInstance().getOptionSummary())
 		{
 			logger.debug(line);
 		}

@@ -6,15 +6,8 @@ import mcp.tools.nmap.NmapFlag;
 
 public class NmapUdp extends NmapPortScan
 {
-	private static final NmapUdp instance = new NmapUdp();
 
-	public static NmapUdp getInstance()
-	{
-		return instance;
-	}
-
-
-	private NmapUdp()
+	public NmapUdp()
 	{
 		super("udp");
 	}

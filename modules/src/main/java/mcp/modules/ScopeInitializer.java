@@ -35,7 +35,7 @@ public class ScopeInitializer extends Module
 
 	private ScopeInitializer()
 	{
-
+		super("Scope initializer");
 		targetIPFile = new Option(null, "ipsFile",
 				"File that contains a list of IP addresses to target. They can be in an nmap format (i.e. CIDRs and ranges).", true, true, "ips.txt",
 				"filename");

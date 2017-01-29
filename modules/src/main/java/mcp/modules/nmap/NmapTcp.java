@@ -7,14 +7,8 @@ import mcp.tools.nmap.NmapFlag;
 
 public class NmapTcp extends NmapPortScan
 {
-	private static final NmapTcp instance = new NmapTcp();
-
-	public static NmapTcp getInstance()
-	{
-		return instance;
-	}
 	
-	private NmapTcp()
+	public NmapTcp()
 	{
 		super("tcp");
 	}

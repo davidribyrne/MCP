@@ -1,7 +1,4 @@
-events/target/**
-job-manager/target/**
-knowledge-base/target/**
-modules/target/**
-options/target/**
-run/target/**
-run-test/target/**
+**/target/**
+/scandata
+*.bak
+*.log

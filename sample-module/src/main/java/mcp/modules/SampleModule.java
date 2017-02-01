@@ -8,20 +8,15 @@ import org.slf4j.LoggerFactory;
 import mcp.events.events.McpCompleteEvent;
 import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpCompleteListener;
-import mcp.events.listeners.McpEventListener;
 import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import net.dacce.commons.cli.ModuleOption;
-import net.dacce.commons.cli.ModuleOptions;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionContainer;
 
 public class SampleModule extends ExternalModule implements McpStartListener, McpCompleteListener
 {
 	final static Logger logger = LoggerFactory.getLogger(SampleModule.class);
 
 	private ModuleOption testStringOption;
-	
 	public SampleModule()
 	{
 		super("Sample Module", "sample", "This is just a sample module");

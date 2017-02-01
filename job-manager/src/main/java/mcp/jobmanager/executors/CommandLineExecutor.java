@@ -24,6 +24,7 @@ public class CommandLineExecutor extends Executor<Process>
 	private Process process;
 	private String programName;
 	private JobState state = JobState.UNSTARTED;
+	private int expectedExitValue;
 
 	final static Logger logger = LoggerFactory.getLogger(CommandLineExecutor.class);
 
@@ -42,7 +43,7 @@ public class CommandLineExecutor extends Executor<Process>
 	 * @param appendOutput
 	 */
 	public CommandLineExecutor(String programName, String jobName, String executable, List<String> arguments, String startingDirectory,
-			String stdoutFilename, String stderrFilename, boolean appendOutput)
+			String stdoutFilename, String stderrFilename, boolean appendOutput, int expectedExitValue)
 	{
 		super(jobName);
 		this.executable = executable;
@@ -52,6 +53,7 @@ public class CommandLineExecutor extends Executor<Process>
 		this.stderrFilename = stderrFilename;
 		this.appendOutput = appendOutput;
 		this.programName = programName;
+		this.expectedExitValue = expectedExitValue;
 	}
 
 
@@ -112,7 +114,14 @@ public class CommandLineExecutor extends Executor<Process>
 	{
 		if ((state == JobState.RUNNING) && !process.isAlive())
 		{
-			state = JobState.COMPLETE;
+			if (process.exitValue() != expectedExitValue)
+			{
+				state = JobState.FAILED;
+			}
+			else
+			{
+				state = JobState.COMPLETE;
+			}
 		}
 		return state;
 	}

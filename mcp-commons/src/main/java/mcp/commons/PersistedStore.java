@@ -11,7 +11,7 @@ public class PersistedStore
 	private final List<PersistedObject> objects;
 	private PersistedStore()
 	{
-		objects = new UniqueList<PersistedObject>();
+		objects = new UniqueList<PersistedObject>(false);
 	}
 
 	public void add(PersistedObject object)

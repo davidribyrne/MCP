@@ -1,4 +1,4 @@
-package mcp.shell;
+package mcp.shell.commands;
 
 import org.crsh.command.*;
 import org.crsh.cli.*;
@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 public class date extends BaseCommand
 {
 	@Usage("show the current time")
+	@Man("This really needs a man page")
 	@Command
 	public Object main(@Usage("the time format") @Option(names = { "f", "format" }) String format)
 	{

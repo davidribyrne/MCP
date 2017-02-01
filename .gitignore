@@ -2,3 +2,4 @@
 /scandata
 *.bak
 *.log
+.DS_Store

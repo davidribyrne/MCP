@@ -15,7 +15,8 @@ public class Scope
 	private Addresses targetAddresses;
 
 	public static final Scope instance = new Scope();
-	
+
+
 	private Scope()
 	{
 		includeAddresses = new Addresses();
@@ -23,75 +24,99 @@ public class Scope
 		changed = false;
 	}
 
+
 	public boolean isInScope(SimpleInetAddress address)
 	{
-		return includeAddresses.contains(address) && !excludeAddresses.contains(address);
+		synchronized (this)
+		{
+			return includeAddresses.contains(address) && !excludeAddresses.contains(address);
+		}
 	}
+
 
 	public Addresses getTargetAddresses()
 	{
-		if ((targetAddresses == null) || changed)
+		synchronized (this)
 		{
-			targetAddresses = new Addresses();
-			for (SimpleInetAddress address : includeAddresses.getAddresses())
+			if ((targetAddresses == null) || changed)
 			{
-				if (!excludeAddresses.contains(address))
+				targetAddresses = new Addresses();
+				for (SimpleInetAddress address : includeAddresses.getAddresses())
 				{
-					targetAddresses.add(address);
+					if (!excludeAddresses.contains(address))
+					{
+						targetAddresses.add(address);
+					}
 				}
+				changed = false;
 			}
-			changed = false;
-		}
 
-		return targetAddresses;
+			return targetAddresses;
+		}
 	}
 
 
 	public void addIncludeAddressBlock(String addressBlock) throws InvalidIPAddressFormatException
 	{
-		changed = true;
-		includeAddresses.add(addressBlock);
+		synchronized (this)
+		{
+			changed = true;
+			includeAddresses.add(addressBlock);
+		}
 	}
 
 
 	public void addExcludeAddressBlock(String addressBlock) throws InvalidIPAddressFormatException
 	{
-		changed = true;
-		excludeAddresses.add(addressBlock);
+		synchronized (this)
+		{
+			changed = true;
+			excludeAddresses.add(addressBlock);
+		}
 	}
 
 
 	public void setIncludeAddresses(Addresses includeAddresses)
 	{
-		this.includeAddresses = includeAddresses;
-		changed = true;
+		synchronized (this)
+		{
+			this.includeAddresses = includeAddresses;
+			changed = true;
+		}
 	}
 
 
 	public void setExcludeAddresses(Addresses excludeAddresses)
 	{
-		this.excludeAddresses = excludeAddresses;
-		changed = true;
+		synchronized (this)
+		{
+			this.excludeAddresses = excludeAddresses;
+			changed = true;
+		}
 	}
-	
+
+
 	@Override
 	public String toString()
 	{
-		StringBuilder sb = new StringBuilder();
-		sb.append("Include:\n");
-		sb.append(StringUtils.indentText(1, true, includeAddresses.toString()));
-		sb.append("\n\nExclude:\n");
-		if (excludeAddresses.isEmpty())
+		synchronized (this)
 		{
-			sb.append("\tnone");
+			StringBuilder sb = new StringBuilder();
+			sb.append("Include:\n");
+			sb.append(StringUtils.indentText(1, true, includeAddresses.toString()));
+			sb.append("\n\nExclude:\n");
+			if (excludeAddresses.isEmpty())
+			{
+				sb.append("\tnone");
+			}
+			else
+			{
+				sb.append(StringUtils.indentText(1, true, excludeAddresses.toString()));
+			}
+
+			sb.append("\n\nCalculated targets:\n");
+			sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects("\n", getTargetAddresses().getAddresses())));
+			return sb.toString();
 		}
-		else
-		{
-			sb.append(StringUtils.indentText(1, true, excludeAddresses.toString()));
-		}
-		
-		sb.append("\n\nCalculated targets:\n");
-		sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects("\n", getTargetAddresses().getAddresses())));
-		return sb.toString();
 	}
 }

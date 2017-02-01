@@ -1,6 +1,7 @@
 package mcp.jobmanager.executors;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,15 +37,15 @@ public class ExecutionScheduler implements Runnable
 {
 	private static ExecutionScheduler instance = new ExecutionScheduler();
 
-	private Map<JobState, List<Executor<?>>> jobs;
+	private final MapOfLists<JobState, Executor<?>> jobs;
 	private Thread thread;
 	private boolean running;
 	private ScheduledThreadPoolExecutor scheduler;
 
 
-	private MapOfLists<Class<? extends McpEvent>, McpEventListener> listeners;
-	private List<NodeCreationListener> nodeListeners;
-	private MapOfLists<String, ExecutorCompleteListener> executorListeners;
+	private final MapOfLists<Class<? extends McpEvent>, McpEventListener> listeners;
+	private final List<NodeCreationListener> nodeListeners;
+	private final MapOfLists<String, ExecutorCompleteListener> executorListeners;
 
 
 	final static Logger logger = LoggerFactory.getLogger(ExecutionScheduler.class);
@@ -52,22 +53,18 @@ public class ExecutionScheduler implements Runnable
 
 	private ExecutionScheduler()
 	{
-		jobs = new HashMap<JobState, List<Executor<?>>>();
-		for (JobState state : JobState.values())
-		{
-			jobs.put(state, new ArrayList<Executor<?>>(1));
-		}
-		thread = new Thread(instance);
-		thread.setName("MCP Execution Scheduler");
-		running = true;
-		thread.start();
 		scheduler = new ScheduledThreadPoolExecutor(3, new DaemonThreadFactory());
 
-
+		jobs = new MapOfLists<JobState, Executor<?>>();
+		jobs.seedKeys(JobState.values());
 		listeners = new MapOfLists<Class<? extends McpEvent>, McpEventListener>();
 		nodeListeners = new ArrayList<NodeCreationListener>();
 		executorListeners = new MapOfLists<String, ExecutorCompleteListener>();
 
+		thread = new Thread(this);
+		thread.setName("MCP Execution Scheduler");
+		running = true;
+		thread.start();
 	}
 
 	private class DaemonThreadFactory implements ThreadFactory
@@ -136,7 +133,8 @@ public class ExecutionScheduler implements Runnable
 		{
 			synchronized (this)
 			{
-				for (Executor<?> executor : jobs.get(JobState.RUNNING))
+				Executor<?>[] tmpJobs = jobs.get(JobState.RUNNING).toArray(new Executor<?>[0]);
+				for (Executor<?> executor : tmpJobs)
 				{
 					if (!executor.isRunning())
 					{
@@ -144,7 +142,7 @@ public class ExecutionScheduler implements Runnable
 						ExecutorCompleteEvent event = new ExecutorCompleteEvent(executor.getProgramName(), executor.getName(),
 								executor.getState() == JobState.COMPLETE);
 						jobs.get(executor.getState()).add(executor);
-						executor.getCallbackObject().jobComplete(executor.getState());
+						executor.signalCallback();
 						signalEvent(event);
 					}
 				}
@@ -178,32 +176,38 @@ public class ExecutionScheduler implements Runnable
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this)
-				.append("isRunning", running)
-				.append("jobs running", jobs.get(JobState.RUNNING).size())
-				.append("scheduler active count", scheduler.getActiveCount())
-				.append("scheduler queue size", scheduler.getQueue().size())
-				.build();
+		synchronized (this)
+		{
+			return new ToStringBuilder(this)
+					.append("isRunning", running)
+					.append("jobs running", jobs.get(JobState.RUNNING).size())
+					.append("scheduler active count", scheduler.getActiveCount())
+					.append("scheduler queue size", scheduler.getQueue().size())
+					.build();
+		}
 	}
 
 
 	public void registerListener(Class<? extends McpEvent> eventClass, McpEventListener listener)
 	{
-		if (eventClass == ElementCreationEvent.class)
+		synchronized (this)
 		{
-			nodeListeners.add((NodeCreationListener) listener);
-		}
-		else if (eventClass == ExecutorCompleteEvent.class)
-		{
-			ExecutorCompleteListener l = (ExecutorCompleteListener) listener;
-			for (String program : l.getProgramNames())
+			if (eventClass == ElementCreationEvent.class)
 			{
-				executorListeners.put(program, l);
+				nodeListeners.add((NodeCreationListener) listener);
 			}
-		}
-		else
-		{
-			listeners.put(eventClass, listener);
+			else if (eventClass == ExecutorCompleteEvent.class)
+			{
+				ExecutorCompleteListener l = (ExecutorCompleteListener) listener;
+				for (String program : l.getProgramNames())
+				{
+					executorListeners.put(program, l);
+				}
+			}
+			else
+			{
+				listeners.put(eventClass, listener);
+			}
 		}
 	}
 
@@ -307,6 +311,15 @@ public class ExecutionScheduler implements Runnable
 					}
 				});
 			}
+		}
+	}
+
+
+	public Map<JobState, List<Executor<?>>> getJobs()
+	{
+		synchronized (this)
+		{
+			return jobs.unmodifiableMapOfLists();
 		}
 	}
 

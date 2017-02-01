@@ -88,8 +88,15 @@ public class NmapScan implements JobCompleteCallback
 		ScanStatus status = checkNmapScanStatus();
 		if (status == ScanStatus.COMPLETE)
 		{
-			parseResults();
-			return;
+			try
+			{
+				parseResults();
+				return;
+			}
+			catch (FileNotFoundException e)
+			{
+				logger.warn(jobName + " nmap scan marked complete but output file not found. Re-running scan.", e);
+			}
 		}
 
 		String targetFile = outputFileName + TARGET_IP_FILE_SUFFIX;
@@ -108,7 +115,8 @@ public class NmapScan implements JobCompleteCallback
 		List<String> arguments = generateCommandArguments(status);
 		CommandLineExecutor executor = new CommandLineExecutor("Nmap", jobName, NmapGeneralOptions.getInstance()
 				.getNmapPath(), arguments, WorkingDirectories.getScanDataDirectory(),
-				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true);
+				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true, 0);
+		executor.setCallback(this);
 		lastCommandLine = NmapGeneralOptions.getInstance().getNmapPath() + " " + CollectionUtils.joinObjects(" ", arguments);
 		ExecutionScheduler.getInstance().executeImmediately(executor);
 	}
@@ -195,12 +203,12 @@ public class NmapScan implements JobCompleteCallback
 		return outputFileName;
 	}
 
-	private void parseResults()
+	private void parseResults() throws FileNotFoundException
 	{
 		File f = new File(outputFileName + ".xml");
 		if (!f.exists())
 		{
-			throw new IllegalStateException("Output file does not exist");
+			throw new FileNotFoundException("Nmap output file (" + f.getAbsolutePath() + ") not found for the " + jobName + " scan.");
 		}
 		NmapXmlParser.parse(f, jobName, lastCommandLine);
 	}
@@ -209,7 +217,14 @@ public class NmapScan implements JobCompleteCallback
 	@Override
 	public void jobComplete(JobState result)
 	{
-		parseResults();
+		try
+		{
+			parseResults();
+		}
+		catch (FileNotFoundException e)
+		{
+			logger.error(e.getLocalizedMessage(), e);
+		}
 	}
 
 

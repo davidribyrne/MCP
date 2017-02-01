@@ -123,7 +123,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		maxAutoAddDomainOption.addValidator(countValidator);
 		maxAutoAddSubDomainOption.addValidator(countValidator);
 		
-		group = new OptionGroup("Hostname discovery", "Hostname discovery.");
+		group = new OptionGroup("Hostname discovery", "Hostname Discovery");
 		group.addChild(dnsServersOption);
 		group.addChild(publicDnsServersOption);
 		group.addChild(enableHostnameDiscoveryOption);

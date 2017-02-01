@@ -52,29 +52,37 @@ public class Modules
 
 	private void populateCoreOptions()
 	{
-		MCPOptions.getInstance().addOptionContainer(GeneralOptions.getInstance().getOptions());
-		MCPOptions.getInstance().addOptionContainer(ScopeInitializer.getInstance().getOptions());
-		MCPOptions.getInstance().addOptionContainer(NmapGeneralOptions.getInstance().getOptions());
-		MCPOptions.getInstance().addOptionContainer(HostnameDiscoveryGeneralOptions.getInstance().getOptions());
+		MCPOptions.getInstance().addChild(GeneralOptions.getInstance().getOptions());
+		MCPOptions.getInstance().addChild(ScopeInitializer.getInstance().getOptions());
+		MCPOptions.getInstance().addChild(NmapGeneralOptions.getInstance().getOptions());
+		MCPOptions.getInstance().addChild(HostnameDiscoveryGeneralOptions.getInstance().getOptions());
 	}
 
 
 	public void populateOptions()
 	{
 		populateCoreOptions();
+		OptionGroup standardModulesOptionGroup = new OptionGroup("Standard Modules", "Standard Modules");
+		
 		for (Module module : normalModules)
 		{
-			MCPOptions.getInstance().addOptionContainer(module.getOptions());
+			standardModulesOptionGroup.addChild(module.getOptions());
 		}
+		MCPOptions.getInstance().addChild(standardModulesOptionGroup);
+		
+		
 		/*
 		 * External modules are loaded after core options are processed
 		 */
 		externalModules = ExternalModuleLoader.loadModules();
 
+		OptionGroup externalModulesOptionGroup = new OptionGroup("External Modules", "External Modules");
+
 		for (ExternalModule module : externalModules)
 		{
-			MCPOptions.getInstance().addOptionContainer(module.getOptions());
+			externalModulesOptionGroup.addChild(module.getOptions());
 		}
+		MCPOptions.getInstance().addChild(externalModulesOptionGroup);
 	}
 
 

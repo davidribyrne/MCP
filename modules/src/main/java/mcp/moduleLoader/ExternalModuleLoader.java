@@ -37,7 +37,7 @@ public class ExternalModuleLoader
 	public static List<ExternalModule> loadModules()
 	{
 		List<ExternalModule> modules = new ArrayList<ExternalModule>();
-		for (File jarPath : getJarURLs("d:\\seafile\\mcp\\sample-module\\target"))
+		for (File jarPath : getJarURLs("d:\\seafile\\mcp\\mcp\\sample-module\\target"))
 		{
 			List<String> jarClassNames = getModuleClasses(jarPath);
 			if (!jarClassNames.isEmpty())

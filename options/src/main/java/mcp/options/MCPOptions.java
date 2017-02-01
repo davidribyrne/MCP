@@ -101,7 +101,7 @@ public class MCPOptions
 	}
 
 
-	public void addOptionContainer(OptionContainer option)
+	public void addChild(OptionContainer option)
 	{
 		options.addOptionContainer(option);
 	}

@@ -41,11 +41,10 @@ public abstract class Executor<T> implements Callable<T>
 	public abstract JobState getState();
 
 
-	public JobCompleteCallback getCallbackObject()
+	public void signalCallback()
 	{
-		return callbackObject;
+		callbackObject.jobComplete(getState());
 	}
-
 
 	public void setCallback(JobCompleteCallback callbackObject)
 	{

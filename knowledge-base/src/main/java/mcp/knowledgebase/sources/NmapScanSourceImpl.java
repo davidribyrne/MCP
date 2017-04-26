@@ -1,6 +1,7 @@
 package mcp.knowledgebase.sources;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class NmapScanSourceImpl implements NmapScanSource
 {
@@ -46,7 +47,7 @@ public class NmapScanSourceImpl implements NmapScanSource
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this).append("outputPath", outputPath).append("description", description)
+		return new ToStringBuilder(this, ToStringStyle.JSON_STYLE).append("outputPath", outputPath).append("description", description)
 				.append("commandLine", commandLine).build();
 	}
 }

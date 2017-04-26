@@ -26,8 +26,7 @@ import mcp.shell.MCPShell;
 public class MCP
 {
 	final static Logger logger = LoggerFactory.getLogger(MCP.class);
-	private MCPShell shell;
-	private boolean interactive;
+	private boolean interactiveConsole;
 
 	public static void main(String[] args)
 	{
@@ -43,20 +42,8 @@ public class MCP
 		setupLogger();
 		Modules.getInstance().initializeOtherModules();
 		ExecutionScheduler.getInstance().signalEvent(new McpStartEvent());
-		interactive = GeneralOptions.getInstance().isInteractive();
-				
-		if (interactive)
-		{
-			shell = new MCPShell();
-			try
-			{
-				shell.start();
-			}
-			catch (IntrospectionException | InvocationException | SyntaxException | InstantiationException | IllegalAccessException e)
-			{
-				logger.error("Problem with shell", e);
-			}
-		}
+		MCPShell.setupShell();
+		
 		waitForQueue();
 		ExecutionScheduler.getInstance().signalEvent(new McpCompleteEvent());
 		
@@ -65,7 +52,7 @@ public class MCP
 
 	private void waitForQueue()
 	{
-		while(!ExecutionScheduler.getInstance().isQueueEmpty() || (interactive && shell.getShellThread().isAlive()))
+		while(!ExecutionScheduler.getInstance().isQueueEmpty() || MCPShell.isActive())
 		{
 			Object o = new Object();
 			synchronized(o)

@@ -31,7 +31,7 @@ public enum ServiceReason
 		{
 			case "table":
 				return TABLE;
-			case "probe":
+			case "probed":
 				return SCAN;
 		}
 		logger.warn("The Nmap service reson '" + reason + "' is unknown.");

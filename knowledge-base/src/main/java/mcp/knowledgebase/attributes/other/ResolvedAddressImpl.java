@@ -4,6 +4,8 @@ import java.time.Instant;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import mcp.knowledgebase.attributes.NodeAttributeImpl;
 import mcp.knowledgebase.attributes.hostname.ResolvedAddress;
 import mcp.knowledgebase.nodes.Node;
@@ -49,7 +51,7 @@ public class ResolvedAddressImpl extends NodeAttributeImpl implements ResolvedAd
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this).appendSuper(super.toString()).append(address).build();
+		return new ToStringBuilder(this, ToStringStyle.JSON_STYLE).append(address).build();
 	}
 
 }

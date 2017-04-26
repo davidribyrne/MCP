@@ -41,6 +41,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 import mcp.knowledgebase.KnowledgeBaseImpl;
+import mcp.knowledgebase.attributes.host.IcmpResponseType;
 import mcp.knowledgebase.attributes.host.OSGuess;
 import mcp.knowledgebase.attributes.host.OSGuessImpl;
 import mcp.knowledgebase.attributes.port.PortResponse;
@@ -50,14 +51,17 @@ import mcp.knowledgebase.attributes.port.PortStateReason;
 import mcp.knowledgebase.attributes.port.ServiceDescription;
 import mcp.knowledgebase.attributes.port.ServiceDescriptionImpl;
 import mcp.knowledgebase.attributes.port.ServiceReason;
-import mcp.knowledgebase.nodes.Address;
+import mcp.knowledgebase.nodes.IPAddress;
+import mcp.knowledgebase.nodes.MacAddress;
 import mcp.knowledgebase.nodes.Hostname;
 import mcp.knowledgebase.nodes.Port;
 import mcp.knowledgebase.nodes.PortType;
 import mcp.knowledgebase.sources.NmapScanSource;
+import mcp.modules.GeneralOptions;
 import net.dacce.commons.netaddr.IPUtils;
 import net.dacce.commons.netaddr.InvalidIPAddressFormatException;
 import net.dacce.commons.netaddr.MacUtils;
+import net.dacce.commons.netaddr.SimpleInetAddress;
 
 
 /**
@@ -78,14 +82,20 @@ public class NMapXmlHandler extends DefaultHandler
 
 	private boolean isCpeData = false;
 	private final NmapScanSource source;
-	private Address currentAddress;
-//	private Host currentHost;
+	private IPAddress currentIPAddress;
+	private SimpleInetAddress tempIPAddress;
 	private Port currentPort;
+	private Integer currentPortNumber;
+	private PortType currentPortType;
+	private PortResponse currentPortResponse;
 	private OSGuess currentOSGuess;
-	private byte[] currentMac;
-	private String currentMacVendor;
+	private MacAddress currentMac;
 	private final Instant scanTime;
-
+	private boolean trackAll;
+	private String currentServiceName;
+	private ServiceReason currentServiceReason;
+	private ServiceDescription currentServiceDescription;
+	private IcmpResponseType currentIcmpResponse;
 	// https://svn.nmap.org/nmap/docs/nmap.dtd
 
 
@@ -93,8 +103,10 @@ public class NMapXmlHandler extends DefaultHandler
 	{
 		this.scanTime = scanTime;
 		this.source = source;
+		trackAll = GeneralOptions.getInstance().getTrackAllData().isEnabled();
 	}
-	
+
+
 	@Override
 	public void startDocument() throws SAXException
 	{
@@ -105,9 +117,40 @@ public class NMapXmlHandler extends DefaultHandler
 	{
 		if (currentOSGuess == null)
 		{
-			currentOSGuess = new OSGuessImpl(scanTime, source, currentAddress.getHost() );
-			currentAddress.getHost().addOSGuess(currentOSGuess);
+			currentOSGuess = new OSGuessImpl(scanTime, source, currentIPAddress.getHost());
+			currentIPAddress.getHost().addOSGuess(currentOSGuess);
 		}
+	}
+
+
+	private IPAddress getCurrentIPAddress()
+	{
+		if (currentIPAddress == null)
+		{
+			currentIPAddress = KnowledgeBaseImpl.getInstance().getOrCreateIPAddressNode(tempIPAddress);
+		}
+		return currentIPAddress;
+	}
+
+
+	private Port getCurrentPort()
+	{
+		if (currentPort == null)
+		{
+			currentPort = getCurrentIPAddress().getOrCreatePort(currentPortType, currentPortNumber);
+		}
+		return currentPort;
+	}
+
+
+	private ServiceDescription getCurrentServiceDescription()
+	{
+		if (currentServiceDescription == null)
+		{
+			currentServiceDescription = new ServiceDescriptionImpl(getCurrentPort(), scanTime, source,
+					currentServiceName, currentServiceReason);
+		}
+		return currentServiceDescription;
 	}
 
 
@@ -115,133 +158,170 @@ public class NMapXmlHandler extends DefaultHandler
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException
 	{
+		try
+		{
 
-		if (qName.equals(NmapDtdStrings.NMAPRUN_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.SCANINFO_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.DEBUGGING_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.VERBOSE_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.HOST_TAG))
-		{
-			currentAddress = null;
-			currentPort = null;
-			currentOSGuess = null;
-			currentMac = null;
-			currentMacVendor = null;
-		}
-		if (qName.equals(NmapDtdStrings.STATUS_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.ADDRESS_TAG))
-		{
-			String type = attributes.getValue(NmapDtdStrings.ADDRTYPE_ATTR).toLowerCase();
-			if (type.equals("ipv4"))
+			if (qName.equals(NmapDtdStrings.NMAPRUN_TAG))
 			{
-				try
+			}
+			if (qName.equals(NmapDtdStrings.SCANINFO_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.DEBUGGING_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.VERBOSE_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.HOST_TAG))
+			{
+				currentIPAddress = null;
+				tempIPAddress = null;
+				currentPort = null;
+				currentOSGuess = null;
+				currentMac = null;
+				currentPortType = null;
+				currentPortNumber = null;
+				currentPortResponse = null;
+				currentServiceName = null;
+				currentServiceReason = null;
+				currentIcmpResponse = null;
+			}
+			if (qName.equals(NmapDtdStrings.STATUS_TAG))
+			{
+				currentIcmpResponse = IcmpResponseType.parseFromNmap(attributes.getValue(NmapDtdStrings.REASON_ATTR));
+				if (currentIcmpResponse != null && currentIPAddress != null)
 				{
-					currentAddress = KnowledgeBaseImpl.getInstance().getOrCreateAddressNode(IPUtils.fromString(attributes.getValue(NmapDtdStrings.ADDR_ATTR)));
-					currentAddress.setMacAddress(currentMac);
-					currentAddress.setMacVendor(currentMacVendor);
-				}
-				catch (InvalidIPAddressFormatException e)
-				{
-					logger.warn("Nmap seems to have put an invalid IP address (" + attributes.getValue(NmapDtdStrings.ADDR_ATTR) + ")in a file: " + e.getLocalizedMessage(), e);
+					getCurrentIPAddress().setIcmpResponse(currentIcmpResponse);
 				}
 			}
-			else if (type.equals("mac"))
+			if (qName.equals(NmapDtdStrings.ADDRESS_TAG))
 			{
-				currentMac = MacUtils.getMacFromString(attributes.getValue(NmapDtdStrings.ADDR_ATTR));
-				currentMacVendor = attributes.getValue(NmapDtdStrings.VENDOR_ATTR);
-				currentAddress.setMacAddress(currentMac);
-				currentAddress.setMacVendor(currentMacVendor);
+				String type = attributes.getValue(NmapDtdStrings.ADDRTYPE_ATTR).toLowerCase();
+				if (type.equals("ipv4"))
+				{
+					try
+					{
+						tempIPAddress = IPUtils.fromString(attributes.getValue(NmapDtdStrings.ADDR_ATTR));
+
+						if (currentMac != null)
+						{
+							getCurrentIPAddress().setMacAddress(currentMac);
+						}
+						if (currentIcmpResponse != null)
+						{
+							getCurrentIPAddress().setIcmpResponse(currentIcmpResponse);
+						}
+					}
+					catch (InvalidIPAddressFormatException e)
+					{
+						logger.warn("Nmap seems to have put an invalid IP address (" + attributes.getValue(NmapDtdStrings.ADDR_ATTR) + ") in a file: "
+								+ e.getLocalizedMessage(), e);
+					}
+				}
+				else if (type.equals("mac"))
+				{
+					String rawMac = attributes.getValue(NmapDtdStrings.ADDR_ATTR);
+					byte[] hexMac = MacUtils.getMacFromString(rawMac);
+					currentMac = KnowledgeBaseImpl.getInstance().getOrCreateMacAddressNode(hexMac);
+					getCurrentIPAddress().setMacAddress(currentMac);
+					currentMac.setMacVendor(attributes.getValue(NmapDtdStrings.VENDOR_ATTR));
+				}
+			}
+			if (qName.equals(NmapDtdStrings.HOSTNAMES_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.HOSTNAME_TAG))
+			{
+				Hostname hostname = KnowledgeBaseImpl.getInstance().getOrCreateHostname(attributes.getValue(NmapDtdStrings.NAME_ATTR));
+				hostname.addAddress(getCurrentIPAddress());
+			}
+			if (qName.equals(NmapDtdStrings.PORTS_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.PORT_TAG))
+			{
+				currentPortType = PortType.fromNmap(attributes.getValue(NmapDtdStrings.PROTOCOL_ATTR));
+				currentPortNumber = Integer.valueOf(attributes.getValue(NmapDtdStrings.PORTID_ATTR));
+			}
+			if (qName.equals(NmapDtdStrings.STATE_TAG))
+			{
+				currentPortResponse = PortResponse.parseNmapText(attributes.getValue(NmapDtdStrings.STATE_ATTR));
+				if (currentPortResponse == PortResponse.OPEN || trackAll)
+				{
+					PortState state = new PortStateImpl(getCurrentPort(), scanTime, source, currentPortResponse,
+							PortStateReason.parseNmapText(attributes.getValue(NmapDtdStrings.REASON_ATTR)));
+					getCurrentPort().addState(state);
+
+					// If we've already parsed the service tag, handle it
+					if (currentServiceName != null)
+					{
+						getCurrentPort().setServiceDescription(getCurrentServiceDescription());
+					}
+				}
+			}
+			if (qName.equals(NmapDtdStrings.SERVICE_TAG))
+			{
+				currentServiceName = attributes.getValue(NmapDtdStrings.NAME_ATTR);
+				currentServiceReason = ServiceReason.fromNmap(attributes.getValue(NmapDtdStrings.METHOD_ATTR));
+				// If the port is open, or we're logging everything, put the service description in
+				if (PortResponse.OPEN.equals(currentPortResponse) || trackAll)
+				{
+					getCurrentPort().setServiceDescription(getCurrentServiceDescription());
+				}
+			}
+			if (qName.equals(NmapDtdStrings.OS_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.PORT_USED_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.OSCLASS_TAG))
+			{
+				makeCurrentOSGuess();
+				currentOSGuess.setDeviceType(attributes.getValue(NmapDtdStrings.TYPE_ATTR));
+				currentOSGuess.setVendor(attributes.getValue(NmapDtdStrings.VENDOR_ATTR));
+				currentOSGuess.setVersion(attributes.getValue(NmapDtdStrings.VERSION_ATTR));
+				currentOSGuess.setOsFamily(attributes.getValue(NmapDtdStrings.OSFAMILY_ATTR));
+				currentOSGuess.setConfidence(Integer.getInteger(attributes.getValue(NmapDtdStrings.ACCURACY_ATTR)));
+			}
+			if (qName.equals(NmapDtdStrings.OS_MATCH_TAG))
+			{
+				makeCurrentOSGuess();
+			}
+			if (qName.equals(NmapDtdStrings.DISTANCE_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.TCP_SEQUENCE_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.TCP_TS_SEQUENCE_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.TIMES_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.UPTIME_TAG))
+			{
+				getCurrentIPAddress().getHost().addNote("Up since " + attributes.getValue(NmapDtdStrings.LASTBOOT_ATTR));
+			}
+			if (qName.equals(NmapDtdStrings.RUNSTATS_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.FINISHED_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.HOSTS_TAG))
+			{
+			}
+			if (qName.equals(NmapDtdStrings.CPE_ATTR))
+			{
 			}
 		}
-		if (qName.equals(NmapDtdStrings.HOSTNAMES_TAG))
+		catch (Exception e) // Xerxes swallows runtime exceptions, so we need to catch them here.
 		{
+			logger.error("Problem parsing nmap XML.", e);
 		}
-		if (qName.equals(NmapDtdStrings.HOSTNAME_TAG))
-		{
-			Hostname hostname = KnowledgeBaseImpl.getInstance().getOrCreateHostname(attributes.getValue(NmapDtdStrings.NAME_ATTR));
-			hostname.addAddress(currentAddress);
-		}
-		if (qName.equals(NmapDtdStrings.PORTS_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.PORT_TAG))
-		{
-			PortType type = PortType.fromNmap(attributes.getValue(NmapDtdStrings.PROTOCOL_ATTR));
-			int number = Integer.valueOf(attributes.getValue(NmapDtdStrings.PORTID_ATTR));
-			currentPort = currentAddress.getOrCreatePort(type, number);
-		}
-		if (qName.equals(NmapDtdStrings.STATE_TAG))
-		{
-			PortState state = new PortStateImpl(currentPort, scanTime, source, 
-					PortResponse.parseNmapText(attributes.getValue(NmapDtdStrings.STATE_ATTR)), 
-					PortStateReason.parseNmapText(attributes.getValue(NmapDtdStrings.REASON_ATTR)));
-			currentPort.addState(state);
-		}
-		if (qName.equals(NmapDtdStrings.SERVICE_TAG))
-		{
-			ServiceDescription description = new ServiceDescriptionImpl(currentPort, scanTime, source, 
-					attributes.getValue(NmapDtdStrings.NAME_ATTR), 
-					ServiceReason.fromNmap(attributes.getValue(NmapDtdStrings.METHOD_ATTR)));
-			currentPort.setServiceDescription(description);
-		}
-		if (qName.equals(NmapDtdStrings.OS_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.PORT_USED_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.OSCLASS_TAG))
-		{
-			makeCurrentOSGuess();
-			currentOSGuess.setDeviceType(attributes.getValue(NmapDtdStrings.TYPE_ATTR));
-			currentOSGuess.setVendor(attributes.getValue(NmapDtdStrings.VENDOR_ATTR));
-			currentOSGuess.setVersion(attributes.getValue(NmapDtdStrings.VERSION_ATTR));
-			currentOSGuess.setOsFamily(attributes.getValue(NmapDtdStrings.OSFAMILY_ATTR));
-			currentOSGuess.setConfidence(Integer.getInteger(attributes.getValue(NmapDtdStrings.ACCURACY_ATTR)));
-		}
-		if (qName.equals(NmapDtdStrings.OS_MATCH_TAG))
-		{
-			makeCurrentOSGuess();
-		}
-		if (qName.equals(NmapDtdStrings.DISTANCE_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.TCP_SEQUENCE_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.TCP_TS_SEQUENCE_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.TIMES_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.UPTIME_TAG))
-		{
-			currentAddress.getHost().addNote("Up since " + attributes.getValue(NmapDtdStrings.LASTBOOT_ATTR));
-		}
-		if (qName.equals(NmapDtdStrings.RUNSTATS_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.FINISHED_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.HOSTS_TAG))
-		{
-		}
-		if (qName.equals(NmapDtdStrings.CPE_ATTR))
-		{
-		}
-
 		// set the previousQName for comparison to later elements
 	}
 
@@ -347,7 +427,6 @@ public class NMapXmlHandler extends DefaultHandler
 	public void endDocument() throws SAXException
 	{
 	}
-
 
 
 }

@@ -2,6 +2,8 @@ package mcp.knowledgebase.attributes;
 
 import java.time.Instant;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import mcp.knowledgebase.nodes.Node;
 import mcp.knowledgebase.sources.Source;
 
@@ -32,7 +34,7 @@ public abstract class ScoredNodeAttributeImpl extends NodeAttributeImpl implemen
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this).appendSuper(super.toString()).append("confidence", confidence).build();
+		return new ToStringBuilder(this, ToStringStyle.JSON_STYLE).append("confidence", confidence).build();
 	}
 
 

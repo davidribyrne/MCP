@@ -2,6 +2,8 @@ package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import mcp.knowledgebase.attributes.AttributeHistory;
 import mcp.knowledgebase.attributes.AttributeHistoryImpl;
 import mcp.knowledgebase.attributes.ScoredAttributeHistory;
@@ -16,16 +18,16 @@ public class PortImpl extends NodeImpl implements Port
 {
 	private final PortType type;
 	private final int number;
-	private final Address address;
+	private final IPAddress iPAddress;
 
 	private final AttributeHistory<PortState> stateHistory;
 	private final ScoredAttributeHistory<ServiceDescription> serviceDescriptionHistory;
 	private final ScoredAttributeHistory<SoftwareGuess> softwareGuessHistory;
  
-	public PortImpl(Address address, PortType type, int number)
+	public PortImpl(IPAddress iPAddress, PortType type, int number)
 	{
-		super(address);
-		this.address = address;
+		super(iPAddress);
+		this.iPAddress = iPAddress;
 		this.type = type;
 		this.number = number;
 		stateHistory = new AttributeHistoryImpl<PortState>();
@@ -93,7 +95,7 @@ public class PortImpl extends NodeImpl implements Port
 	}
 
 
-	public static Field NUMBER_FIELD()
+	public synchronized static Field NUMBER_FIELD()
 	{
 		if (numberField == null)
 		{
@@ -107,10 +109,10 @@ public class PortImpl extends NodeImpl implements Port
 	@Override
 	public String toString()
 	{
-		ToStringBuilder tsb = new ToStringBuilder(this);
+		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.JSON_STYLE);
 		tsb.append("number", number);
 		tsb.append("type", type);
-		tsb.append("stateHistory", stateHistory.getLastAttribute());
+//		tsb.append("stateHistory", stateHistory.getLastAttribute());
 		tsb.append("serviceDescriptionHistory", serviceDescriptionHistory.getAggregate());
 		return tsb.toString();
 	}
@@ -155,9 +157,9 @@ public class PortImpl extends NodeImpl implements Port
 
 
 	@Override
-	public Address getAddressNode()
+	public IPAddress getAddressNode()
 	{
-		return address;
+		return iPAddress;
 	}
 
 

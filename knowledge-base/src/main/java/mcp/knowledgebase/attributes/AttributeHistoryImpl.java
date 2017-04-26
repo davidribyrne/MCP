@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import net.dacce.commons.general.CollectionUtils;
 
 
@@ -76,7 +78,7 @@ public class AttributeHistoryImpl<Attribute extends NodeAttribute> implements At
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this).appendSuper(super.toString()).append("history", CollectionUtils.joinObjects(", ", history)).build();
+		return new ToStringBuilder(this, ToStringStyle.JSON_STYLE).append("history", CollectionUtils.joinObjects(", ", history)).build();
 	}
 
 }

@@ -34,9 +34,9 @@ public class ExternalModuleLoader
 	}
 
 
-	public static List<ExternalModule> loadModules()
+	public static Map<Class<? extends ExternalModule>, ExternalModule> loadModules()
 	{
-		List<ExternalModule> modules = new ArrayList<ExternalModule>();
+		Map<Class<? extends ExternalModule>, ExternalModule> modules = new HashMap<Class<? extends ExternalModule>, ExternalModule>();
 		for (File jarPath : getJarURLs("d:\\seafile\\mcp\\mcp\\sample-module\\target"))
 		{
 			List<String> jarClassNames = getModuleClasses(jarPath);
@@ -63,7 +63,7 @@ public class ExternalModuleLoader
 							Object instance = clazz.newInstance();
 							if (instance instanceof ExternalModule)
 							{
-								modules.add((ExternalModule) instance);
+								modules.put(clazz, (ExternalModule) instance);
 							}
 							else
 							{

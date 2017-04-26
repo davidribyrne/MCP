@@ -4,6 +4,8 @@ import java.time.Instant;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import mcp.knowledgebase.attributes.ScoredNodeAttributeImpl;
 import mcp.knowledgebase.nodes.Port;
 import mcp.knowledgebase.sources.Source;
@@ -84,7 +86,7 @@ public class SoftwareGuessImpl extends ScoredNodeAttributeImpl implements Softwa
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this).appendSuper(super.toString()).append("product", product)
+		return new ToStringBuilder(this, ToStringStyle.JSON_STYLE).append("product", product)
 				.append("vendor", vendor).append("version", version).build();
 	}
 

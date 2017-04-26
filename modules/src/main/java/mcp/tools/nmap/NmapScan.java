@@ -114,7 +114,7 @@ public class NmapScan implements JobCompleteCallback
 		}
 		List<String> arguments = generateCommandArguments(status);
 		CommandLineExecutor executor = new CommandLineExecutor("Nmap", jobName, NmapGeneralOptions.getInstance()
-				.getNmapPath(), arguments, WorkingDirectories.getScanDataDirectory(),
+				.getNmapPath(), arguments, WorkingDirectories.getWorkingDirectory(),
 				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true, 0);
 		executor.setCallback(this);
 		lastCommandLine = NmapGeneralOptions.getInstance().getNmapPath() + " " + CollectionUtils.joinObjects(" ", arguments);
@@ -217,6 +217,10 @@ public class NmapScan implements JobCompleteCallback
 	@Override
 	public void jobComplete(JobState result)
 	{
+		if (result == JobState.FAILED)
+		{
+			logger.warn("Nmap job failed - " + jobName + ". Trying to parse result file anyway. The error could be in " + outputFileName + CONSOLE_OUT_FILE_SUFFIX);
+		}
 		try
 		{
 			parseResults();

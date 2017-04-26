@@ -24,22 +24,25 @@ public class GeneralOptions extends Module
 	private final static GeneralOptions instance = new GeneralOptions();
 	private static OptionGroup group;
 	private int verbose;
-	private boolean interactive;
+	private boolean interactiveConsole;
 
 
 
 	private Option verboseOption;
-	private Option interactiveOption;
 	private Option workingDirectoryOption;
 //	private Option continueAfterErrorOption;
 	private Option basicReconOption;
+	private Option trackAllData;
+
 	private Option threadCount;
+	private OptionGroup interactiveOptions;
+	private Option interactiveConsoleOption;
+	private Option interactiveTelnetOption;
 
 	private GeneralOptions()
 	{
 		super("General options");
 		verboseOption = new Option("v", "verbose", "Output verbosity (0-6).", true, false, "2", "n");
-		interactiveOption = new Option("i", "interactive", "Run in interactive mode.");
 		workingDirectoryOption = new Option(null, "workingDirectory", "Working directory for Recon Master.", true, true, ".",
 				"directory path");
 //		continueAfterErrorOption = new Option(null, "continueAfterError", "Continue trying to run scans if something goes wrong.");
@@ -47,7 +50,7 @@ public class GeneralOptions extends Module
 				+ "--hostnameDiscovery --icmpEchoScan --topTcpScan "
 				+ "--udpPorts 53,67,68,69,111,123,135,137,138,139,161,162,445,500,514,520,631,1434,1604,4500,5353,10000");
 		threadCount = new Option("t", "threads", "Working thread count.", true, true, "3", "n");
-		
+		trackAllData = new Option("", "trackall", "Track all data, even negative results (e.g., non-open ports). This may significantly increase resource use");
 		verboseOption.addValidator(new NumericValidator(false, 0, 6));
 		PathState workingDirState = new PathState();
 		workingDirState.directory = Requirement.MUST;
@@ -57,12 +60,19 @@ public class GeneralOptions extends Module
 
 		group = new OptionGroup("General", "General options");
 		group.addChild(verboseOption);
-		group.addChild(interactiveOption);
+		group.addChild(interactiveConsoleOption);
 		group.addChild(workingDirectoryOption);
 //		group.addChild(continueAfterErrorOption);
 		group.addChild(basicReconOption);
 		group.addChild(threadCount);
+		group.addChild(trackAllData);
 
+		interactiveOptions = new OptionGroup("Interactive options", "Interactive options");
+		interactiveConsoleOption = new Option("i", "interactive", "Run in interactive mode on the console.");
+		interactiveTelnetOption = new Option(null, "telnet", "Run interactive telnet server.", true, false, "2300", "port");
+		interactiveOptions.addChild(interactiveConsoleOption);
+		interactiveOptions.addChild(interactiveTelnetOption);
+		group.addChild(interactiveOptions);
 	}
 
 
@@ -109,7 +119,7 @@ public class GeneralOptions extends Module
 			throw new IllegalArgumentException("Verbose option out of range.");
 		}
 		
-		interactive = interactiveOption.isEnabled();
+		interactiveConsole = interactiveConsoleOption.isEnabled();
 	}
 
 
@@ -151,9 +161,27 @@ public class GeneralOptions extends Module
 		return threadCount;
 	}
 	
+	public boolean isInteractiveConsole()
+	{
+		return interactiveConsole;
+	}
+
 	public boolean isInteractive()
 	{
-		return interactive;
+		return interactiveConsole || interactiveTelnetOption.isEnabled();
+	}
+
+
+	public Option getTelnetOption()
+	{
+		return interactiveTelnetOption;
+	}
+
+
+
+	public Option getTrackAllData()
+	{
+		return trackAllData;
 	}
 
 

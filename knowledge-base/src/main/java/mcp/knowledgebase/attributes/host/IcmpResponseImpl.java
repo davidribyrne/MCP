@@ -4,6 +4,8 @@ import java.time.Instant;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import mcp.knowledgebase.attributes.NodeAttributeImpl;
 import mcp.knowledgebase.nodes.Host;
 import mcp.knowledgebase.sources.Source;
@@ -53,7 +55,7 @@ public class IcmpResponseImpl extends NodeAttributeImpl implements IcmpResponse
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this).appendSuper(super.toString()).append("data", data).build();
+		return new ToStringBuilder(this, ToStringStyle.JSON_STYLE).append("data", data).build();
 	}
 	
 }

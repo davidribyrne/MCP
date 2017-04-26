@@ -26,12 +26,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ServiceLoader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.crsh.cli.Argument;
 import org.crsh.cli.Command;
 import org.crsh.cli.Named;
+import org.crsh.cli.Option;
+import org.crsh.cli.Usage;
 import org.crsh.cli.descriptor.CommandDescriptor;
 import org.crsh.cli.impl.SyntaxException;
 import org.crsh.cli.impl.bootstrap.CommandProvider;
@@ -52,48 +54,71 @@ import org.crsh.console.jline.internal.Configuration;
 import org.crsh.shell.Shell;
 import org.crsh.shell.ShellFactory;
 import org.crsh.shell.impl.command.ExternalResolver;
+import org.crsh.standalone.Bootstrap;
+import org.crsh.util.CloseableList;
 import org.crsh.util.InterruptHandler;
 import org.crsh.util.Utils;
 import org.crsh.vfs.FS;
 import org.crsh.vfs.spi.file.FileMountFactory;
 import org.crsh.vfs.spi.url.ClassPathMountFactory;
 import org.fusesource.jansi.AnsiConsole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import mcp.modules.GeneralOptions;
 import mcp.shell.commands.*;
+import mcp.tools.nmap.NmapScan;
 
 
 @Named("crash")
 public class MCPShell
 {
-	private static Logger log = Logger.getLogger(MCPShell.class.getName());
-	private final MCPBootstrap2 bootstrap;
+	private final static Logger logger = LoggerFactory.getLogger(MCPShell.class);
+	private final MCPBootstrap bootstrap;
 	private JLineProcessor processor;
 	private Thread shellThread;
-	
-	public MCPShell()
+	private static boolean interactiveConsole;
+	private static boolean interactiveTelnet;
+	private static MCPShell instance;
+
+
+	private MCPShell()
 	{
-		bootstrap = new MCPBootstrap2();
+		bootstrap = new MCPBootstrap();
+
+
 	}
 
-	private void loadCommands()
+
+	public static void setupShell()
 	{
-		ExternalResolver.INSTANCE.addCommand("date", "show the date", date.class);
-		ExternalResolver.INSTANCE.addCommand("ps", "show jobs", ps.class);
+		interactiveConsole = GeneralOptions.getInstance().isInteractiveConsole();
+		interactiveTelnet = GeneralOptions.getInstance().getTelnetOption().isEnabled();
+		if (interactiveConsole || interactiveTelnet)
+		{
+			instance = new MCPShell();
+			try
+			{
+				instance.start();
+			}
+			catch (IntrospectionException | InvocationException | SyntaxException | InstantiationException | IllegalAccessException e)
+			{
+				logger.error("Problem with shell", e);
+			}
+		}
 
 	}
-	
+
+
+
+
 	public void start() throws InvocationException, SyntaxException, InstantiationException, IllegalAccessException, IntrospectionException
 	{
 		ObjectCommandDescriptor<MCPShell> descriptor = CommandFactory.DEFAULT.create(MCPShell.class);
 		HelpDescriptor<Instance<MCPShell>> helpDescriptor = HelpDescriptor.create(descriptor);
 		InvocationMatcher<Instance<MCPShell>> matcher = helpDescriptor.matcher();
 		InvocationMatch<Instance<MCPShell>> match = matcher.parse("");
-//		final MCPShell instance = MCPShell.class.newInstance();
 		Object o = match.invoke(Util.wrap(this));
-//		if (o != null)
-//		{
-//			System.out.println(o);
-//		}
 	}
 
 
@@ -105,109 +130,102 @@ public class MCPShell
 	}
 
 
+
 	@Command
 	public void main() throws Exception
 	{
-		loadCommands();
-		String conf = "classpath:/crash/";
-		FS.Builder confBuilder = createBuilder().mount(conf);
-
-		//
-		String cmd = "classpath:/crash/commands/";
-		FS.Builder cmdBuilder = createBuilder().mount(cmd);
-
-		//
-		log.log(Level.INFO, "conf mounts: " + confBuilder.toString());
-		log.log(Level.INFO, "cmd mounts: " + cmdBuilder.toString());
-
+		Commands.loadCommands();
+		boolean interactive = GeneralOptions.getInstance().isInteractiveConsole();
 
 		// Do bootstrap
 		bootstrap.bootstrap();
-		Runtime.getRuntime().addShutdownHook(new Thread()
+		if (interactive)
 		{
-			@Override
-			public void run()
+			Runtime.getRuntime().addShutdownHook(new Thread()
 			{
-				bootstrap.stop();
-			}
-		});
+				@Override
+				public void run()
+				{
+					bootstrap.stop();
+				}
+			});
 
-		//
-		ShellFactory factory = bootstrap.getContext().getPlugin(ShellFactory.class);
-		Shell shell = factory.create(null);
+			ShellFactory factory = bootstrap.getContext().getPlugin(ShellFactory.class);
+			Shell shell = factory.create(null);
 
-		//
-		final Terminal term = TerminalFactory.create();
+			//
+			final Terminal term = TerminalFactory.create();
 
-		//
-		String encoding = Configuration.getEncoding();
+			//
+			String encoding = Configuration.getEncoding();
 
-		// Use AnsiConsole only if term doesn't support Ansi
-		PrintStream out;
-		boolean ansi;
-		if (term.isAnsiSupported())
-		{
-			out = new PrintStream(new BufferedOutputStream(term.wrapOutIfNeeded(new FileOutputStream(FileDescriptor.out)), 16384), false,
-					encoding);
-			ansi = true;
-		}
-		else
-		{
-			out = AnsiConsole.out;
-			ansi = false;
-		}
-
-		FileInputStream in = new FileInputStream(FileDescriptor.in);
-		ConsoleReader reader = new ConsoleReader(in, out);
-
-		processor = new JLineProcessor(ansi, shell, reader, out);
-
-		InterruptHandler interruptHandler = new InterruptHandler(new Runnable()
-		{
-			@Override
-			public void run()
+			// Use AnsiConsole only if term doesn't support Ansi
+			PrintStream out;
+			boolean ansi;
+			if (term.isAnsiSupported())
 			{
-				processor.interrupt();
+				out = new PrintStream(new BufferedOutputStream(term.wrapOutIfNeeded(new FileOutputStream(FileDescriptor.out)), 16384), false,
+						encoding);
+				ansi = true;
 			}
-		});
-		interruptHandler.install();
+			else
+			{
+				out = AnsiConsole.out;
+				ansi = false;
+			}
+			FileInputStream in = new FileInputStream(FileDescriptor.in);
+			ConsoleReader reader = new ConsoleReader(in, out);
 
-		//
-		shellThread = new Thread(processor);
-		shellThread.setName("MCP shell");
-		shellThread.setDaemon(true);
-		shellThread.start();
+			processor = new JLineProcessor(ansi, shell, reader, out);
+			InterruptHandler interruptHandler = new InterruptHandler(new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					processor.interrupt();
+				}
+			});
+			interruptHandler.install();
 
-		//
-//		try
-//		{
-//			// This is where the shell thread blocks
-//			processor.closed();
-//		}
-//		catch (Throwable t)
-//		{
-//			t.printStackTrace();
-//		}
+
+			//
+			shellThread = new Thread(processor);
+			shellThread.setName("MCP shell");
+			shellThread.setDaemon(true);
+			shellThread.start();
+		}
 	}
 
-	public MCPBootstrap2 getBootstrap()
+
+	public MCPBootstrap getBootstrap()
 	{
 		return bootstrap;
 	}
+
 
 	public JLineProcessor getProcessor()
 	{
 		return processor;
 	}
-	
+
+
 	public void stop()
 	{
 		bootstrap.getExecutor().shutdown();
 	}
 
+
 	public Thread getShellThread()
 	{
 		return shellThread;
+	}
+
+
+	public static boolean isActive()
+	{
+		// TODO: Fix this, especially telnet
+		return (interactiveConsole && instance.getShellThread().isAlive())
+				|| (interactiveTelnet) ;
 	}
 
 }

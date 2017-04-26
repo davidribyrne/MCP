@@ -4,6 +4,8 @@ import java.time.Instant;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import mcp.knowledgebase.attributes.NodeAttributeImpl;
 import mcp.knowledgebase.nodes.Port;
 import mcp.knowledgebase.sources.Source;
@@ -66,8 +68,11 @@ public class PortStateImpl extends NodeAttributeImpl implements PortState
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this).appendSuper(super.toString()).append("response", response)
-				.append("reason", reason).build();
+		ToStringBuilder tsb = new ToStringBuilder(this, ToStringStyle.JSON_STYLE);
+//		tsb.appendSuper(super.toString());
+		tsb.append("response", response);
+		tsb.append("reason", reason);
+		return tsb.toString();
 	}
 
 }

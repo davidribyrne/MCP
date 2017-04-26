@@ -5,9 +5,9 @@ import mcp.knowledgebase.nodes.Node;
 
 public interface KbElement
 {
-	public List<String> getNotes();
+	public Iterable<String> getNotes();
 	public void addNote(String note);
 	public Node getParent();
 	public void addSecondaryParent(Node parent);
-	public List<Node> getSecondaryParents();
+	public Iterable<Node> getSecondaryParents();
 }

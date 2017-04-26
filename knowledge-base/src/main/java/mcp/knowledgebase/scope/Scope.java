@@ -104,6 +104,7 @@ public class Scope
 			StringBuilder sb = new StringBuilder();
 			sb.append("Include:\n");
 			sb.append(StringUtils.indentText(1, true, includeAddresses.toString()));
+			
 			sb.append("\n\nExclude:\n");
 			if (excludeAddresses.isEmpty())
 			{
@@ -115,7 +116,7 @@ public class Scope
 			}
 
 			sb.append("\n\nCalculated targets:\n");
-			sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects("\n", getTargetAddresses().getAddresses())));
+			sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects(", ", getTargetAddresses().getAddresses())));
 			return sb.toString();
 		}
 	}

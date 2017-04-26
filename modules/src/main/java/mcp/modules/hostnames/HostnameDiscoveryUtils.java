@@ -6,7 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import mcp.knowledgebase.KnowledgeBaseImpl;
-import mcp.knowledgebase.nodes.Address;
+import mcp.knowledgebase.nodes.IPAddress;
 import mcp.knowledgebase.nodes.Hostname;
 import mcp.knowledgebase.scope.Scope;
 import net.dacce.commons.dns.client.DnsTransaction;
@@ -106,7 +106,7 @@ public class HostnameDiscoveryUtils
 		if (Scope.instance.isInScope(address))
 		{
 			logger.debug("Hostname " + hostname + "->" + address.toString() + " was discovered and is in-scope.");
-			Address a = KnowledgeBaseImpl.getInstance().getOrCreateAddressNode(address);
+			IPAddress a = KnowledgeBaseImpl.getInstance().getOrCreateIPAddressNode(address);
 			Hostname hostnameNode = KnowledgeBaseImpl.getInstance().getOrCreateHostname(hostname);
 			hostnameNode.addAddress(a);
 			registerDomainsInHostname(hostname);

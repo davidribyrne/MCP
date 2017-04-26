@@ -2,6 +2,8 @@ package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import net.dacce.commons.general.UnexpectedException;
 
 
@@ -49,7 +51,7 @@ public class DomainImpl extends NodeImpl implements Domain
 		}
 	}
 
-	public static Field NAME_FIELD()
+	public synchronized static Field NAME_FIELD()
 	{
 		if (nameField == null)
 		{
@@ -71,7 +73,7 @@ public class DomainImpl extends NodeImpl implements Domain
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this).appendSuper(super.toString()).append("domainName", name).build();
+		return new ToStringBuilder(this, ToStringStyle.JSON_STYLE).append("domainName", name).build();
 	}
 
 }

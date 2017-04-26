@@ -6,10 +6,10 @@ import java.util.List;
 public interface Hostname extends Node
 {
 
-	public void addAddress(Address address);
+	public void addAddress(IPAddress iPAddress);
 
 	public String getName();
 
-	public List<Address> getAddresses();
+	public Iterable<IPAddress> getAddresses();
 	
 }

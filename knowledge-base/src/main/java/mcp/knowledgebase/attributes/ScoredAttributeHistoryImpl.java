@@ -1,6 +1,7 @@
 package mcp.knowledgebase.attributes;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ScoredAttributeHistoryImpl<Attribute extends ScoredNodeAttribute> extends AttributeHistoryImpl<Attribute> implements ScoredAttributeHistory<Attribute>
 {
@@ -39,7 +40,7 @@ public class ScoredAttributeHistoryImpl<Attribute extends ScoredNodeAttribute> e
 	@Override
 	public String toString()
 	{
-		return new ToStringBuilder(this).appendSuper(super.toString()).append("aggregate", aggregate).build();
+		return new ToStringBuilder(this, ToStringStyle.JSON_STYLE).append("aggregate", aggregate).build();
 	}
 
 }

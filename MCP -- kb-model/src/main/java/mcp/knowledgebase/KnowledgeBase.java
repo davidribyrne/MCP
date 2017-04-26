@@ -1,6 +1,7 @@
 package mcp.knowledgebase;
 
-import mcp.knowledgebase.nodes.Address;
+import mcp.knowledgebase.nodes.IPAddress;
+import mcp.knowledgebase.nodes.MacAddress;
 import mcp.knowledgebase.nodes.Domain;
 import mcp.knowledgebase.nodes.Host;
 import mcp.knowledgebase.nodes.Hostname;
@@ -11,10 +12,10 @@ import net.dacce.commons.netaddr.SimpleInetAddress;
 public interface KnowledgeBase
 {
 
-	public IndexedCache<Host> getHosts();
+	public Iterable<Host> getHosts();
 
 
-	public IndexedCache<Hostname> getHostnames();
+	public Iterable<Hostname> getHostnames();
 
 	/**
 	 * Don't forget to check the domains through HostnameDiscoveryUtils
@@ -23,7 +24,7 @@ public interface KnowledgeBase
 	 */
 	public Hostname getOrCreateHostname(String name);
 
-	public IndexedCache<Domain> getDomains();
+	public Iterable<Domain> getDomains();
 
 	/**
 	 * 
@@ -36,7 +37,11 @@ public interface KnowledgeBase
 	 * This will also create the host node if it isn't yet created.
 	 * @return
 	 */
-	public IndexedCache<Address> getAddressNodes();
+	public Iterable<IPAddress> getIPAddressNodes();
 	
-	public Address getOrCreateAddressNode(SimpleInetAddress address);
+	public IPAddress getOrCreateIPAddressNode(SimpleInetAddress address);
+	
+	public MacAddress getOrCreateMacAddressNode(byte[] hexAddress);
+	
+	public Iterable<MacAddress> getMacAddressNodes();
 }

@@ -1,6 +1,6 @@
 package mcp.modules;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import mcp.events.events.McpCompleteEvent;
@@ -21,13 +21,12 @@ import net.dacce.commons.general.UnexpectedException;
 public class Modules
 {
 	private final static Modules instance = new Modules();
-	private List<Module> normalModules;
-	private List<ExternalModule> externalModules = new ArrayList<ExternalModule>(1);
-
+	private final Map<Class<? extends Module>, Module> normalModules;
+	private Map<Class<? extends ExternalModule>, ExternalModule> externalModules;	
 
 	private Modules()
 	{
-		Class[] normalModuleClassess = new Class[] {
+		Class[] normalModuleClasses = new Class[] {
 				CommonHostnames.class,
 				InputFileMonitor.class,
 				NmapIcmp.class,
@@ -35,12 +34,13 @@ public class Modules
 				NmapUdp.class,
 				SimpleKbDumper.class
 		};
-		normalModules = new ArrayList<Module>(normalModuleClassess.length);
-		for (Class clazz : normalModuleClassess)
+		normalModules = new HashMap<Class<? extends Module>, Module>(normalModuleClasses.length);
+		externalModules = new HashMap<Class<? extends ExternalModule>, ExternalModule>(1);
+		for (Class clazz : normalModuleClasses)
 		{
 			try
 			{
-				normalModules.add((Module) clazz.newInstance());
+				normalModules.put(clazz, (Module) clazz.newInstance());
 			}
 			catch (IllegalAccessException | InstantiationException e)
 			{
@@ -49,6 +49,16 @@ public class Modules
 		}
 	}
 
+	public Module getModuleInstance(Class<? extends Module> clazz)
+	{
+		if (normalModules.containsKey(clazz))
+			return normalModules.get(clazz);
+		
+		if (externalModules.containsKey(clazz))
+			return externalModules.get(clazz);
+		
+		return null;
+	}
 
 	private void populateCoreOptions()
 	{
@@ -64,7 +74,7 @@ public class Modules
 		populateCoreOptions();
 		OptionGroup standardModulesOptionGroup = new OptionGroup("Standard Modules", "Standard Modules");
 		
-		for (Module module : normalModules)
+		for (Module module : normalModules.values())
 		{
 			standardModulesOptionGroup.addChild(module.getOptions());
 		}
@@ -78,7 +88,7 @@ public class Modules
 
 		OptionGroup externalModulesOptionGroup = new OptionGroup("External Modules", "External Modules");
 
-		for (ExternalModule module : externalModules)
+		for (ExternalModule module: externalModules.values())
 		{
 			externalModulesOptionGroup.addChild(module.getOptions());
 		}
@@ -96,11 +106,11 @@ public class Modules
 
 	public void initializeOtherModules()
 	{
-		for (Module module : normalModules)
+		for (Module module : normalModules.values())
 		{
 			module.initialize();
 		}
-		for (Module module : externalModules)
+		for (Module module : externalModules.values())
 		{
 			module.initialize();
 

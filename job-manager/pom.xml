@@ -21,5 +21,9 @@
 			<groupId>net.dacce</groupId>
 			<artifactId>commons-general</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>mcp</groupId>
+			<artifactId>job-manager</artifactId>
+		</dependency>
 	</dependencies>
 </project>

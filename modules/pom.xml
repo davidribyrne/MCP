@@ -19,6 +19,10 @@
 		</dependency>
 		<dependency>
 			<groupId>mcp</groupId>
+			<artifactId>commons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mcp</groupId>
 			<artifactId>knowledge-base</artifactId>
 		</dependency>
 		<dependency>
@@ -32,6 +36,10 @@
 		<dependency>
 			<groupId>net.dacce</groupId>
 			<artifactId>commons-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.dacce</groupId>
+			<artifactId>commons-simple-server</artifactId>
 		</dependency>
 
 	</dependencies>

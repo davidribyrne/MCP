@@ -15,6 +15,7 @@
 		<module>run-test</module>
 		<module>MCP -- kb-model</module>
 		<module>mcp-commons</module>
+		<module>BurpExtractor</module>
 	</modules>
 	<build>
 		<plugins>
@@ -107,6 +108,17 @@
 				<artifactId>commons-validation</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
+			<dependency>
+				<groupId>net.dacce</groupId>
+				<artifactId>commons-simple-server</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
+
+			<dependency>
+				<groupId>BurpDependencies</groupId>
+				<artifactId>BurpDependencies</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+			</dependency>
 
 
 			<dependency>
@@ -142,6 +154,11 @@
 			<dependency>
 				<groupId>mcp</groupId>
 				<artifactId>commons</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>mcp</groupId>
+				<artifactId>burpextractor</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

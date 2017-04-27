@@ -1,0 +1,834 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- NewPage -->
+<html lang="en">
+<head>
+<title>IExtensionHelpers</title>
+<link rel="stylesheet" type="text/css" href="../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="IExtensionHelpers";
+    }
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../burp/package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../burp/ICookie.html" title="interface in burp"><span class="strong">Prev Class</span></a></li>
+<li><a href="../burp/IExtensionStateListener.html" title="interface in burp"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../index.html?burp/IExtensionHelpers.html" target="_top">Frames</a></li>
+<li><a href="IExtensionHelpers.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<!-- ======== START OF CLASS DATA ======== -->
+<div class="header">
+<div class="subTitle">burp</div>
+<h2 title="Interface IExtensionHelpers" class="title">Interface IExtensionHelpers</h2>
+</div>
+<div class="contentContainer">
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre>public interface <span class="strong">IExtensionHelpers</span></pre>
+<div class="block">This interface contains a number of helper methods, which extensions can use
+ to assist with various common tasks that arise for Burp extensions.
+
+ Extensions can call <code>IBurpExtenderCallbacks.getHelpers</code> to obtain
+ an instance of this interface.</div>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- ========== METHOD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#addParameter(byte[],%20burp.IParameter)">addParameter</a></strong>(byte[]&nbsp;request,
+            <a href="../burp/IParameter.html" title="interface in burp">IParameter</a>&nbsp;parameter)</code>
+<div class="block">This method adds a new parameter to an HTTP request, and if appropriate
+ updates the Content-Length header.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../burp/IRequestInfo.html" title="interface in burp">IRequestInfo</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#analyzeRequest(byte[])">analyzeRequest</a></strong>(byte[]&nbsp;request)</code>
+<div class="block">This method can be used to analyze an HTTP request, and obtain various
+ key details about it.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../burp/IRequestInfo.html" title="interface in burp">IRequestInfo</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#analyzeRequest(burp.IHttpRequestResponse)">analyzeRequest</a></strong>(<a href="../burp/IHttpRequestResponse.html" title="interface in burp">IHttpRequestResponse</a>&nbsp;request)</code>
+<div class="block">This method can be used to analyze an HTTP request, and obtain various
+ key details about it.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../burp/IRequestInfo.html" title="interface in burp">IRequestInfo</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#analyzeRequest(burp.IHttpService,%20byte[])">analyzeRequest</a></strong>(<a href="../burp/IHttpService.html" title="interface in burp">IHttpService</a>&nbsp;httpService,
+              byte[]&nbsp;request)</code>
+<div class="block">This method can be used to analyze an HTTP request, and obtain various
+ key details about it.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../burp/IResponseInfo.html" title="interface in burp">IResponseInfo</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#analyzeResponse(byte[])">analyzeResponse</a></strong>(byte[]&nbsp;response)</code>
+<div class="block">This method can be used to analyze an HTTP response, and obtain various
+ key details about it.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../burp/IResponseKeywords.html" title="interface in burp">IResponseKeywords</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#analyzeResponseKeywords(java.util.List,%20byte[]...)">analyzeResponseKeywords</a></strong>(java.util.List&lt;java.lang.String&gt;&nbsp;keywords,
+                       byte[]...&nbsp;responses)</code>
+<div class="block">This method analyzes one or more responses to identify the number of
+ occurrences of the specified keywords and returns an
+ <code>IResponseKeywords</code> object that can be queried to obtain
+ details of the number of occurrences of each keyword.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../burp/IResponseVariations.html" title="interface in burp">IResponseVariations</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#analyzeResponseVariations(byte[]...)">analyzeResponseVariations</a></strong>(byte[]...&nbsp;responses)</code>
+<div class="block">This method analyzes one or more responses to identify variations in a
+ number of attributes and returns an <code>IResponseVariations</code>
+ object that can be queried to obtain details of the variations.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#base64Decode(byte[])">base64Decode</a></strong>(byte[]&nbsp;data)</code>
+<div class="block">This method can be used to Base64-decode the specified data.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#base64Decode(java.lang.String)">base64Decode</a></strong>(java.lang.String&nbsp;data)</code>
+<div class="block">This method can be used to Base64-decode the specified data.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#base64Encode(byte[])">base64Encode</a></strong>(byte[]&nbsp;data)</code>
+<div class="block">This method can be used to Base64-encode the specified data.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#base64Encode(java.lang.String)">base64Encode</a></strong>(java.lang.String&nbsp;data)</code>
+<div class="block">This method can be used to Base64-encode the specified data.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#buildHttpMessage(java.util.List,%20byte[])">buildHttpMessage</a></strong>(java.util.List&lt;java.lang.String&gt;&nbsp;headers,
+                byte[]&nbsp;body)</code>
+<div class="block">This method builds an HTTP message containing the specified headers and
+ message body.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#buildHttpRequest(java.net.URL)">buildHttpRequest</a></strong>(java.net.URL&nbsp;url)</code>
+<div class="block">This method creates a GET request to the specified URL.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../burp/IHttpService.html" title="interface in burp">IHttpService</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#buildHttpService(java.lang.String,%20int,%20boolean)">buildHttpService</a></strong>(java.lang.String&nbsp;host,
+                int&nbsp;port,
+                boolean&nbsp;useHttps)</code>
+<div class="block">This method constructs an <code>IHttpService</code> object based on the
+ details provided.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../burp/IHttpService.html" title="interface in burp">IHttpService</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#buildHttpService(java.lang.String,%20int,%20java.lang.String)">buildHttpService</a></strong>(java.lang.String&nbsp;host,
+                int&nbsp;port,
+                java.lang.String&nbsp;protocol)</code>
+<div class="block">This method constructs an <code>IHttpService</code> object based on the
+ details provided.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../burp/IParameter.html" title="interface in burp">IParameter</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#buildParameter(java.lang.String,%20java.lang.String,%20byte)">buildParameter</a></strong>(java.lang.String&nbsp;name,
+              java.lang.String&nbsp;value,
+              byte&nbsp;type)</code>
+<div class="block">This method constructs an <code>IParameter</code> object based on the
+ details provided.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#bytesToString(byte[])">bytesToString</a></strong>(byte[]&nbsp;data)</code>
+<div class="block">This method can be used to convert data from an array of bytes into
+ String form.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../burp/IParameter.html" title="interface in burp">IParameter</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#getRequestParameter(byte[],%20java.lang.String)">getRequestParameter</a></strong>(byte[]&nbsp;request,
+                   java.lang.String&nbsp;parameterName)</code>
+<div class="block">This method can be used to retrieve details of a specified parameter
+ within an HTTP request.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#indexOf(byte[],%20byte[],%20boolean,%20int,%20int)">indexOf</a></strong>(byte[]&nbsp;data,
+       byte[]&nbsp;pattern,
+       boolean&nbsp;caseSensitive,
+       int&nbsp;from,
+       int&nbsp;to)</code>
+<div class="block">This method searches a piece of data for the first occurrence of a
+ specified pattern.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../burp/IScannerInsertionPoint.html" title="interface in burp">IScannerInsertionPoint</a></code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#makeScannerInsertionPoint(java.lang.String,%20byte[],%20int,%20int)">makeScannerInsertionPoint</a></strong>(java.lang.String&nbsp;insertionPointName,
+                         byte[]&nbsp;baseRequest,
+                         int&nbsp;from,
+                         int&nbsp;to)</code>
+<div class="block">This method constructs an <code>IScannerInsertionPoint</code> object
+ based on the details provided.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#removeParameter(byte[],%20burp.IParameter)">removeParameter</a></strong>(byte[]&nbsp;request,
+               <a href="../burp/IParameter.html" title="interface in burp">IParameter</a>&nbsp;parameter)</code>
+<div class="block">This method removes a parameter from an HTTP request, and if appropriate
+ updates the Content-Length header.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#stringToBytes(java.lang.String)">stringToBytes</a></strong>(java.lang.String&nbsp;data)</code>
+<div class="block">This method can be used to convert data from String form into an array of
+ bytes.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#toggleRequestMethod(byte[])">toggleRequestMethod</a></strong>(byte[]&nbsp;request)</code>
+<div class="block">This method can be used to toggle a request's method between GET and
+ POST.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#updateParameter(byte[],%20burp.IParameter)">updateParameter</a></strong>(byte[]&nbsp;request,
+               <a href="../burp/IParameter.html" title="interface in burp">IParameter</a>&nbsp;parameter)</code>
+<div class="block">This method updates the value of a parameter within an HTTP request, and
+ if appropriate updates the Content-Length header.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#urlDecode(byte[])">urlDecode</a></strong>(byte[]&nbsp;data)</code>
+<div class="block">This method can be used to URL-decode the specified data.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#urlDecode(java.lang.String)">urlDecode</a></strong>(java.lang.String&nbsp;data)</code>
+<div class="block">This method can be used to URL-decode the specified data.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>byte[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#urlEncode(byte[])">urlEncode</a></strong>(byte[]&nbsp;data)</code>
+<div class="block">This method can be used to URL-encode the specified data.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>java.lang.String</code></td>
+<td class="colLast"><code><strong><a href="../burp/IExtensionHelpers.html#urlEncode(java.lang.String)">urlEncode</a></strong>(java.lang.String&nbsp;data)</code>
+<div class="block">This method can be used to URL-encode the specified data.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
+<!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="analyzeRequest(burp.IHttpRequestResponse)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>analyzeRequest</h4>
+<pre><a href="../burp/IRequestInfo.html" title="interface in burp">IRequestInfo</a>&nbsp;analyzeRequest(<a href="../burp/IHttpRequestResponse.html" title="interface in burp">IHttpRequestResponse</a>&nbsp;request)</pre>
+<div class="block">This method can be used to analyze an HTTP request, and obtain various
+ key details about it.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>request</code> - An <code>IHttpRequestResponse</code> object containing the
+ request to be analyzed.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IRequestInfo</code> object that can be queried to obtain
+ details about the request.</dd></dl>
+</li>
+</ul>
+<a name="analyzeRequest(burp.IHttpService, byte[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>analyzeRequest</h4>
+<pre><a href="../burp/IRequestInfo.html" title="interface in burp">IRequestInfo</a>&nbsp;analyzeRequest(<a href="../burp/IHttpService.html" title="interface in burp">IHttpService</a>&nbsp;httpService,
+                          byte[]&nbsp;request)</pre>
+<div class="block">This method can be used to analyze an HTTP request, and obtain various
+ key details about it.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>httpService</code> - The HTTP service associated with the request. This is
+ optional and may be <code>null</code>, in which case the resulting
+ <code>IRequestInfo</code> object will not include the full request URL.</dd><dd><code>request</code> - The request to be analyzed.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IRequestInfo</code> object that can be queried to obtain
+ details about the request.</dd></dl>
+</li>
+</ul>
+<a name="analyzeRequest(byte[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>analyzeRequest</h4>
+<pre><a href="../burp/IRequestInfo.html" title="interface in burp">IRequestInfo</a>&nbsp;analyzeRequest(byte[]&nbsp;request)</pre>
+<div class="block">This method can be used to analyze an HTTP request, and obtain various
+ key details about it. The resulting <code>IRequestInfo</code> object will
+ not include the full request URL. To obtain the full URL, use one of the
+ other overloaded <code>analyzeRequest()</code> methods.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>request</code> - The request to be analyzed.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IRequestInfo</code> object that can be queried to obtain
+ details about the request.</dd></dl>
+</li>
+</ul>
+<a name="analyzeResponse(byte[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>analyzeResponse</h4>
+<pre><a href="../burp/IResponseInfo.html" title="interface in burp">IResponseInfo</a>&nbsp;analyzeResponse(byte[]&nbsp;response)</pre>
+<div class="block">This method can be used to analyze an HTTP response, and obtain various
+ key details about it.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>response</code> - The response to be analyzed.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IResponseInfo</code> object that can be queried to
+ obtain details about the response.</dd></dl>
+</li>
+</ul>
+<a name="getRequestParameter(byte[], java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getRequestParameter</h4>
+<pre><a href="../burp/IParameter.html" title="interface in burp">IParameter</a>&nbsp;getRequestParameter(byte[]&nbsp;request,
+                             java.lang.String&nbsp;parameterName)</pre>
+<div class="block">This method can be used to retrieve details of a specified parameter
+ within an HTTP request. <b>Note:</b> Use <code>analyzeRequest()</code> to
+ obtain details of all parameters within the request.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>request</code> - The request to be inspected for the specified parameter.</dd><dd><code>parameterName</code> - The name of the parameter to retrieve.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IParameter</code> object that can be queried to obtain
+ details about the parameter, or <code>null</code> if the parameter was
+ not found.</dd></dl>
+</li>
+</ul>
+<a name="urlDecode(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>urlDecode</h4>
+<pre>java.lang.String&nbsp;urlDecode(java.lang.String&nbsp;data)</pre>
+<div class="block">This method can be used to URL-decode the specified data.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be decoded.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The decoded data.</dd></dl>
+</li>
+</ul>
+<a name="urlEncode(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>urlEncode</h4>
+<pre>java.lang.String&nbsp;urlEncode(java.lang.String&nbsp;data)</pre>
+<div class="block">This method can be used to URL-encode the specified data. Any characters
+ that do not need to be encoded within HTTP requests are not encoded.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be encoded.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The encoded data.</dd></dl>
+</li>
+</ul>
+<a name="urlDecode(byte[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>urlDecode</h4>
+<pre>byte[]&nbsp;urlDecode(byte[]&nbsp;data)</pre>
+<div class="block">This method can be used to URL-decode the specified data.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be decoded.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The decoded data.</dd></dl>
+</li>
+</ul>
+<a name="urlEncode(byte[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>urlEncode</h4>
+<pre>byte[]&nbsp;urlEncode(byte[]&nbsp;data)</pre>
+<div class="block">This method can be used to URL-encode the specified data. Any characters
+ that do not need to be encoded within HTTP requests are not encoded.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be encoded.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The encoded data.</dd></dl>
+</li>
+</ul>
+<a name="base64Decode(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>base64Decode</h4>
+<pre>byte[]&nbsp;base64Decode(java.lang.String&nbsp;data)</pre>
+<div class="block">This method can be used to Base64-decode the specified data.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be decoded.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The decoded data.</dd></dl>
+</li>
+</ul>
+<a name="base64Decode(byte[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>base64Decode</h4>
+<pre>byte[]&nbsp;base64Decode(byte[]&nbsp;data)</pre>
+<div class="block">This method can be used to Base64-decode the specified data.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be decoded.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The decoded data.</dd></dl>
+</li>
+</ul>
+<a name="base64Encode(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>base64Encode</h4>
+<pre>java.lang.String&nbsp;base64Encode(java.lang.String&nbsp;data)</pre>
+<div class="block">This method can be used to Base64-encode the specified data.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be encoded.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The encoded data.</dd></dl>
+</li>
+</ul>
+<a name="base64Encode(byte[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>base64Encode</h4>
+<pre>java.lang.String&nbsp;base64Encode(byte[]&nbsp;data)</pre>
+<div class="block">This method can be used to Base64-encode the specified data.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be encoded.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The encoded data.</dd></dl>
+</li>
+</ul>
+<a name="stringToBytes(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>stringToBytes</h4>
+<pre>byte[]&nbsp;stringToBytes(java.lang.String&nbsp;data)</pre>
+<div class="block">This method can be used to convert data from String form into an array of
+ bytes. The conversion does not reflect any particular character set, and
+ a character with the hex representation 0xWXYZ will always be converted
+ into a byte with the representation 0xYZ. It performs the opposite
+ conversion to the method <code>bytesToString()</code>, and byte-based
+ data that is converted to a String and back again using these two methods
+ is guaranteed to retain its integrity (which may not be the case with
+ conversions that reflect a given character set).</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be converted.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The converted data.</dd></dl>
+</li>
+</ul>
+<a name="bytesToString(byte[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>bytesToString</h4>
+<pre>java.lang.String&nbsp;bytesToString(byte[]&nbsp;data)</pre>
+<div class="block">This method can be used to convert data from an array of bytes into
+ String form. The conversion does not reflect any particular character
+ set, and a byte with the representation 0xYZ will always be converted
+ into a character with the hex representation 0x00YZ. It performs the
+ opposite conversion to the method <code>stringToBytes()</code>, and
+ byte-based data that is converted to a String and back again using these
+ two methods is guaranteed to retain its integrity (which may not be the
+ case with conversions that reflect a given character set).</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be converted.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The converted data.</dd></dl>
+</li>
+</ul>
+<a name="indexOf(byte[], byte[], boolean, int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>indexOf</h4>
+<pre>int&nbsp;indexOf(byte[]&nbsp;data,
+          byte[]&nbsp;pattern,
+          boolean&nbsp;caseSensitive,
+          int&nbsp;from,
+          int&nbsp;to)</pre>
+<div class="block">This method searches a piece of data for the first occurrence of a
+ specified pattern. It works on byte-based data in a way that is similar
+ to the way the native Java method <code>String.indexOf()</code> works on
+ String-based data.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>data</code> - The data to be searched.</dd><dd><code>pattern</code> - The pattern to be searched for.</dd><dd><code>caseSensitive</code> - Flags whether or not the search is case-sensitive.</dd><dd><code>from</code> - The offset within <code>data</code> where the search should
+ begin.</dd><dd><code>to</code> - The offset within <code>data</code> where the search should
+ end.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The offset of the first occurrence of the pattern within the
+ specified bounds, or -1 if no match is found.</dd></dl>
+</li>
+</ul>
+<a name="buildHttpMessage(java.util.List, byte[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>buildHttpMessage</h4>
+<pre>byte[]&nbsp;buildHttpMessage(java.util.List&lt;java.lang.String&gt;&nbsp;headers,
+                      byte[]&nbsp;body)</pre>
+<div class="block">This method builds an HTTP message containing the specified headers and
+ message body. If applicable, the Content-Length header will be added or
+ updated, based on the length of the body.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>headers</code> - A list of headers to include in the message.</dd><dd><code>body</code> - The body of the message, of <code>null</code> if the message
+ has an empty body.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>The resulting full HTTP message.</dd></dl>
+</li>
+</ul>
+<a name="buildHttpRequest(java.net.URL)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>buildHttpRequest</h4>
+<pre>byte[]&nbsp;buildHttpRequest(java.net.URL&nbsp;url)</pre>
+<div class="block">This method creates a GET request to the specified URL. The headers used
+ in the request are determined by the Request headers settings as
+ configured in Burp Spider's options.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>url</code> - The URL to which the request should be made.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>A request to the specified URL.</dd></dl>
+</li>
+</ul>
+<a name="addParameter(byte[], burp.IParameter)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>addParameter</h4>
+<pre>byte[]&nbsp;addParameter(byte[]&nbsp;request,
+                  <a href="../burp/IParameter.html" title="interface in burp">IParameter</a>&nbsp;parameter)</pre>
+<div class="block">This method adds a new parameter to an HTTP request, and if appropriate
+ updates the Content-Length header.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>request</code> - The request to which the parameter should be added.</dd><dd><code>parameter</code> - An <code>IParameter</code> object containing details of
+ the parameter to be added. Supported parameter types are:
+ <code>PARAM_URL</code>, <code>PARAM_BODY</code> and
+ <code>PARAM_COOKIE</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>A new HTTP request with the new parameter added.</dd></dl>
+</li>
+</ul>
+<a name="removeParameter(byte[], burp.IParameter)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>removeParameter</h4>
+<pre>byte[]&nbsp;removeParameter(byte[]&nbsp;request,
+                     <a href="../burp/IParameter.html" title="interface in burp">IParameter</a>&nbsp;parameter)</pre>
+<div class="block">This method removes a parameter from an HTTP request, and if appropriate
+ updates the Content-Length header.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>request</code> - The request from which the parameter should be removed.</dd><dd><code>parameter</code> - An <code>IParameter</code> object containing details of
+ the parameter to be removed. Supported parameter types are:
+ <code>PARAM_URL</code>, <code>PARAM_BODY</code> and
+ <code>PARAM_COOKIE</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>A new HTTP request with the parameter removed.</dd></dl>
+</li>
+</ul>
+<a name="updateParameter(byte[], burp.IParameter)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>updateParameter</h4>
+<pre>byte[]&nbsp;updateParameter(byte[]&nbsp;request,
+                     <a href="../burp/IParameter.html" title="interface in burp">IParameter</a>&nbsp;parameter)</pre>
+<div class="block">This method updates the value of a parameter within an HTTP request, and
+ if appropriate updates the Content-Length header. <b>Note:</b> This
+ method can only be used to update the value of an existing parameter of a
+ specified type. If you need to change the type of an existing parameter,
+ you should first call <code>removeParameter()</code> to remove the
+ parameter with the old type, and then call <code>addParameter()</code> to
+ add a parameter with the new type.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>request</code> - The request containing the parameter to be updated.</dd><dd><code>parameter</code> - An <code>IParameter</code> object containing details of
+ the parameter to be updated. Supported parameter types are:
+ <code>PARAM_URL</code>, <code>PARAM_BODY</code> and
+ <code>PARAM_COOKIE</code>.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>A new HTTP request with the parameter updated.</dd></dl>
+</li>
+</ul>
+<a name="toggleRequestMethod(byte[])">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toggleRequestMethod</h4>
+<pre>byte[]&nbsp;toggleRequestMethod(byte[]&nbsp;request)</pre>
+<div class="block">This method can be used to toggle a request's method between GET and
+ POST. Parameters are relocated between the URL query string and message
+ body as required, and the Content-Length header is created or removed as
+ applicable.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>request</code> - The HTTP request whose method should be toggled.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>A new HTTP request using the toggled method.</dd></dl>
+</li>
+</ul>
+<a name="buildHttpService(java.lang.String, int, java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>buildHttpService</h4>
+<pre><a href="../burp/IHttpService.html" title="interface in burp">IHttpService</a>&nbsp;buildHttpService(java.lang.String&nbsp;host,
+                            int&nbsp;port,
+                            java.lang.String&nbsp;protocol)</pre>
+<div class="block">This method constructs an <code>IHttpService</code> object based on the
+ details provided.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>host</code> - The HTTP service host.</dd><dd><code>port</code> - The HTTP service port.</dd><dd><code>protocol</code> - The HTTP service protocol.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IHttpService</code> object based on the details
+ provided.</dd></dl>
+</li>
+</ul>
+<a name="buildHttpService(java.lang.String, int, boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>buildHttpService</h4>
+<pre><a href="../burp/IHttpService.html" title="interface in burp">IHttpService</a>&nbsp;buildHttpService(java.lang.String&nbsp;host,
+                            int&nbsp;port,
+                            boolean&nbsp;useHttps)</pre>
+<div class="block">This method constructs an <code>IHttpService</code> object based on the
+ details provided.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>host</code> - The HTTP service host.</dd><dd><code>port</code> - The HTTP service port.</dd><dd><code>useHttps</code> - Flags whether the HTTP service protocol is HTTPS or HTTP.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IHttpService</code> object based on the details
+ provided.</dd></dl>
+</li>
+</ul>
+<a name="buildParameter(java.lang.String, java.lang.String, byte)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>buildParameter</h4>
+<pre><a href="../burp/IParameter.html" title="interface in burp">IParameter</a>&nbsp;buildParameter(java.lang.String&nbsp;name,
+                        java.lang.String&nbsp;value,
+                        byte&nbsp;type)</pre>
+<div class="block">This method constructs an <code>IParameter</code> object based on the
+ details provided.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>name</code> - The parameter name.</dd><dd><code>value</code> - The parameter value.</dd><dd><code>type</code> - The parameter type, as defined in the <code>IParameter</code>
+ interface.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IParameter</code> object based on the details provided.</dd></dl>
+</li>
+</ul>
+<a name="makeScannerInsertionPoint(java.lang.String, byte[], int, int)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>makeScannerInsertionPoint</h4>
+<pre><a href="../burp/IScannerInsertionPoint.html" title="interface in burp">IScannerInsertionPoint</a>&nbsp;makeScannerInsertionPoint(java.lang.String&nbsp;insertionPointName,
+                                               byte[]&nbsp;baseRequest,
+                                               int&nbsp;from,
+                                               int&nbsp;to)</pre>
+<div class="block">This method constructs an <code>IScannerInsertionPoint</code> object
+ based on the details provided. It can be used to quickly create a simple
+ insertion point based on a fixed payload location within a base request.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>insertionPointName</code> - The name of the insertion point.</dd><dd><code>baseRequest</code> - The request from which to build scan requests.</dd><dd><code>from</code> - The offset of the start of the payload location.</dd><dd><code>to</code> - The offset of the end of the payload location.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IScannerInsertionPoint</code> object based on the
+ details provided.</dd></dl>
+</li>
+</ul>
+<a name="analyzeResponseVariations(byte[]...)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>analyzeResponseVariations</h4>
+<pre><a href="../burp/IResponseVariations.html" title="interface in burp">IResponseVariations</a>&nbsp;analyzeResponseVariations(byte[]...&nbsp;responses)</pre>
+<div class="block">This method analyzes one or more responses to identify variations in a
+ number of attributes and returns an <code>IResponseVariations</code>
+ object that can be queried to obtain details of the variations.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>responses</code> - The responses to analyze.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IResponseVariations</code> object representing the
+ variations in the responses.</dd></dl>
+</li>
+</ul>
+<a name="analyzeResponseKeywords(java.util.List, byte[]...)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>analyzeResponseKeywords</h4>
+<pre><a href="../burp/IResponseKeywords.html" title="interface in burp">IResponseKeywords</a>&nbsp;analyzeResponseKeywords(java.util.List&lt;java.lang.String&gt;&nbsp;keywords,
+                                        byte[]...&nbsp;responses)</pre>
+<div class="block">This method analyzes one or more responses to identify the number of
+ occurrences of the specified keywords and returns an
+ <code>IResponseKeywords</code> object that can be queried to obtain
+ details of the number of occurrences of each keyword.</div>
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>keywords</code> - The keywords to look for.</dd><dd><code>responses</code> - The responses to analyze.</dd>
+<dt><span class="strong">Returns:</span></dt><dd>An <code>IResponseKeywords</code> object representing the counts
+ of the keywords appearing in the responses.</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<!-- ========= END OF CLASS DATA ========= -->
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../burp/package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../burp/ICookie.html" title="interface in burp"><span class="strong">Prev Class</span></a></li>
+<li><a href="../burp/IExtensionStateListener.html" title="interface in burp"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../index.html?burp/IExtensionHelpers.html" target="_top">Frames</a></li>
+<li><a href="IExtensionHelpers.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li>Field&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+</body>
+</html>

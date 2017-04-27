@@ -9,6 +9,7 @@ import mcp.events.listeners.McpEventListener;
 import mcp.moduleLoader.ExternalModuleLoader;
 import mcp.modules.hostnames.CommonHostnames;
 import mcp.modules.hostnames.HostnameDiscoveryGeneralOptions;
+import mcp.modules.listeners.HttpTransactionListener;
 import mcp.modules.nmap.NmapGeneralOptions;
 import mcp.modules.nmap.NmapIcmp;
 import mcp.modules.nmap.NmapTcp;
@@ -18,6 +19,12 @@ import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.general.UnexpectedException;
 
 
+
+/**
+ * To add new standard clasess, change the normalModuleClasses array
+ * @author dbyrne
+ *
+ */
 public class Modules
 {
 	private final static Modules instance = new Modules();
@@ -32,7 +39,8 @@ public class Modules
 				NmapIcmp.class,
 				NmapTcp.class,
 				NmapUdp.class,
-				SimpleKbDumper.class
+				SimpleKbDumper.class,
+				HttpTransactionListener.class
 		};
 		normalModules = new HashMap<Class<? extends Module>, Module>(normalModuleClasses.length);
 		externalModules = new HashMap<Class<? extends ExternalModule>, ExternalModule>(1);
@@ -84,7 +92,7 @@ public class Modules
 		/*
 		 * External modules are loaded after core options are processed
 		 */
-		externalModules = ExternalModuleLoader.loadModules();
+		externalModules = ExternalModuleLoader.loadModules("");
 
 		OptionGroup externalModulesOptionGroup = new OptionGroup("External Modules", "External Modules");
 

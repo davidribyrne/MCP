@@ -1,0 +1,565 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- NewPage -->
+<html lang="en">
+<head>
+<title>IContextMenuInvocation</title>
+<link rel="stylesheet" type="text/css" href="../stylesheet.css" title="Style">
+</head>
+<body>
+<script type="text/javascript"><!--
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="IContextMenuInvocation";
+    }
+//-->
+</script>
+<noscript>
+<div>JavaScript is disabled on your browser.</div>
+</noscript>
+<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar_top">
+<!--   -->
+</a><a href="#skip-navbar_top" title="Skip navigation links"></a><a name="navbar_top_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../burp/package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../burp/IContextMenuFactory.html" title="interface in burp"><span class="strong">Prev Class</span></a></li>
+<li><a href="../burp/ICookie.html" title="interface in burp"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../index.html?burp/IContextMenuInvocation.html" target="_top">Frames</a></li>
+<li><a href="IContextMenuInvocation.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_top">
+<li><a href="../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_top">
+<!--   -->
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<!-- ======== START OF CLASS DATA ======== -->
+<div class="header">
+<div class="subTitle">burp</div>
+<h2 title="Interface IContextMenuInvocation" class="title">Interface IContextMenuInvocation</h2>
+</div>
+<div class="contentContainer">
+<div class="description">
+<ul class="blockList">
+<li class="blockList">
+<hr>
+<br>
+<pre>public interface <span class="strong">IContextMenuInvocation</span></pre>
+<div class="block">This interface is used when Burp calls into an extension-provided
+ <code>IContextMenuFactory</code> with details of a context menu invocation.
+ The custom context menu factory can query this interface to obtain details of
+ the invocation event, in order to determine what menu items should be
+ displayed.</div>
+</li>
+</ul>
+</div>
+<div class="summary">
+<ul class="blockList">
+<li class="blockList">
+<!-- =========== FIELD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_summary">
+<!--   -->
+</a>
+<h3>Field Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Field Summary table, listing fields, and an explanation">
+<caption><span>Fields</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Field and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_INTRUDER_ATTACK_RESULTS">CONTEXT_INTRUDER_ATTACK_RESULTS</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in an Intruder
+ attack results.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_INTRUDER_PAYLOAD_POSITIONS">CONTEXT_INTRUDER_PAYLOAD_POSITIONS</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in the Intruder
+ payload positions editor.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_MESSAGE_EDITOR_REQUEST">CONTEXT_MESSAGE_EDITOR_REQUEST</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in a request
+ editor.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_MESSAGE_EDITOR_RESPONSE">CONTEXT_MESSAGE_EDITOR_RESPONSE</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in a response
+ editor.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_MESSAGE_VIEWER_REQUEST">CONTEXT_MESSAGE_VIEWER_REQUEST</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in a non-editable
+ request viewer.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_MESSAGE_VIEWER_RESPONSE">CONTEXT_MESSAGE_VIEWER_RESPONSE</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in a non-editable
+ response viewer.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_PROXY_HISTORY">CONTEXT_PROXY_HISTORY</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in the Proxy
+ history.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_SCANNER_RESULTS">CONTEXT_SCANNER_RESULTS</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in the Scanner
+ results.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_SEARCH_RESULTS">CONTEXT_SEARCH_RESULTS</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in a search
+ results window.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_TARGET_SITE_MAP_TABLE">CONTEXT_TARGET_SITE_MAP_TABLE</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in the Target
+ site map table.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#CONTEXT_TARGET_SITE_MAP_TREE">CONTEXT_TARGET_SITE_MAP_TREE</a></strong></code>
+<div class="block">Used to indicate that the context menu is being invoked in the Target
+ site map tree.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
+<!-- ========== METHOD SUMMARY =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_summary">
+<!--   -->
+</a>
+<h3>Method Summary</h3>
+<table class="overviewSummary" border="0" cellpadding="3" cellspacing="0" summary="Method Summary table, listing methods, and an explanation">
+<caption><span>Methods</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colLast" scope="col">Method and Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>java.awt.event.InputEvent</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#getInputEvent()">getInputEvent</a></strong>()</code>
+<div class="block">This method can be used to retrieve the native Java input event that was
+ the trigger for the context menu invocation.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>byte</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#getInvocationContext()">getInvocationContext</a></strong>()</code>
+<div class="block">This method can be used to retrieve the context within which the menu was
+ invoked.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code><a href="../burp/IScanIssue.html" title="interface in burp">IScanIssue</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#getSelectedIssues()">getSelectedIssues</a></strong>()</code>
+<div class="block">This method can be used to retrieve details of the Scanner issues that
+ were selected by the user when the context menu was invoked.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code><a href="../burp/IHttpRequestResponse.html" title="interface in burp">IHttpRequestResponse</a>[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#getSelectedMessages()">getSelectedMessages</a></strong>()</code>
+<div class="block">This method can be used to retrieve details of the HTTP requests /
+ responses that were shown or selected by the user when the context menu
+ was invoked.</div>
+</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>int[]</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#getSelectionBounds()">getSelectionBounds</a></strong>()</code>
+<div class="block">This method can be used to retrieve the bounds of the user's selection
+ into the current message, if applicable.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<td class="colLast"><code><strong><a href="../burp/IContextMenuInvocation.html#getToolFlag()">getToolFlag</a></strong>()</code>
+<div class="block">This method can be used to retrieve the Burp tool within which the
+ context menu was invoked.</div>
+</td>
+</tr>
+</table>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="details">
+<ul class="blockList">
+<li class="blockList">
+<!-- ============ FIELD DETAIL =========== -->
+<ul class="blockList">
+<li class="blockList"><a name="field_detail">
+<!--   -->
+</a>
+<h3>Field Detail</h3>
+<a name="CONTEXT_MESSAGE_EDITOR_REQUEST">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CONTEXT_MESSAGE_EDITOR_REQUEST</h4>
+<pre>static final&nbsp;byte CONTEXT_MESSAGE_EDITOR_REQUEST</pre>
+<div class="block">Used to indicate that the context menu is being invoked in a request
+ editor.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_MESSAGE_EDITOR_REQUEST">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CONTEXT_MESSAGE_EDITOR_RESPONSE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CONTEXT_MESSAGE_EDITOR_RESPONSE</h4>
+<pre>static final&nbsp;byte CONTEXT_MESSAGE_EDITOR_RESPONSE</pre>
+<div class="block">Used to indicate that the context menu is being invoked in a response
+ editor.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_MESSAGE_EDITOR_RESPONSE">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CONTEXT_MESSAGE_VIEWER_REQUEST">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CONTEXT_MESSAGE_VIEWER_REQUEST</h4>
+<pre>static final&nbsp;byte CONTEXT_MESSAGE_VIEWER_REQUEST</pre>
+<div class="block">Used to indicate that the context menu is being invoked in a non-editable
+ request viewer.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_MESSAGE_VIEWER_REQUEST">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CONTEXT_MESSAGE_VIEWER_RESPONSE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CONTEXT_MESSAGE_VIEWER_RESPONSE</h4>
+<pre>static final&nbsp;byte CONTEXT_MESSAGE_VIEWER_RESPONSE</pre>
+<div class="block">Used to indicate that the context menu is being invoked in a non-editable
+ response viewer.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_MESSAGE_VIEWER_RESPONSE">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CONTEXT_TARGET_SITE_MAP_TREE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CONTEXT_TARGET_SITE_MAP_TREE</h4>
+<pre>static final&nbsp;byte CONTEXT_TARGET_SITE_MAP_TREE</pre>
+<div class="block">Used to indicate that the context menu is being invoked in the Target
+ site map tree.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_TARGET_SITE_MAP_TREE">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CONTEXT_TARGET_SITE_MAP_TABLE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CONTEXT_TARGET_SITE_MAP_TABLE</h4>
+<pre>static final&nbsp;byte CONTEXT_TARGET_SITE_MAP_TABLE</pre>
+<div class="block">Used to indicate that the context menu is being invoked in the Target
+ site map table.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_TARGET_SITE_MAP_TABLE">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CONTEXT_PROXY_HISTORY">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CONTEXT_PROXY_HISTORY</h4>
+<pre>static final&nbsp;byte CONTEXT_PROXY_HISTORY</pre>
+<div class="block">Used to indicate that the context menu is being invoked in the Proxy
+ history.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_PROXY_HISTORY">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CONTEXT_SCANNER_RESULTS">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CONTEXT_SCANNER_RESULTS</h4>
+<pre>static final&nbsp;byte CONTEXT_SCANNER_RESULTS</pre>
+<div class="block">Used to indicate that the context menu is being invoked in the Scanner
+ results.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_SCANNER_RESULTS">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CONTEXT_INTRUDER_PAYLOAD_POSITIONS">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CONTEXT_INTRUDER_PAYLOAD_POSITIONS</h4>
+<pre>static final&nbsp;byte CONTEXT_INTRUDER_PAYLOAD_POSITIONS</pre>
+<div class="block">Used to indicate that the context menu is being invoked in the Intruder
+ payload positions editor.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_INTRUDER_PAYLOAD_POSITIONS">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CONTEXT_INTRUDER_ATTACK_RESULTS">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>CONTEXT_INTRUDER_ATTACK_RESULTS</h4>
+<pre>static final&nbsp;byte CONTEXT_INTRUDER_ATTACK_RESULTS</pre>
+<div class="block">Used to indicate that the context menu is being invoked in an Intruder
+ attack results.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_INTRUDER_ATTACK_RESULTS">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+<a name="CONTEXT_SEARCH_RESULTS">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>CONTEXT_SEARCH_RESULTS</h4>
+<pre>static final&nbsp;byte CONTEXT_SEARCH_RESULTS</pre>
+<div class="block">Used to indicate that the context menu is being invoked in a search
+ results window.</div>
+<dl><dt><span class="strong">See Also:</span></dt><dd><a href="../constant-values.html#burp.IContextMenuInvocation.CONTEXT_SEARCH_RESULTS">Constant Field Values</a></dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+<!-- ============ METHOD DETAIL ========== -->
+<ul class="blockList">
+<li class="blockList"><a name="method_detail">
+<!--   -->
+</a>
+<h3>Method Detail</h3>
+<a name="getInputEvent()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getInputEvent</h4>
+<pre>java.awt.event.InputEvent&nbsp;getInputEvent()</pre>
+<div class="block">This method can be used to retrieve the native Java input event that was
+ the trigger for the context menu invocation.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>The <code>InputEvent</code> that was the trigger for the context
+ menu invocation.</dd></dl>
+</li>
+</ul>
+<a name="getToolFlag()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getToolFlag</h4>
+<pre>int&nbsp;getToolFlag()</pre>
+<div class="block">This method can be used to retrieve the Burp tool within which the
+ context menu was invoked.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>A flag indicating the Burp tool within which the context menu was
+ invoked. Burp tool flags are defined in the
+ <code>IBurpExtenderCallbacks</code> interface.</dd></dl>
+</li>
+</ul>
+<a name="getInvocationContext()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getInvocationContext</h4>
+<pre>byte&nbsp;getInvocationContext()</pre>
+<div class="block">This method can be used to retrieve the context within which the menu was
+ invoked.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>An index indicating the context within which the menu was
+ invoked. The indices used are defined within this interface.</dd></dl>
+</li>
+</ul>
+<a name="getSelectionBounds()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSelectionBounds</h4>
+<pre>int[]&nbsp;getSelectionBounds()</pre>
+<div class="block">This method can be used to retrieve the bounds of the user's selection
+ into the current message, if applicable.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>An int[2] array containing the start and end offsets of the
+ user's selection in the current message. If the user has not made any
+ selection in the current message, both offsets indicate the position of
+ the caret within the editor. If the menu is not being invoked from a
+ message editor, the method returns <code>null</code>.</dd></dl>
+</li>
+</ul>
+<a name="getSelectedMessages()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSelectedMessages</h4>
+<pre><a href="../burp/IHttpRequestResponse.html" title="interface in burp">IHttpRequestResponse</a>[]&nbsp;getSelectedMessages()</pre>
+<div class="block">This method can be used to retrieve details of the HTTP requests /
+ responses that were shown or selected by the user when the context menu
+ was invoked.
+
+ <b>Note:</b> For performance reasons, the objects returned from this
+ method are tied to the originating context of the messages within the
+ Burp UI. For example, if a context menu is invoked on the Proxy intercept
+ panel, then the
+ <code>IHttpRequestResponse</code> returned by this method will reflect
+ the current contents of the interception panel, and this will change when
+ the current message has been forwarded or dropped. If your extension
+ needs to store details of the message for which the context menu has been
+ invoked, then you should query those details from the
+ <code>IHttpRequestResponse</code> at the time of invocation, or you
+ should use
+ <code>IBurpExtenderCallbacks.saveBuffersToTempFiles()</code> to create a
+ persistent read-only copy of the
+ <code>IHttpRequestResponse</code>.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>An array of <code>IHttpRequestResponse</code> objects
+ representing the items that were shown or selected by the user when the
+ context menu was invoked. This method returns <code>null</code> if no
+ messages are applicable to the invocation.</dd></dl>
+</li>
+</ul>
+<a name="getSelectedIssues()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getSelectedIssues</h4>
+<pre><a href="../burp/IScanIssue.html" title="interface in burp">IScanIssue</a>[]&nbsp;getSelectedIssues()</pre>
+<div class="block">This method can be used to retrieve details of the Scanner issues that
+ were selected by the user when the context menu was invoked.</div>
+<dl><dt><span class="strong">Returns:</span></dt><dd>An array of <code>IScanIssue</code> objects representing the
+ issues that were selected by the user when the context menu was invoked.
+ This method returns <code>null</code> if no Scanner issues are applicable
+ to the invocation.</dd></dl>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<!-- ========= END OF CLASS DATA ========= -->
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<div class="bottomNav"><a name="navbar_bottom">
+<!--   -->
+</a><a href="#skip-navbar_bottom" title="Skip navigation links"></a><a name="navbar_bottom_firstrow">
+<!--   -->
+</a>
+<ul class="navList" title="Navigation">
+<li><a href="../burp/package-summary.html">Package</a></li>
+<li class="navBarCell1Rev">Class</li>
+<li><a href="../deprecated-list.html">Deprecated</a></li>
+<li><a href="../index-all.html">Index</a></li>
+</ul>
+</div>
+<div class="subNav">
+<ul class="navList">
+<li><a href="../burp/IContextMenuFactory.html" title="interface in burp"><span class="strong">Prev Class</span></a></li>
+<li><a href="../burp/ICookie.html" title="interface in burp"><span class="strong">Next Class</span></a></li>
+</ul>
+<ul class="navList">
+<li><a href="../index.html?burp/IContextMenuInvocation.html" target="_top">Frames</a></li>
+<li><a href="IContextMenuInvocation.html" target="_top">No Frames</a></li>
+</ul>
+<ul class="navList" id="allclasses_navbar_bottom">
+<li><a href="../allclasses-noframe.html">All Classes</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_bottom");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li>Summary:&nbsp;</li>
+<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#field_summary">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_summary">Method</a></li>
+</ul>
+<ul class="subNavList">
+<li>Detail:&nbsp;</li>
+<li><a href="#field_detail">Field</a>&nbsp;|&nbsp;</li>
+<li>Constr&nbsp;|&nbsp;</li>
+<li><a href="#method_detail">Method</a></li>
+</ul>
+</div>
+<a name="skip-navbar_bottom">
+<!--   -->
+</a></div>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+</body>
+</html>

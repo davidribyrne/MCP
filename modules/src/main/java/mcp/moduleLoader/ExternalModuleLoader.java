@@ -34,10 +34,11 @@ public class ExternalModuleLoader
 	}
 
 
-	public static Map<Class<? extends ExternalModule>, ExternalModule> loadModules()
+	public static Map<Class<? extends ExternalModule>, ExternalModule> loadModules(String path)
 	{
 		Map<Class<? extends ExternalModule>, ExternalModule> modules = new HashMap<Class<? extends ExternalModule>, ExternalModule>();
-		for (File jarPath : getJarURLs("d:\\seafile\\mcp\\mcp\\sample-module\\target"))
+		// for (File jarPath : getJarURLs("d:\\seafile\\mcp\\mcp\\sample-module\\target"))
+		for (File jarPath : getJarURLs(path))
 		{
 			List<String> jarClassNames = getModuleClasses(jarPath);
 			if (!jarClassNames.isEmpty())
@@ -45,19 +46,19 @@ public class ExternalModuleLoader
 				URL[] urls;
 				try
 				{
-					urls = new URL[] {jarPath.toURI().toURL()};
+					urls = new URL[] { jarPath.toURI().toURL() };
 				}
 				catch (MalformedURLException e1)
 				{
 					throw new UnexpectedException(e1);
 				}
-				
+
 				URLClassLoader loader = new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
 				for (String className : jarClassNames)
 				{
 					try
 					{
-						Class clazz = Class.forName (className, true, loader);
+						Class clazz = Class.forName(className, true, loader);
 						try
 						{
 							Object instance = clazz.newInstance();
@@ -67,14 +68,15 @@ public class ExternalModuleLoader
 							}
 							else
 							{
-								logger.error("The class " + className + " in " + jarPath.toString() + " is not a subclass of " + ExternalModule.class.getSimpleName());
+								logger.error("The class " + className + " in " + jarPath.toString() + " is not a subclass of "
+										+ ExternalModule.class.getSimpleName());
 							}
 						}
 						catch (InstantiationException | IllegalAccessException e)
 						{
 							logger.error("Failed to instantiate " + className + " from " + jarPath.toString(), e);
 						}
-						
+
 					}
 					catch (ClassNotFoundException e)
 					{
@@ -147,9 +149,13 @@ public class ExternalModuleLoader
 		List<File> jars = new ArrayList<File>(1);
 		File folder = new File(path);
 		FileFilter jarsFilter = new WildcardFileFilter("*.jar");
-		for (File jar : folder.listFiles(jarsFilter))
+		File[] files = folder.listFiles(jarsFilter);
+		if (files != null)
 		{
-			jars.add(jar);
+			for (File jar : files)
+			{
+				jars.add(jar);
+			}
 		}
 		return jars;
 	}

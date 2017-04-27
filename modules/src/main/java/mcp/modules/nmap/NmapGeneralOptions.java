@@ -70,6 +70,7 @@ public class NmapGeneralOptions extends Module
 			if (nmapPathValue == null)
 			{
 				logger.warn("Nmap executable not found in system path. This will cause an error if an nmap scan is attempted.");
+				return;
 			}
 			nmapexecutable = new File(nmapPathValue);
 		}

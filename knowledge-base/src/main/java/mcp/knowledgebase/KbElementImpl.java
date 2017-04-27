@@ -1,6 +1,7 @@
 package mcp.knowledgebase;
 
 import java.util.List;
+
 import mcp.knowledgebase.nodes.Node;
 import net.dacce.commons.general.SlimList;
 

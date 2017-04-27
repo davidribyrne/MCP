@@ -35,11 +35,13 @@
 package mcp.tools.nmap.parser;
 
 import java.time.Instant;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
 import mcp.knowledgebase.KnowledgeBaseImpl;
 import mcp.knowledgebase.attributes.host.IcmpResponseType;
 import mcp.knowledgebase.attributes.host.OSGuess;
@@ -51,9 +53,9 @@ import mcp.knowledgebase.attributes.port.PortStateReason;
 import mcp.knowledgebase.attributes.port.ServiceDescription;
 import mcp.knowledgebase.attributes.port.ServiceDescriptionImpl;
 import mcp.knowledgebase.attributes.port.ServiceReason;
+import mcp.knowledgebase.nodes.Hostname;
 import mcp.knowledgebase.nodes.IPAddress;
 import mcp.knowledgebase.nodes.MacAddress;
-import mcp.knowledgebase.nodes.Hostname;
 import mcp.knowledgebase.nodes.Port;
 import mcp.knowledgebase.nodes.PortType;
 import mcp.knowledgebase.sources.NmapScanSource;

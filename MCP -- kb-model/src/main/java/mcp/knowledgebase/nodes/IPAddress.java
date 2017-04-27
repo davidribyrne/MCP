@@ -1,7 +1,6 @@
 package mcp.knowledgebase.nodes;
 
 import mcp.knowledgebase.attributes.host.IcmpResponseType;
-import net.dacce.commons.general.IndexedCache;
 import net.dacce.commons.netaddr.SimpleInetAddress;
 
 

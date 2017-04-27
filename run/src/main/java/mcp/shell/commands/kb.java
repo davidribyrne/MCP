@@ -1,8 +1,9 @@
 package mcp.shell.commands;
 
 import org.crsh.cli.Argument;
-import org.crsh.cli.*;
-import org.crsh.cli.Option;
+import org.crsh.cli.Command;
+import org.crsh.cli.Man;
+import org.crsh.cli.Named;
 import org.crsh.cli.Usage;
 import org.crsh.command.BaseCommand;
 import org.slf4j.Logger;
@@ -12,8 +13,6 @@ import mcp.knowledgebase.KnowledgeBaseImpl;
 import mcp.knowledgebase.nodes.IPAddress;
 import mcp.modules.Modules;
 import mcp.modules.SimpleKbDumper;
-
-import java.util.*;
 @Usage("Knowledge Base interaction\n"
 		+ "commands: dump list")
 @Man("The kb command allows the user to display knowledge base content")

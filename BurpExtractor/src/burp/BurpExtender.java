@@ -1,9 +1,7 @@
 package burp;
 
-import java.util.*;
-
-import com.ibm.xfr.burpExtractor.ExtractorScanner;
 import com.ibm.xfr.burpExtractor.ExtractorPanel;
+import com.ibm.xfr.burpExtractor.ExtractorScanner;
 
 
 public class BurpExtender implements IBurpExtender

@@ -1,10 +1,14 @@
 package mcp.modules;
 
+import java.io.File;
+import java.nio.file.FileAlreadyExistsException;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import mcp.commons.WorkingDirectories;
 import mcp.modules.parsers.Parser;
 import mcp.modules.parsers.Parsers;
@@ -12,9 +16,6 @@ import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.general.FileUtils;
-import java.io.File;
-import java.nio.file.FileAlreadyExistsException;
-import java.util.*;
 
 public class InputFileMonitor extends Module
 {

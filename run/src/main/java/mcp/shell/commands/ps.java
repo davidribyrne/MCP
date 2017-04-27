@@ -1,5 +1,7 @@
 package mcp.shell.commands;
 
+import java.util.List;
+
 import org.crsh.cli.Command;
 import org.crsh.cli.Option;
 import org.crsh.cli.Usage;
@@ -10,9 +12,6 @@ import org.slf4j.LoggerFactory;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.jobmanager.executors.Executor;
 import mcp.jobmanager.jobs.JobState;
-
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class ps extends BaseCommand
 {

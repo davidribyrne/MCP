@@ -1,6 +1,5 @@
 package mcp.knowledgebase;
 
-import java.util.List;
 import mcp.knowledgebase.nodes.Node;
 
 public interface KbElement

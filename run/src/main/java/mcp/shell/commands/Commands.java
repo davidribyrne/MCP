@@ -1,10 +1,6 @@
 package mcp.shell.commands;
 
-import org.crsh.command.BaseCommand;
 import org.crsh.shell.impl.command.ExternalResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.util.*;
 
 public class Commands
 {

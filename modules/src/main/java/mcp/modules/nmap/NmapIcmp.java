@@ -5,11 +5,9 @@ import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.scope.Scope;
 import mcp.modules.GeneralOptions;
-import mcp.modules.Module;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
 import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.cli.OptionGroup;
 
 

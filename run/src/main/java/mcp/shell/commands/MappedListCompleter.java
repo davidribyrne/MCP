@@ -1,5 +1,8 @@
 package mcp.shell.commands;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.crsh.cli.descriptor.ParameterDescriptor;
 import org.crsh.cli.spi.Completer;
 import org.crsh.cli.spi.Completion;
@@ -7,8 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.dacce.commons.general.MapOfLists;
-
-import java.util.*;
 
 public class MappedListCompleter implements Completer
 {

@@ -1,5 +1,8 @@
 package mcp.shell;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.crsh.plugin.CRaSHPlugin;
 import org.crsh.plugin.PluginDiscovery;
 import org.crsh.shell.impl.command.CRaSHShellFactory;
@@ -9,8 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.modules.GeneralOptions;
-
-import java.util.*;
 
 public class MCPShellPluginDiscovery implements PluginDiscovery
 {

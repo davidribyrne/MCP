@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.attributes.URL;
 
-import java.util.*;
-
 public class WebsiteImpl extends NodeImpl implements Website
 {
 	private final static Logger logger = LoggerFactory.getLogger(WebsiteImpl.class);

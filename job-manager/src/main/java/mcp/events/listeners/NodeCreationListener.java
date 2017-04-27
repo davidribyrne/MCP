@@ -1,6 +1,7 @@
 package mcp.events.listeners;
 
 import java.util.Collection;
+
 import mcp.events.events.ElementCreationEvent;
 import mcp.knowledgebase.nodes.Node;
 

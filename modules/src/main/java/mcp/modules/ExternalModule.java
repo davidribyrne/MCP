@@ -1,12 +1,7 @@
 package mcp.modules;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.dacce.commons.cli.ModuleOptions;
 import net.dacce.commons.cli.OptionContainer;
-
-import java.util.*;
 
 public abstract class ExternalModule extends Module
 {

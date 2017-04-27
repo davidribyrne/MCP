@@ -1,15 +1,14 @@
 package com.ibm.xfr.burpExtractor;
 
 
-import burp.ITab;
-
 import java.awt.Component;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
 
 import javax.swing.JOptionPane;
+
+import burp.ITab;
 
 public class ExtractorPanel extends javax.swing.JPanel implements ITab 
 {

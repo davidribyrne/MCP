@@ -4,11 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.modules.Module;
-import mcp.modules.nmap.NmapGeneralOptions;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.cli.OptionGroup;
-
-import java.util.*;
 
 public abstract class HostnameDiscoveryModule extends Module
 {

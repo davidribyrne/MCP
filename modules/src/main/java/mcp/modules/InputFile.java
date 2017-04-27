@@ -1,16 +1,18 @@
 package mcp.modules;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import mcp.commons.WorkingDirectories;
 import net.dacce.commons.general.CryptoUtils;
 import net.dacce.commons.general.FileUtils;
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 
 public class InputFile

@@ -1,25 +1,18 @@
 package com.ibm.xfr.burpExtractor;
 
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.List;
+
 import burp.IBurpExtenderCallbacks;
 import burp.IHttpRequestResponse;
-import burp.IHttpService;
 import burp.IScanIssue;
 import burp.IScannerCheck;
 import burp.IScannerInsertionPoint;
 import mcp.commons.HttpTransaction;
-
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class ExtractorScanner implements IScannerCheck

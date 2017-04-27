@@ -1,25 +1,19 @@
 package mcp.shell;
 
-import org.crsh.plugin.CRaSHPlugin;
-import org.crsh.plugin.Embedded;
-import org.crsh.plugin.PluginContext;
-import org.crsh.plugin.PluginDiscovery;
-import org.crsh.plugin.PropertyDescriptor;
-import org.crsh.plugin.ResourceKind;
-import org.crsh.plugin.ServiceLoaderDiscovery;
-import org.crsh.telnet.TelnetPlugin;
-import org.crsh.vfs.FS;
-import org.crsh.vfs.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Level;
+
+import org.crsh.plugin.Embedded;
+import org.crsh.plugin.PluginContext;
+import org.crsh.plugin.PluginDiscovery;
+import org.crsh.vfs.FS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class MCPBootstrap extends Embedded

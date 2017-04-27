@@ -3,11 +3,13 @@ package mcp.modules.hostnames;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import mcp.knowledgebase.KnowledgeBaseImpl;
-import mcp.knowledgebase.nodes.IPAddress;
 import mcp.knowledgebase.nodes.Hostname;
+import mcp.knowledgebase.nodes.IPAddress;
 import mcp.knowledgebase.scope.Scope;
 import net.dacce.commons.dns.client.DnsTransaction;
 import net.dacce.commons.dns.client.Resolver;

@@ -1,11 +1,8 @@
 package mcp.modules;
 
-import java.util.*;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import mcp.events.events.McpCompleteEvent;
-import mcp.events.events.McpStartEvent;
-import mcp.events.listeners.McpEventListener;
 import mcp.moduleLoader.ExternalModuleLoader;
 import mcp.modules.hostnames.CommonHostnames;
 import mcp.modules.hostnames.HostnameDiscoveryGeneralOptions;

@@ -1,24 +1,20 @@
 package mcp.modules;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import mcp.commons.PersistedObject;
-import mcp.commons.WorkingDirectories;
-import net.dacce.commons.general.CryptoUtils;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.general.UnexpectedException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchService;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.Collection;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import mcp.commons.PersistedObject;
+import net.dacce.commons.general.FileUtils;
+import net.dacce.commons.general.UnexpectedException;
 
 public class InputFilesState implements PersistedObject
 {

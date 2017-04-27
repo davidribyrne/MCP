@@ -1,5 +1,8 @@
 package mcp.knowledgebase.attributes;
 
+import java.time.Instant;
+import java.util.Collections;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -12,9 +15,6 @@ import mcp.knowledgebase.nodes.Website;
 import mcp.knowledgebase.sources.Source;
 import net.dacce.commons.general.MapOfLists;
 import net.dacce.commons.general.NotImplementedException;
-
-import java.time.Instant;
-import java.util.*;
 
 
 public class URLImpl extends NodeAttributeImpl implements URL

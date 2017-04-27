@@ -2,15 +2,12 @@ package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import mcp.knowledgebase.attributes.host.IcmpResponseType;
-import net.dacce.commons.general.CustomToStringStyle;
 import net.dacce.commons.general.IndexedCache;
 import net.dacce.commons.general.UnexpectedException;
-import net.dacce.commons.netaddr.MacUtils;
 import net.dacce.commons.netaddr.SimpleInetAddress;
 
 public class IPAddressImpl extends NodeImpl implements IPAddress

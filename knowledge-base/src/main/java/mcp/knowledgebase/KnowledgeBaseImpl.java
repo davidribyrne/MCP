@@ -2,24 +2,25 @@ package mcp.knowledgebase;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.esotericsoftware.yamlbeans.YamlException;
+
 import mcp.commons.WorkingDirectories;
 import mcp.events.events.ElementCreationEvent;
 import mcp.jobmanager.executors.ExecutionScheduler;
-import mcp.knowledgebase.nodes.IPAddress;
-import mcp.knowledgebase.nodes.IPAddressImpl;
-import mcp.knowledgebase.nodes.MacAddress;
-import mcp.knowledgebase.nodes.MacAddressImpl;
 import mcp.knowledgebase.nodes.Domain;
 import mcp.knowledgebase.nodes.DomainImpl;
 import mcp.knowledgebase.nodes.Host;
 import mcp.knowledgebase.nodes.HostImpl;
 import mcp.knowledgebase.nodes.Hostname;
 import mcp.knowledgebase.nodes.HostnameImpl;
+import mcp.knowledgebase.nodes.IPAddress;
+import mcp.knowledgebase.nodes.IPAddressImpl;
+import mcp.knowledgebase.nodes.MacAddress;
+import mcp.knowledgebase.nodes.MacAddressImpl;
 import net.dacce.commons.general.IndexedCache;
 import net.dacce.commons.general.MultiClassIndexedCache;
 import net.dacce.commons.general.YamlUtils;

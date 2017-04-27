@@ -25,18 +25,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ServiceLoader;
 
-import org.crsh.cli.Argument;
 import org.crsh.cli.Command;
 import org.crsh.cli.Named;
-import org.crsh.cli.Option;
-import org.crsh.cli.Usage;
-import org.crsh.cli.descriptor.CommandDescriptor;
 import org.crsh.cli.impl.SyntaxException;
-import org.crsh.cli.impl.bootstrap.CommandProvider;
 import org.crsh.cli.impl.descriptor.HelpDescriptor;
 import org.crsh.cli.impl.descriptor.IntrospectionException;
 import org.crsh.cli.impl.invocation.InvocationException;
@@ -53,9 +45,6 @@ import org.crsh.console.jline.console.ConsoleReader;
 import org.crsh.console.jline.internal.Configuration;
 import org.crsh.shell.Shell;
 import org.crsh.shell.ShellFactory;
-import org.crsh.shell.impl.command.ExternalResolver;
-import org.crsh.standalone.Bootstrap;
-import org.crsh.util.CloseableList;
 import org.crsh.util.InterruptHandler;
 import org.crsh.util.Utils;
 import org.crsh.vfs.FS;
@@ -66,8 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.modules.GeneralOptions;
-import mcp.shell.commands.*;
-import mcp.tools.nmap.NmapScan;
+import mcp.shell.commands.Commands;
 
 
 @Named("crash")

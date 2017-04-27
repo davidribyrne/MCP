@@ -1,9 +1,13 @@
 package mcp.shell.commands;
 
-import org.crsh.command.*;
-import org.crsh.cli.*;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.crsh.cli.Command;
+import org.crsh.cli.Man;
+import org.crsh.cli.Option;
+import org.crsh.cli.Usage;
+import org.crsh.command.BaseCommand;
 
 public class date extends BaseCommand
 {

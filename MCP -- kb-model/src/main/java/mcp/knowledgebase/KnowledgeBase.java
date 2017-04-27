@@ -1,11 +1,10 @@
 package mcp.knowledgebase;
 
-import mcp.knowledgebase.nodes.IPAddress;
-import mcp.knowledgebase.nodes.MacAddress;
 import mcp.knowledgebase.nodes.Domain;
 import mcp.knowledgebase.nodes.Host;
 import mcp.knowledgebase.nodes.Hostname;
-import net.dacce.commons.general.IndexedCache;
+import mcp.knowledgebase.nodes.IPAddress;
+import mcp.knowledgebase.nodes.MacAddress;
 import net.dacce.commons.netaddr.SimpleInetAddress;
 
 

@@ -7,8 +7,6 @@ import mcp.modules.Module;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.cli.OptionGroup;
 
-import java.util.*;
-
 public abstract class NmapModule extends Module
 {
 

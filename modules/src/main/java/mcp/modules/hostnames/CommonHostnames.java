@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import mcp.events.events.ElementCreationEvent;
 import mcp.events.listeners.NodeCreationListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.nodes.Domain;
 import mcp.knowledgebase.nodes.Node;
-import mcp.modules.Module;
-import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.dns.client.DnsTransaction;
 import net.dacce.commons.dns.exceptions.DnsClientConnectException;

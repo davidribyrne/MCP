@@ -6,7 +6,7 @@ import mcp.knowledgebase.attributes.host.OSGuess;
 public interface Host extends Node
 {
 
-	public void addOSGuess(OSGuess guess);
+	public void setOSGuess(OSGuess guess);
 
 	public Iterable<IPAddress> getAddresses();
 

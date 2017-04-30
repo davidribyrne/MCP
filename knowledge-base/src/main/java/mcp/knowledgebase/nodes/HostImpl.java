@@ -6,8 +6,6 @@ import java.util.List;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import mcp.knowledgebase.attributes.ScoredAttributeHistory;
-import mcp.knowledgebase.attributes.ScoredAttributeHistoryImpl;
 import mcp.knowledgebase.attributes.host.OSGuess;
 import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.general.UniqueList;
@@ -17,13 +15,12 @@ public class HostImpl extends NodeImpl implements Host
 {
 	final private List<IPAddress> addresses;
 	private boolean up = false;
-	private final ScoredAttributeHistory<OSGuess> osGuess;
+	private OSGuess osGuess;
 
 	public HostImpl(IPAddress iPAddress)
 	{
 		super(null);
 		addresses = new UniqueList<IPAddress>(1);
-		osGuess = new ScoredAttributeHistoryImpl<OSGuess>();
 		addresses.add(iPAddress);
 	}
 
@@ -33,9 +30,9 @@ public class HostImpl extends NodeImpl implements Host
 	 * @see mcp.knowledgebase.nodes.impl.Host#addOSGuess(mcp.knowledgebase.nodes.attributes.host.OSGuess)
 	 */
 	@Override
-	public void addOSGuess(OSGuess guess)
+	public void setOSGuess(OSGuess guess)
 	{
-		osGuess.addValue(guess);
+		osGuess = guess;
 	}
 
 	private static Field addressesField;

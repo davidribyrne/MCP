@@ -5,10 +5,6 @@ import java.lang.reflect.Field;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import mcp.knowledgebase.attributes.AttributeHistory;
-import mcp.knowledgebase.attributes.AttributeHistoryImpl;
-import mcp.knowledgebase.attributes.ScoredAttributeHistory;
-import mcp.knowledgebase.attributes.ScoredAttributeHistoryImpl;
 import mcp.knowledgebase.attributes.port.PortState;
 import mcp.knowledgebase.attributes.port.ServiceDescription;
 import mcp.knowledgebase.attributes.port.SoftwareGuess;
@@ -20,10 +16,12 @@ public class PortImpl extends NodeImpl implements Port
 	private final PortType type;
 	private final int number;
 	private final IPAddress iPAddress;
+	private ServiceDescription description;
+	private SoftwareGuess guess;
 
-	private final AttributeHistory<PortState> stateHistory;
-	private final ScoredAttributeHistory<ServiceDescription> serviceDescriptionHistory;
-	private final ScoredAttributeHistory<SoftwareGuess> softwareGuessHistory;
+//	private final AttributeHistory<PortState> stateHistory;
+//	private final ScoredAttributeHistory<ServiceDescription> serviceDescriptionHistory;
+//	private final ScoredAttributeHistory<SoftwareGuess> softwareGuessHistory;
  
 	public PortImpl(IPAddress iPAddress, PortType type, int number)
 	{
@@ -31,9 +29,9 @@ public class PortImpl extends NodeImpl implements Port
 		this.iPAddress = iPAddress;
 		this.type = type;
 		this.number = number;
-		stateHistory = new AttributeHistoryImpl<PortState>();
-		serviceDescriptionHistory = new ScoredAttributeHistoryImpl<ServiceDescription>();
-		softwareGuessHistory = new ScoredAttributeHistoryImpl<SoftwareGuess>();
+//		stateHistory = new AttributeHistoryImpl<PortState>();
+//		serviceDescriptionHistory = new ScoredAttributeHistoryImpl<ServiceDescription>();
+//		softwareGuessHistory = new ScoredAttributeHistoryImpl<SoftwareGuess>();
 	}
 
 
@@ -43,7 +41,7 @@ public class PortImpl extends NodeImpl implements Port
 	@Override
 	public void setServiceDescription(ServiceDescription description)
 	{
-		serviceDescriptionHistory.addValue(description);
+		this.description = description;
 	}
 
 	/* (non-Javadoc)
@@ -52,7 +50,7 @@ public class PortImpl extends NodeImpl implements Port
 	@Override
 	public void setSoftwareGuess(SoftwareGuess guess)
 	{
-		softwareGuessHistory.addValue(guess);
+		this.guess = guess;
 	}
 
 
@@ -114,53 +112,61 @@ public class PortImpl extends NodeImpl implements Port
 		tsb.append("number", number);
 		tsb.append("type", type);
 //		tsb.append("stateHistory", stateHistory.getLastAttribute());
-		tsb.append("serviceDescriptionHistory", serviceDescriptionHistory.getAggregate());
+//		tsb.append("serviceDescriptionHistory", serviceDescriptionHistory.getAggregate());
 		return tsb.toString();
 	}
 
 
 
-	/* (non-Javadoc)
-	 * @see mcp.knowledgebase.nodes.impl.Port#getState()
-	 */
-	@Override
-	public AttributeHistory<PortState> getStateHistory()
-	{
-		return stateHistory;
-	}
+//	/* (non-Javadoc)
+//	 * @see mcp.knowledgebase.nodes.impl.Port#getState()
+//	 */
+//	@Override
+//	public AttributeHistory<PortState> getStateHistory()
+//	{
+//		return stateHistory;
+//	}
 
-
-	/* (non-Javadoc)
-	 * @see mcp.knowledgebase.nodes.impl.Port#getServiceDescription()
-	 */
-	@Override
-	public ScoredAttributeHistory<ServiceDescription> getServiceDescription()
-	{
-		return serviceDescriptionHistory;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see mcp.knowledgebase.nodes.impl.Port#getSoftwareGuess()
-	 */
-	@Override
-	public ScoredAttributeHistory<SoftwareGuess> getSoftwareGuess()
-	{
-		return softwareGuessHistory;
-	}
-
-
-	@Override
-	public void addState(PortState state)
-	{
-		this.stateHistory.addValue(state);
-	}
+//
+//	/* (non-Javadoc)
+//	 * @see mcp.knowledgebase.nodes.impl.Port#getServiceDescription()
+//	 */
+//	@Override
+//	public ScoredAttributeHistory<ServiceDescription> getServiceDescription()
+//	{
+//		return serviceDescriptionHistory;
+//	}
+//
+//
+//	/* (non-Javadoc)
+//	 * @see mcp.knowledgebase.nodes.impl.Port#getSoftwareGuess()
+//	 */
+//	@Override
+//	public ScoredAttributeHistory<SoftwareGuess> getSoftwareGuess()
+//	{
+//		return softwareGuessHistory;
+//	}
+//
+//
+//	@Override
+//	public void addState(PortState state)
+//	{
+//		this.stateHistory.addValue(state);
+//	}
 
 
 	@Override
 	public IPAddress getAddressNode()
 	{
 		return iPAddress;
+	}
+
+
+	@Override
+	public void setState(PortState state)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 

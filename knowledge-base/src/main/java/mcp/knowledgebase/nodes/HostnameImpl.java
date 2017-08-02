@@ -3,17 +3,22 @@ package mcp.knowledgebase.nodes;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.general.UniqueList;
 
-
+@Entity
 public class HostnameImpl extends NodeImpl implements Hostname
 {
-	private final String name;
-	private final UniqueList<IPAddress> addresses;
+	private String name;
+
+	@ElementCollection(targetClass=IPAddress.class)
+	private List<IPAddress> addresses;
 
 
 	public HostnameImpl(String name)
@@ -23,6 +28,10 @@ public class HostnameImpl extends NodeImpl implements Hostname
 		addresses = new UniqueList<IPAddress>(1);
 	}
 
+	private HostnameImpl()
+	{
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see mcp.knowledgebase.nodes.impl.Hostname#addAddress(net.dacce.commons.netaddr.SimpleInetAddress)

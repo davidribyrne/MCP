@@ -45,6 +45,7 @@ public class ServiceDescriptionImpl extends ScoredNodeAttributeImpl implements S
 		return reason;
 	}
 
+	@Override
 	public Port getParent()
 	{
 		return (Port) super.getParent();

@@ -2,16 +2,23 @@ package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
 
+import javax.persistence.Entity;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import net.dacce.commons.general.UnexpectedException;
 
-
+@Entity
 public class DomainImpl extends NodeImpl implements Domain
 {
 	
-	private final String name;
+	private String name;
+	
+	private DomainImpl()
+	{
+		
+	}
 	public DomainImpl(String name)
 	{
 		super(null);

@@ -1,6 +1,9 @@
 package mcp.knowledgebase.nodes;
 
 import java.lang.reflect.Field;
+import java.util.List;
+
+import javax.persistence.Entity;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -10,11 +13,12 @@ import net.dacce.commons.general.IndexedCache;
 import net.dacce.commons.general.UnexpectedException;
 import net.dacce.commons.netaddr.SimpleInetAddress;
 
+@Entity
 public class IPAddressImpl extends NodeImpl implements IPAddress
 {
 	private final SimpleInetAddress address;
-	final private IndexedCache<Port> tcpPorts;
-	final private IndexedCache<Port> udpPorts;
+	private IndexedCache<Port> tcpPorts;
+	private IndexedCache<Port> udpPorts;
 	private Host host;
 	private MacAddress macAddress;
 	private IcmpResponseType icmpResponse;
@@ -74,7 +78,7 @@ public class IPAddressImpl extends NodeImpl implements IPAddress
 		{
 			cache = udpPorts;
 		}
-		port = (Port) cache.getMember(PortImpl.NUMBER_FIELD(), number);
+		port = cache.getMember(PortImpl.NUMBER_FIELD(), number);
 		if (port == null)
 		{
 			port = new PortImpl(this, type, number);

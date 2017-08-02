@@ -164,4 +164,3 @@ public class OSGuessImpl extends ScoredNodeAttributeImpl implements OSGuess
 	}
 
 }
-

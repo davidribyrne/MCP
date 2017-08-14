@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.events.events.ElementCreationEvent;
+import mcp.events.events.NodeCreationEvent;
 import mcp.events.events.ExecutorCompleteEvent;
 import mcp.events.events.McpCompleteEvent;
 import mcp.events.events.McpEvent;
@@ -188,7 +188,7 @@ public class ExecutionScheduler implements Runnable
 	{
 		synchronized (this)
 		{
-			if (eventClass == ElementCreationEvent.class)
+			if (eventClass == NodeCreationEvent.class)
 			{
 				nodeListeners.add((NodeCreationListener) listener);
 			}
@@ -247,16 +247,16 @@ public class ExecutionScheduler implements Runnable
 	}
 
 
-	public void signalEvent(ElementCreationEvent event)
+	public void signalEvent(NodeCreationEvent event)
 	{
 		synchronized (this)
 		{
 
 			for (NodeCreationListener listener : nodeListeners)
 			{
-				for (Class<? extends Node> clazz : listener.getNodeMonitorClasses())
+				for (Class<? extends Node> clazz : listener.getMonitorNodeTypes())
 				{
-					if (clazz.isInstance(event.getElement()))
+					if (clazz.isInstance(event.getNode()))
 					{
 						scheduler.submit(new Runnable()
 						{

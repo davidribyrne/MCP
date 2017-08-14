@@ -10,11 +10,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.events.events.ElementCreationEvent;
+import mcp.events.events.NodeCreationEvent;
 import mcp.events.listeners.NodeCreationListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
-import mcp.knowledgebase.nodes.Domain;
-import mcp.knowledgebase.nodes.Node;
+import mcp.knowledgebase.NodeType;
+import mcp.knowledgebase.NodeTypeImpl;
 import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.dns.client.DnsTransaction;
 import net.dacce.commons.dns.exceptions.DnsClientConnectException;
@@ -30,7 +30,7 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 
 	private List<String> commonNames;
 	@SuppressWarnings("rawtypes")
-	private final Collection nodeTypes = Collections.singletonList(Domain.class); 
+	private final Collection nodeTypes = Collections.singletonList(NodeTypeImpl.getByName(NodeTypeImpl.DOMAIN)); 
 
 	public CommonHostnames()
 	{
@@ -40,7 +40,7 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Class<? extends Node>> getNodeMonitorClasses()
+	public Collection<NodeType> getMonitorNodeTypes()
 	{
 		return nodeTypes;
 	}
@@ -51,7 +51,7 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 	{
 		if (HostnameDiscoveryGeneralOptions.getInstance().getTestCommonHostnamesOption().isEnabled())
 		{
-			ExecutionScheduler.getInstance().registerListener(ElementCreationEvent.class, this);
+			ExecutionScheduler.getInstance().registerListener(NodeCreationEvent.class, this);
 			loadHostnames();
 		}
 	}
@@ -87,9 +87,9 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 
 
 	@Override
-	public void handleEvent(ElementCreationEvent reconEvent)
+	public void handleEvent(NodeCreationEvent reconEvent)
 	{
-		String domainName = ((Domain) reconEvent.getElement()).getName();
+		String domainName = new String(reconEvent.getNode().getValue());
 		List<DnsTransaction> transactions = new ArrayList<DnsTransaction>(commonNames.size());
 		for (String name: commonNames)
 		{

@@ -1,202 +1,151 @@
 package mcp.knowledgebase;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.yamlbeans.YamlException;
+import net.dacce.commons.general.FileUtils;
+import net.dacce.commons.general.UnexpectedException;
 
-import mcp.commons.WorkingDirectories;
-import mcp.events.events.ElementCreationEvent;
-import mcp.jobmanager.executors.ExecutionScheduler;
-import mcp.knowledgebase.nodes.Domain;
-import mcp.knowledgebase.nodes.DomainImpl;
-import mcp.knowledgebase.nodes.Host;
-import mcp.knowledgebase.nodes.HostImpl;
-import mcp.knowledgebase.nodes.Hostname;
-import mcp.knowledgebase.nodes.HostnameImpl;
-import mcp.knowledgebase.nodes.IPAddress;
-import mcp.knowledgebase.nodes.IPAddressImpl;
-import mcp.knowledgebase.nodes.MacAddress;
-import mcp.knowledgebase.nodes.MacAddressImpl;
-import net.dacce.commons.general.IndexedCache;
-import net.dacce.commons.general.MultiClassIndexedCache;
-import net.dacce.commons.general.YamlUtils;
-import net.dacce.commons.netaddr.MacUtils;
-import net.dacce.commons.netaddr.SimpleInetAddress;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.*;
 
 
-public class KnowledgeBaseImpl extends MultiClassIndexedCache implements KnowledgeBase
+public class KnowledgeBaseImpl implements KnowledgeBase
 {
-	final static Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
+	private final static Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
+	private final static String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+	private java.sql.Connection dbConnection;
 
-	private static KnowledgeBaseImpl instance;
+	private static final KnowledgeBase instance = new KnowledgeBaseImpl();
 
 
-	private KnowledgeBaseImpl()
+	public KnowledgeBaseImpl()
 	{
-		super(true);
+
+		try
+		{
+			Class.forName(DRIVER).newInstance();
+		}
+		catch (InstantiationException e)
+		{
+			throw new UnexpectedException(e);
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new UnexpectedException(e);
+		}
+		catch (ClassNotFoundException e)
+		{
+			System.err.println(e.getLocalizedMessage());
+			System.err.println(e.toString());
+			System.err.println("You need to have a driver for the database.");
+			System.exit(1);
+		}
 	}
 
-	public synchronized void saveToDisk()
+
+	public void load(String path) throws FileNotFoundException, SQLException
+	{
+		if (!FileUtils.exists(path))
+		{
+			throw new FileNotFoundException("Couldn't find '" + path + "'");
+		}
+
+		dbConnection = DriverManager.getConnection("jdbc:derby:" + path + ";create=false");
+		configureConnection();
+	}
+
+
+	public void createDb(String path) throws SQLException, IOException
+	{
+		if (FileUtils.exists(path))
+		{
+			throw new FileAlreadyExistsException("There is already a file at '" + path + "'");
+		}
+
+		dbConnection = DriverManager.getConnection("jdbc:derby:" + path + ";create=true");
+		configureConnection();
+
+		File schemaFile = new File(this.getClass().getClassLoader().getResource("schema.sql").getFile());
+		Statement statement = dbConnection.createStatement();
+		for (String command : FileUtils.readFileToString(schemaFile).split("//////////"))
+		{
+			if (command.matches("^\\s*$"))
+				continue;
+
+			statement.execute(command);
+		}
+
+		statement.close();
+
+	}
+
+
+	private void configureConnection() throws SQLException
+	{
+		dbConnection.setAutoCommit(true);
+	}
+
+
+	public void shutdown() throws SQLException
+	{
+		DriverManager.getConnection("jdbc:derby:;shutdown=true");
+	}
+
+	@Override
+	public void addNode(Node node)
 	{
 		try
 		{
-			YamlUtils.writeObject(getOutputFilename(), this);
+			PreparedStatement psInsert = dbConnection.prepareStatement(
+					"insert into NODES (id, type, time, value) values (?, ?, ?, ?)");
+
+			psInsert.setString(1, node.getID().toString());
+			psInsert.setString(2, node.getType().getID().toString());
+			psInsert.setTimestamp(3, node.getCreationTime());
+			psInsert.setString(4, new String(node.getValue()));
+			psInsert.execute();
+			psInsert.close();
 		}
-		catch (IOException e)
+		catch (SQLException e)
 		{
-			logger.error("Failed to save knowledge base to disk (" + getOutputFilename() + "): " + e.getLocalizedMessage(), e);
+			logger.error("Unexpected problem running SQL for inserting a new node type", e);
+			throw new UnexpectedException(e);
+		}
+		
+	}
+
+	@Override
+	public void addNodeType(NodeType nodeType)
+	{
+		try
+		{
+			PreparedStatement psInsert = dbConnection.prepareStatement(
+					"insert into TYPES (id, name, description) values (?, ?, ?)");
+
+			psInsert.setString(1, nodeType.getID().toString());
+			psInsert.setString(2, nodeType.getName());
+			psInsert.setString(1, nodeType.getDescription());
+			psInsert.execute();
+			psInsert.close();
+		}
+		catch (SQLException e)
+		{
+			logger.error("Unexpected problem running SQL for inserting a new node type", e);
+			throw new UnexpectedException(e);
 		}
 	}
 
-	public static synchronized KnowledgeBaseImpl getInstance()
+	public static KnowledgeBase getInstance()
 	{
-		if (instance == null)
-		{
-			try
-			{
-				instance = (KnowledgeBaseImpl) YamlUtils.readObject(getOutputFilename(), KnowledgeBaseImpl.class);
-			}
-			catch (FileNotFoundException e)
-			{
-				logger.trace("Knowledge base yaml file not found (" + getOutputFilename() + "). Creating new object.", e);
-			}
-			catch (YamlException e)
-			{
-				logger.warn("Problem reading YAML for knowledge base: " + e.getLocalizedMessage(), e);
-			}
-			if (instance == null)
-			{
-				instance = new KnowledgeBaseImpl();
-			}
-		}
-
 		return instance;
-	}
-	
-	
-	
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mcp.knowledgebase.Kb#getOrCreateHostname(java.lang.String)
-	 */
-	@Override
-	public synchronized Hostname getOrCreateHostname(String name)
-	{
-		Hostname hostname = (Hostname) getMember(Hostname.class, HostnameImpl.NAME_FIELD(), name);
-		if (hostname == null)
-		{
-			logger.trace(name + " was added to the KB as a new hostname.");
-			hostname = new HostnameImpl(name);
-			add(Hostname.class, hostname);
-		}
-		return hostname;
-	}
-
-
-	@Override
-	public MacAddress getOrCreateMacAddressNode(byte[] hexAddress)
-	{
-		MacAddress mac = (MacAddress) getMember(MacAddress.class, MacAddressImpl.NAME_FIELD(), hexAddress);
-		if (mac == null)
-		{
-			logger.trace(MacUtils.getHexString(hexAddress) + " was added to the KB as a new MAC address.");
-			mac = new MacAddressImpl(hexAddress);
-			add(MacAddress.class, mac);
-		}
-		return mac;
-	}
-
-	@Override
-	public Iterable<MacAddress> getMacAddressNodes()
-	{
-		return (Iterable<MacAddress>) getMembers(MacAddress.class);
-	}
-	
-	@Override
-	public synchronized boolean addDomain(String name)
-	{
-		Domain domain = (Domain) getMember(Domain.class, DomainImpl.NAME_FIELD(), name);
-		if (domain != null)
-			return false;
-
-		logger.trace(name + " was added to the KB as a new domain.");
-		domain = new DomainImpl(name);
-		add(Domain.class, domain);
-		return true;
-	}
-
-
-	@Override
-	public synchronized IPAddress getOrCreateIPAddressNode(SimpleInetAddress address)
-	{
-		IPAddress addressNode = (IPAddress) getMember(IPAddress.class, IPAddressImpl.ADDRESS_FIELD(), address);
-		if (addressNode == null)
-		{
-			logger.trace(address.toString() + " was added to the KB as a new address.");
-			addressNode = new IPAddressImpl(address);
-			add(IPAddress.class, addressNode);
-			addressNode.setHost(new HostImpl(addressNode));
-		}
-		return addressNode;
-	}
-
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mcp.knowledgebase.Kb#getHosts()
-	 */
-	@Override
-	public IndexedCache<Host> getHosts()
-	{
-		return (IndexedCache<Host>) getMembers(Host.class);
-	} 
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mcp.knowledgebase.Kb#getHostnames()
-	 */
-	@Override
-	public IndexedCache<Hostname> getHostnames()
-	{
-		return (IndexedCache<Hostname>) getMembers(Hostname.class);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mcp.knowledgebase.Kb#getDomains()
-	 */
-	@Override
-	public IndexedCache<Domain> getDomains()
-	{
-		return (IndexedCache<Domain>) getMembers(Domain.class);
-	}
-
-	@Override
-	public IndexedCache<IPAddress> getIPAddressNodes()
-	{
-		return (IndexedCache<IPAddress>) getMembers(IPAddress.class);
-	}
-
-
-	public static String getOutputFilename()
-	{
-		return WorkingDirectories.getResumeDirectory() + "knowledge-base";
-	}
-
-	@Override
-	public void add(Class clazz, Object object) throws IllegalArgumentException
-	{
-		super.add(clazz, object);
-		ExecutionScheduler.getInstance().signalEvent(new ElementCreationEvent((KbElement) object));
 	}
 
 }

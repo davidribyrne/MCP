@@ -234,7 +234,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		{
 			for (String domain: FileUtils.readLines(knownDomainsPath))
 			{
-				KnowledgeBaseImpl.getInstance().addDomain(domain);
+				KnowledgeBaseImpl.getInstance().addNode(domain);
 			}
 		}
 		catch (IOException e)

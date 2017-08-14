@@ -2,15 +2,15 @@ package mcp.events.listeners;
 
 import java.util.Collection;
 
-import mcp.events.events.ElementCreationEvent;
-import mcp.knowledgebase.nodes.Node;
+import mcp.events.events.NodeCreationEvent;
+import mcp.knowledgebase.NodeType;
 
 
 
 public interface NodeCreationListener extends McpEventListener
 {
-	public void handleEvent(ElementCreationEvent reconEvent);
+	public void handleEvent(NodeCreationEvent reconEvent);
 
 
-	public Collection<Class<? extends Node>> getNodeMonitorClasses();
+	public Collection<NodeType> getMonitorNodeTypes();
 }

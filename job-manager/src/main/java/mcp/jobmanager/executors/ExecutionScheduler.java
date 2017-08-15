@@ -19,13 +19,13 @@ import mcp.events.events.McpEvent;
 import mcp.events.events.McpStartEvent;
 import mcp.events.events.ModuleRunCompleteEvent;
 import mcp.events.listeners.ExecutorCompleteListener;
-import mcp.events.listeners.McpCompleteListener;
 import mcp.events.listeners.McpEventListener;
 import mcp.events.listeners.McpStartListener;
 import mcp.events.listeners.ModuleRunCompleteListener;
 import mcp.events.listeners.NodeCreationListener;
 import mcp.jobmanager.jobs.JobState;
-import mcp.knowledgebase.nodes.Node;
+import mcp.knowledgebase.NodeType;
+import mcp.knowledgebase.Node;
 import net.dacce.commons.general.MapOfLists;
 
 
@@ -249,14 +249,14 @@ public class ExecutionScheduler implements Runnable
 
 	public void signalEvent(NodeCreationEvent event)
 	{
+		Node node = event.getNode();
 		synchronized (this)
 		{
-
 			for (NodeCreationListener listener : nodeListeners)
 			{
-				for (Class<? extends Node> clazz : listener.getMonitorNodeTypes())
+				for (NodeType type : listener.getMonitorNodeTypes())
 				{
-					if (clazz.isInstance(event.getNode()))
+					if (node.getType().equals(type))
 					{
 						scheduler.submit(new Runnable()
 						{
@@ -285,25 +285,6 @@ public class ExecutionScheduler implements Runnable
 					public void run()
 					{
 						((McpStartListener) listener).handleEvent(event);
-					}
-				});
-			}
-		}
-	}
-
-
-	public void signalEvent(McpCompleteEvent event)
-	{
-		synchronized (this)
-		{
-			for (McpEventListener listener : listeners.get(McpCompleteEvent.class))
-			{
-				scheduler.submit(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						((McpCompleteListener) listener).handleEvent(event);
 					}
 				});
 			}

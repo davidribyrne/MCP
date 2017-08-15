@@ -9,7 +9,9 @@ import mcp.commons.WorkingDirectories;
 import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
-import mcp.knowledgebase.KnowledgeBaseImpl;
+import mcp.knowledgebase.KnowledgeBase;
+import mcp.knowledgebase.NodeCache;
+import mcp.knowledgebase.nodeLibrary.Common;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Module;
 import net.dacce.commons.cli.Option;
@@ -234,7 +236,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		{
 			for (String domain: FileUtils.readLines(knownDomainsPath))
 			{
-				KnowledgeBaseImpl.getInstance().addNode(domain);
+				KnowledgeBase.getInstance().getOrCreateNode(Common.DOMAIN, domain.getBytes());
 			}
 		}
 		catch (IOException e)
@@ -244,7 +246,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		}
 		for (String domain: knownDomainsOption.getValues())
 		{
-			KnowledgeBaseImpl.getInstance().addDomain(domain);
+			KnowledgeBase.getInstance().getOrCreateNode(Common.DOMAIN, domain.getBytes());
 		}
 
 	}

@@ -15,7 +15,7 @@
 		</dependency>
 		<dependency>
 			<groupId>mcp</groupId>
-			<artifactId>kb-model</artifactId>
+			<artifactId>knowledge-base</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.dacce</groupId>

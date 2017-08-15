@@ -3,7 +3,7 @@ package mcp.modules.nmap;
 import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
-import mcp.knowledgebase.scope.Scope;
+import mcp.knowledgebase.Scope;
 import mcp.modules.GeneralOptions;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;

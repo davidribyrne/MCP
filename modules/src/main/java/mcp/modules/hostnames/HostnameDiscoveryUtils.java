@@ -7,10 +7,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.knowledgebase.KnowledgeBaseImpl;
-import mcp.knowledgebase.nodes.Hostname;
-import mcp.knowledgebase.nodes.IPAddress;
-import mcp.knowledgebase.scope.Scope;
+import mcp.knowledgebase.Connection;
+import mcp.knowledgebase.KnowledgeBase;
+import mcp.knowledgebase.Node;
+import mcp.knowledgebase.NodeCache;
+import mcp.knowledgebase.Scope;
+import mcp.knowledgebase.nodeLibrary.Common;
 import net.dacce.commons.dns.client.DnsTransaction;
 import net.dacce.commons.dns.client.Resolver;
 import net.dacce.commons.dns.exceptions.DnsClientConnectException;
@@ -108,9 +110,9 @@ public class HostnameDiscoveryUtils
 		if (Scope.instance.isInScope(address))
 		{
 			logger.debug("Hostname " + hostname + "->" + address.toString() + " was discovered and is in-scope.");
-			IPAddress a = KnowledgeBaseImpl.getInstance().getOrCreateIPAddressNode(address);
-			Hostname hostnameNode = KnowledgeBaseImpl.getInstance().getOrCreateHostname(hostname);
-			hostnameNode.addAddress(a);
+			Node addressNode = KnowledgeBase.getInstance().getOrCreateNode(Common.IPV4_ADDRESS, address.getAddress());
+			Node hostnameNode = KnowledgeBase.getInstance().getOrCreateNode(Common.HOSTNAME, hostname.getBytes());
+			new Connection(addressNode, hostnameNode);
 			registerDomainsInHostname(hostname);
 		}
 		else
@@ -140,7 +142,7 @@ public class HostnameDiscoveryUtils
 				int limit = HostnameDiscoveryGeneralOptions.getInstance().getMaxAutoAddDomains();
 				if (autoRegisteredDomains < limit)
 				{
-					if (KnowledgeBaseImpl.getInstance().addDomain(domain))
+					if (KnowledgeBase.getInstance().createNodeIfPossible(Common.DOMAIN, domain.getBytes()))
 						autoRegisteredDomains++;
 				}
 				else
@@ -161,8 +163,8 @@ public class HostnameDiscoveryUtils
 				{
 					for (String subdomain : DomainUtils.getSubdomains(hostname))
 					{
-						if (KnowledgeBaseImpl.getInstance().addDomain(subdomain))
-							autoRegisteredSubDomains.put(domain, count + 1);
+						if (KnowledgeBase.getInstance().createNodeIfPossible(Common.DOMAIN, subdomain.getBytes()))
+							autoRegisteredSubDomains.put(subdomain, count + 1);
 					}
 				}
 				else

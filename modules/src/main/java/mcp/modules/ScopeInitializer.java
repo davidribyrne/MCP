@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.commons.WorkingDirectories;
-import mcp.knowledgebase.scope.Scope;
+import mcp.knowledgebase.Scope;
 import net.dacce.commons.cli.Option;
 import net.dacce.commons.cli.OptionContainer;
 import net.dacce.commons.cli.OptionGroup;

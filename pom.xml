@@ -13,7 +13,6 @@
 		<module>options</module>
 		<module>run</module>
 		<module>run-test</module>
-		<module>MCP -- kb-model</module>
 		<module>mcp-commons</module>
 		<module>BurpExtractor</module>
 	</modules>
@@ -133,11 +132,6 @@
 			</dependency>
 
 
-			<dependency>
-				<groupId>mcp</groupId>
-				<artifactId>kb-model</artifactId>
-				<version>${project.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>mcp</groupId>
 				<artifactId>job-manager</artifactId>

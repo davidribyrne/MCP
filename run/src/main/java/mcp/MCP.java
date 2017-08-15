@@ -43,9 +43,6 @@ public class MCP
 		MCPShell.setupShell();
 		
 		waitForQueue();
-		ExecutionScheduler.getInstance().signalEvent(new McpCompleteEvent());
-		
-		waitForQueue();
 	}
 
 	private void waitForQueue()

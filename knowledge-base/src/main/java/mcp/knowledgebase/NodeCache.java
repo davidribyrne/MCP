@@ -2,8 +2,9 @@ package mcp.knowledgebase;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.*;
-import com.google.common.cache.*;
+
+import net.dacce.commons.general.NotImplementedException;
+
 
 public class NodeCache
 {
@@ -11,27 +12,59 @@ public class NodeCache
 
 	private final static NodeCache instance = new NodeCache();
 
+
 	private NodeCache()
 	{
-		
-		
-//		LoadingCache<Key, Graph> graphs = CacheBuilder.newBuilder()
-//			       .maximumSize(1000)
-//			       .expireAfterWrite(10, TimeUnit.MINUTES)
-//			       .removalListener(MY_LISTENER)
-//			       .build(
-//			           new CacheLoader<Key, Graph>() {
-//			             public Graph load(Key key) throws AnyException {
-//			               return createExpensiveGraph(key);
-//			             }
-//			           });
+
+
+		// LoadingCache<Key, Graph> graphs = CacheBuilder.newBuilder()
+		// .maximumSize(1000)
+		// .expireAfterWrite(10, TimeUnit.MINUTES)
+		// .removalListener(MY_LISTENER)
+		// .build(
+		// new CacheLoader<Key, Graph>() {
+		// public Graph load(Key key) throws AnyException {
+		// return createExpensiveGraph(key);
+		// }
+		// });
 
 	}
-	
-	public Node getOrCreateNode(NodeType nodeType, byte[] value)
+
+	/**
+	 * Needed for complicated synchronization problems; probably not the best solution :(
+	 * @param nodeType
+	 * @param value
+	 * @return
+	 */
+	synchronized boolean createNodeIfPossible(NodeType nodeType, byte[] value)
 	{
-		return null;
+		throw new NotImplementedException();
 	}
+	
+	Node getOrCreateNode(NodeType nodeType, byte[] value)
+	{
+		if (nodeExists(nodeType, value))
+			return getNodeFromCache(nodeType, value);
+		else
+			return createNode(nodeType, value);
+	}
+
+	boolean nodeExists(NodeType nodeType, byte[] value)
+	{
+		throw new NotImplementedException();
+	}
+
+	private Node getNodeFromCache(NodeType nodeType, byte[] value)
+	{
+		throw new NotImplementedException();
+	}
+	
+	private Node createNode(NodeType nodeType, byte[] value)
+	{
+		throw new NotImplementedException();
+	}
+
+
 
 	public static NodeCache getInstance()
 	{

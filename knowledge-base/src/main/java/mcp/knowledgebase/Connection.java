@@ -1,17 +1,18 @@
 package mcp.knowledgebase;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.*;
 
-public class ConnectionImpl extends UniqueElementImpl implements Connection
+public class Connection extends UniqueElement
 {
-	private final static Logger logger = LoggerFactory.getLogger(ConnectionImpl.class);
+	private final static Logger logger = LoggerFactory.getLogger(Connection.class);
 	private final Node nodeA;
 	private final Node nodeB;
 	
 
-	public ConnectionImpl(Node nodeA, Node nodeB)
+	public Connection(Node nodeA, Node nodeB)
 	{
 		this(null, nodeA, nodeB);
 	}
@@ -21,7 +22,7 @@ public class ConnectionImpl extends UniqueElementImpl implements Connection
 	 * Use only from KnowledgeBaseImpl
 	 * @param uuid
 	 */
-	ConnectionImpl(UUID uuid, Node nodeA, Node nodeB)
+	Connection(UUID uuid, Node nodeA, Node nodeB)
 	{
 		super(uuid);
 		this.nodeA = nodeA;
@@ -32,14 +33,12 @@ public class ConnectionImpl extends UniqueElementImpl implements Connection
 
 
 
-	@Override
 	public Node getNodeA()
 	{
 		return nodeA;
 	}
 
 
-	@Override
 	public Node getNodeB()
 	{
 		return nodeB;

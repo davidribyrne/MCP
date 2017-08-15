@@ -1,30 +1,31 @@
 package mcp.knowledgebase;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.dacce.commons.general.UniqueList;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.*;
-
-public class NodeImpl extends UniqueElementImpl implements Node
+public class Node extends UniqueElement
 {
-	private final static Logger logger = LoggerFactory.getLogger(NodeImpl.class);
+	private final static Logger logger = LoggerFactory.getLogger(Node.class);
 	private final byte[] value;
 	private final UniqueList<Connection> connections;
 	private final NodeType type;
 	private final Timestamp creationTime;
 
-	public NodeImpl(	NodeType type, byte [] value)
+	public Node(	NodeType type, byte [] value)
 	{
 		creationTime = Timestamp.from(Instant.now());
 		this.type = type;
 		this.value = value;
 		connections = new UniqueList<Connection>(1);
 		
-		KnowledgeBaseImpl.getInstance().addNode(this);
+		KnowledgeBase.getInstance().addNode(this);
 	}
 	
 	
@@ -35,7 +36,7 @@ public class NodeImpl extends UniqueElementImpl implements Node
 	 * @param type
 	 * @param value
 	 */
-	NodeImpl(UUID uuid, Timestamp creationTime, NodeType type, byte [] value)
+	Node(UUID uuid, Timestamp creationTime, NodeType type, byte [] value)
 	{
 		super(uuid);
 		this.creationTime = creationTime;
@@ -69,37 +70,30 @@ public class NodeImpl extends UniqueElementImpl implements Node
 	}
 
 
-	@Override
 	public byte[] getValue()
 	{
 		return value;
 	}
 
 
-	@Override
 	public NodeType getType()
 	{
 		return type;
 	}
 
-	
 
-	@Override
 	public Iterable<Connection> getConnections()
 	{
 		return Collections.unmodifiableList(connections);
 	}
 
 
-
-	@Override
 	public void addConnection(Connection connection)
 	{
 		connections.add(connection);
 	}
 
 
-	@Override
 	public Timestamp getCreationTime()
 	{
 		return creationTime;

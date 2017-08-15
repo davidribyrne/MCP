@@ -42,16 +42,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import mcp.knowledgebase.KnowledgeBaseImpl;
+import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.attributes.host.IcmpResponseType;
 import mcp.knowledgebase.attributes.host.OSGuess;
-import mcp.knowledgebase.attributes.host.OSGuessImpl;
 import mcp.knowledgebase.attributes.port.PortResponse;
 import mcp.knowledgebase.attributes.port.PortState;
 import mcp.knowledgebase.attributes.port.PortStateImpl;
 import mcp.knowledgebase.attributes.port.PortStateReason;
 import mcp.knowledgebase.attributes.port.ServiceDescription;
-import mcp.knowledgebase.attributes.port.ServiceDescriptionImpl;
 import mcp.knowledgebase.attributes.port.ServiceReason;
 import mcp.knowledgebase.nodes.Hostname;
 import mcp.knowledgebase.nodes.IPAddress;
@@ -129,7 +127,7 @@ public class NMapXmlHandler extends DefaultHandler
 	{
 		if (currentIPAddress == null)
 		{
-			currentIPAddress = KnowledgeBaseImpl.getInstance().getOrCreateIPAddressNode(tempIPAddress);
+			currentIPAddress = KnowledgeBase.getInstance().getOrCreateIPAddressNode(tempIPAddress);
 		}
 		return currentIPAddress;
 	}
@@ -225,7 +223,7 @@ public class NMapXmlHandler extends DefaultHandler
 				{
 					String rawMac = attributes.getValue(NmapDtdStrings.ADDR_ATTR);
 					byte[] hexMac = MacUtils.getMacFromString(rawMac);
-					currentMac = KnowledgeBaseImpl.getInstance().getOrCreateMacAddressNode(hexMac);
+					currentMac = KnowledgeBase.getInstance().getOrCreateMacAddressNode(hexMac);
 					getCurrentIPAddress().setMacAddress(currentMac);
 					currentMac.setMacVendor(attributes.getValue(NmapDtdStrings.VENDOR_ATTR));
 				}
@@ -235,7 +233,7 @@ public class NMapXmlHandler extends DefaultHandler
 			}
 			if (qName.equals(NmapDtdStrings.HOSTNAME_TAG))
 			{
-				Hostname hostname = KnowledgeBaseImpl.getInstance().getOrCreateHostname(attributes.getValue(NmapDtdStrings.NAME_ATTR));
+				Hostname hostname = KnowledgeBase.getInstance().getOrCreateHostname(attributes.getValue(NmapDtdStrings.NAME_ATTR));
 				hostname.addAddress(getCurrentIPAddress());
 			}
 			if (qName.equals(NmapDtdStrings.PORTS_TAG))

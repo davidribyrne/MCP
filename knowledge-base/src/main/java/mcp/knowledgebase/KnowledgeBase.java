@@ -1,11 +1,5 @@
 package mcp.knowledgebase;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.general.UnexpectedException;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,19 +8,25 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.dacce.commons.general.FileUtils;
+import net.dacce.commons.general.NotImplementedException;
+import net.dacce.commons.general.UnexpectedException;
 
 
-public class KnowledgeBaseImpl implements KnowledgeBase
+public class KnowledgeBase
 {
-	private final static Logger logger = LoggerFactory.getLogger(KnowledgeBaseImpl.class);
+	private final static Logger logger = LoggerFactory.getLogger(KnowledgeBase.class);
 	private final static String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
 	private java.sql.Connection dbConnection;
 
-	private static final KnowledgeBase instance = new KnowledgeBaseImpl();
+	private static final KnowledgeBase instance = new KnowledgeBase();
 
 
-	public KnowledgeBaseImpl()
+	public KnowledgeBase()
 	{
 
 		try
@@ -99,7 +99,6 @@ public class KnowledgeBaseImpl implements KnowledgeBase
 		DriverManager.getConnection("jdbc:derby:;shutdown=true");
 	}
 
-	@Override
 	public void addNode(Node node)
 	{
 		try
@@ -122,7 +121,6 @@ public class KnowledgeBaseImpl implements KnowledgeBase
 		
 	}
 
-	@Override
 	public void addNodeType(NodeType nodeType)
 	{
 		try
@@ -141,6 +139,26 @@ public class KnowledgeBaseImpl implements KnowledgeBase
 			logger.error("Unexpected problem running SQL for inserting a new node type", e);
 			throw new UnexpectedException(e);
 		}
+	}
+	
+	public synchronized boolean createNodeIfPossible(NodeType nodeType, byte[] value)
+	{
+		return NodeCache.getInstance().createNodeIfPossible(nodeType, value);
+	}
+	
+	public Node getOrCreateNode(NodeType nodeType, byte[] value)
+	{
+		return NodeCache.getInstance().getOrCreateNode(nodeType, value);
+	}
+
+	public boolean nodeExists(NodeType nodeType, byte[] value)
+	{
+		return NodeCache.getInstance().nodeExists(nodeType, value);
+	}
+
+	public Iterable<Node> getAllNodesByType(NodeType type)
+	{
+		throw new NotImplementedException();
 	}
 
 	public static KnowledgeBase getInstance()

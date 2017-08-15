@@ -14,7 +14,8 @@ import mcp.events.events.NodeCreationEvent;
 import mcp.events.listeners.NodeCreationListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.NodeType;
-import mcp.knowledgebase.NodeTypeImpl;
+import mcp.knowledgebase.nodeLibrary.Common;
+import mcp.knowledgebase.NodeType;
 import net.dacce.commons.cli.OptionGroup;
 import net.dacce.commons.dns.client.DnsTransaction;
 import net.dacce.commons.dns.exceptions.DnsClientConnectException;
@@ -30,7 +31,7 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 
 	private List<String> commonNames;
 	@SuppressWarnings("rawtypes")
-	private final Collection nodeTypes = Collections.singletonList(NodeTypeImpl.getByName(NodeTypeImpl.DOMAIN)); 
+	private final Collection nodeTypes = Collections.singletonList(Common.DOMAIN); 
 
 	public CommonHostnames()
 	{

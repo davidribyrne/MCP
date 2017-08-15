@@ -9,10 +9,14 @@ import org.crsh.command.BaseCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.knowledgebase.KnowledgeBaseImpl;
-import mcp.knowledgebase.nodes.IPAddress;
+import mcp.knowledgebase.KnowledgeBase;
+import mcp.knowledgebase.Node;
+import mcp.knowledgebase.nodeLibrary.Common;
 import mcp.modules.Modules;
 import mcp.modules.SimpleKbDumper;
+import net.dacce.commons.general.UnexpectedException;
+import net.dacce.commons.netaddr.IP4Utils;
+import net.dacce.commons.netaddr.InvalidIPAddressFormatException;
 @Usage("Knowledge Base interaction\n"
 		+ "commands: dump list")
 @Man("The kb command allows the user to display knowledge base content")
@@ -62,9 +66,16 @@ public class kb extends BaseCommand
 		{
 			if ("addresses".equalsIgnoreCase(section))
 			{
-				for(IPAddress iPAddress: KnowledgeBaseImpl.getInstance().getIPAddressNodes())
+				for(Node address: KnowledgeBase.getInstance().getAllNodesByType(Common.IPV4_ADDRESS))
 				{
-					sb.append(iPAddress.getAddress().toString()).append("\n");
+					try
+					{
+						sb.append(IP4Utils.bytesToString(address.getValue())).append("\n");
+					}
+					catch (InvalidIPAddressFormatException e)
+					{
+						throw new UnexpectedException(e);
+					}
 				}
 			}
 		}

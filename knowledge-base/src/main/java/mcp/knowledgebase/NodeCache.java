@@ -36,12 +36,12 @@ public class NodeCache
 	 * @param value
 	 * @return
 	 */
-	synchronized boolean createNodeIfPossible(NodeType nodeType, byte[] value)
+	synchronized boolean createNodeIfPossible(DataType nodeType, byte[] value)
 	{
 		throw new NotImplementedException();
 	}
 	
-	Node getOrCreateNode(NodeType nodeType, byte[] value)
+	Node getOrCreateNode(DataType nodeType, byte[] value)
 	{
 		if (nodeExists(nodeType, value))
 			return getNodeFromCache(nodeType, value);
@@ -49,17 +49,17 @@ public class NodeCache
 			return createNode(nodeType, value);
 	}
 
-	boolean nodeExists(NodeType nodeType, byte[] value)
+	boolean nodeExists(DataType nodeType, byte[] value)
 	{
 		throw new NotImplementedException();
 	}
 
-	private Node getNodeFromCache(NodeType nodeType, byte[] value)
+	private Node getNodeFromCache(DataType nodeType, byte[] value)
 	{
 		throw new NotImplementedException();
 	}
 	
-	private Node createNode(NodeType nodeType, byte[] value)
+	private Node createNode(DataType nodeType, byte[] value)
 	{
 		throw new NotImplementedException();
 	}

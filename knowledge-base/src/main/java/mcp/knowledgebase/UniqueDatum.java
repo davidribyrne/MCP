@@ -5,18 +5,18 @@ import java.util.UUID;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 
-public abstract class UniqueElement
+public abstract class UniqueDatum
 {
 	private UUID uuid;
 
 
-	protected UniqueElement()
+	protected UniqueDatum()
 	{
 		this.uuid = UUID.randomUUID();
 	}
 
 
-	protected UniqueElement(UUID uuid)
+	protected UniqueDatum(UUID uuid)
 	{
 		if (uuid == null)
 		{
@@ -39,9 +39,9 @@ public abstract class UniqueElement
 	@Override
 	public boolean equals(Object obj)
 	{
-		if (obj instanceof UniqueElement)
+		if (obj instanceof UniqueDatum)
 		{
-			UniqueElement o = (UniqueElement) obj;
+			UniqueDatum o = (UniqueDatum) obj;
 			return o.uuid.equals(uuid);
 		}
 		else

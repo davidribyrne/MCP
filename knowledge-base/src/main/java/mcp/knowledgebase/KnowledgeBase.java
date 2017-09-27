@@ -121,7 +121,7 @@ public class KnowledgeBase
 		
 	}
 
-	public void addNodeType(NodeType nodeType)
+	public void addNodeType(DataType nodeType)
 	{
 		try
 		{
@@ -141,22 +141,22 @@ public class KnowledgeBase
 		}
 	}
 	
-	public synchronized boolean createNodeIfPossible(NodeType nodeType, byte[] value)
+	public synchronized boolean createNodeIfPossible(DataType nodeType, byte[] value)
 	{
 		return NodeCache.getInstance().createNodeIfPossible(nodeType, value);
 	}
 	
-	public Node getOrCreateNode(NodeType nodeType, byte[] value)
+	public Node getOrCreateNode(DataType nodeType, byte[] value)
 	{
 		return NodeCache.getInstance().getOrCreateNode(nodeType, value);
 	}
 
-	public boolean nodeExists(NodeType nodeType, byte[] value)
+	public boolean nodeExists(DataType nodeType, byte[] value)
 	{
 		return NodeCache.getInstance().nodeExists(nodeType, value);
 	}
 
-	public Iterable<Node> getAllNodesByType(NodeType type)
+	public Iterable<Node> getAllNodesByType(DataType type)
 	{
 		throw new NotImplementedException();
 	}

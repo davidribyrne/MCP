@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Connection extends UniqueElement
+public class Connection extends ComponentWithAttributes
 {
 	private final static Logger logger = LoggerFactory.getLogger(Connection.class);
 	private final Node nodeA;

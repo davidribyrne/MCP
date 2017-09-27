@@ -10,15 +10,15 @@ import org.slf4j.LoggerFactory;
 
 import net.dacce.commons.general.UniqueList;
 
-public class Node extends UniqueElement
+public class Node extends ComponentWithAttributes
 {
 	private final static Logger logger = LoggerFactory.getLogger(Node.class);
 	private final byte[] value;
 	private final UniqueList<Connection> connections;
-	private final NodeType type;
+	private final DataType type;
 	private final Timestamp creationTime;
 
-	public Node(	NodeType type, byte [] value)
+	public Node(	DataType type, byte [] value)
 	{
 		creationTime = Timestamp.from(Instant.now());
 		this.type = type;
@@ -36,7 +36,7 @@ public class Node extends UniqueElement
 	 * @param type
 	 * @param value
 	 */
-	Node(UUID uuid, Timestamp creationTime, NodeType type, byte [] value)
+	Node(UUID uuid, Timestamp creationTime, DataType type, byte [] value)
 	{
 		super(uuid);
 		this.creationTime = creationTime;
@@ -76,7 +76,7 @@ public class Node extends UniqueElement
 	}
 
 
-	public NodeType getType()
+	public DataType getType()
 	{
 		return type;
 	}

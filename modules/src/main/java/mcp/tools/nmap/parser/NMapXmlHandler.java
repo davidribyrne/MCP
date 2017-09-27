@@ -43,6 +43,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import mcp.knowledgebase.KnowledgeBase;
+import mcp.knowledgebase.Node;
 import mcp.knowledgebase.attributes.host.IcmpResponseType;
 import mcp.knowledgebase.attributes.host.OSGuess;
 import mcp.knowledgebase.attributes.port.PortResponse;
@@ -82,12 +83,12 @@ public class NMapXmlHandler extends DefaultHandler
 
 	private boolean isCpeData = false;
 	private final NmapScanSource source;
-	private IPAddress currentIPAddress;
-	private SimpleInetAddress tempIPAddress;
-	private Port currentPort;
+	private Node currentIPAddress;
+	private Node tempIPAddress;
+	private Node currentPort;
 	private Integer currentPortNumber;
 	private PortType currentPortType;
-	private PortResponse currentPortResponse;
+	private Node currentPortResponse;
 	private OSGuess currentOSGuess;
 	private MacAddress currentMac;
 	private final Instant scanTime;
@@ -123,7 +124,7 @@ public class NMapXmlHandler extends DefaultHandler
 	}
 
 
-	private IPAddress getCurrentIPAddress()
+	private Node getCurrentIPAddress()
 	{
 		if (currentIPAddress == null)
 		{
@@ -246,8 +247,8 @@ public class NMapXmlHandler extends DefaultHandler
 			}
 			if (qName.equals(NmapDtdStrings.STATE_TAG))
 			{
-				currentPortResponse = PortResponse.parseNmapText(attributes.getValue(NmapDtdStrings.STATE_ATTR));
-				if (currentPortResponse == PortResponse.OPEN || trackAll)
+				currentPortResponse = PortState.parseNmapText(attributes.getValue(NmapDtdStrings.STATE_ATTR));
+				if (currentPortResponse == PortState.OPEN || trackAll)
 				{
 					PortState state = new PortStateImpl(getCurrentPort(), scanTime, source, currentPortResponse,
 							PortStateReason.parseNmapText(attributes.getValue(NmapDtdStrings.REASON_ATTR)));
@@ -265,7 +266,7 @@ public class NMapXmlHandler extends DefaultHandler
 				currentServiceName = attributes.getValue(NmapDtdStrings.NAME_ATTR);
 				currentServiceReason = ServiceReason.fromNmap(attributes.getValue(NmapDtdStrings.METHOD_ATTR));
 				// If the port is open, or we're logging everything, put the service description in
-				if (PortResponse.OPEN.equals(currentPortResponse) || trackAll)
+				if (PortState.OPEN.equals(currentPortResponse) || trackAll)
 				{
 					getCurrentPort().setServiceDescription(getCurrentServiceDescription());
 				}

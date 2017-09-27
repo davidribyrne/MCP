@@ -1,14 +1,15 @@
 package mcp.knowledgebase.nodeLibrary;
 
 
+import mcp.knowledgebase.DataType;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.Node;
-import mcp.knowledgebase.NodeType;
+import mcp.knowledgebase.DataType;
 
 
 public class PortStateReason
 {
-	public static final NodeType PORT_STATE_REASON = NodeType.getByName("PORT_STATE_REASON", "Port state reason");
+	public static final DataType PORT_STATE_REASON = DataType.getByName("PORT_STATE_REASON", "Port state reason");
 
 	public static final Node PORT_STATE_REASON_NMAP_ABORT = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE_REASON, "abort".getBytes());
 	public static final Node PORT_STATE_REASON_NMAP_ACCES = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE_REASON, "perm-denied".getBytes());

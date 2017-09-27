@@ -4,29 +4,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
 
-public class NodeType extends DataType
+public class AttributeType extends DataType
 {
-	private final static Logger logger = LoggerFactory.getLogger(NodeType.class);
+	private final static Logger logger = LoggerFactory.getLogger(AttributeType.class);
 
 
-	public NodeType()
+
+	public AttributeType()
 	{
 	}
-	
-	
-	public NodeType(UUID uuid, String name, String description)
-	{
-		super(uuid, name, description);
-	}
 
 
-	public NodeType(UUID uuid)
+	public AttributeType(UUID uuid)
 	{
 		super(uuid);
 	}
 
 
-	public static synchronized NodeType getByName(String name, String description)
+	public AttributeType(UUID uuid, String name, String description)
+	{
+		super(uuid, name, description);
+	}
+	
+	
+
+	public static synchronized AttributeType getByName(String name, String description)
 	{
 		UUID uuid = UUID.nameUUIDFromBytes(name.getBytes());
 		DataType t = DataType.getByName(name);
@@ -37,7 +39,7 @@ public class NodeType extends DataType
 		}
 		try
 		{
-			return (NodeType) t;
+			return (AttributeType) t;
 		}
 		catch (ClassCastException e)
 		{
@@ -45,5 +47,4 @@ public class NodeType extends DataType
 			throw e;
 		}
 	}
-
 }

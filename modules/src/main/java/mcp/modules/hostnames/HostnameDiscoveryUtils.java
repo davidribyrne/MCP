@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.Connection;
 import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.Node;
 import mcp.knowledgebase.NodeCache;
 import mcp.knowledgebase.Scope;
 import mcp.knowledgebase.nodeLibrary.Common;
+import mcp.knowledgebase.nodes.Node;
 import net.dacce.commons.dns.client.DnsTransaction;
 import net.dacce.commons.dns.client.Resolver;
 import net.dacce.commons.dns.exceptions.DnsClientConnectException;

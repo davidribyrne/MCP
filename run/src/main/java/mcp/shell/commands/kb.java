@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.Node;
 import mcp.knowledgebase.nodeLibrary.Common;
+import mcp.knowledgebase.nodes.Node;
 import mcp.modules.Modules;
 import mcp.modules.SimpleKbDumper;
 import net.dacce.commons.general.UnexpectedException;

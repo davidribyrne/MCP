@@ -25,7 +25,7 @@ import mcp.events.listeners.ModuleRunCompleteListener;
 import mcp.events.listeners.NodeCreationListener;
 import mcp.jobmanager.jobs.JobState;
 import mcp.knowledgebase.DataType;
-import mcp.knowledgebase.Node;
+import mcp.knowledgebase.nodes.Node;
 import net.dacce.commons.general.MapOfLists;
 
 

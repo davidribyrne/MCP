@@ -5,45 +5,55 @@ import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.DataType;
 import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.Node;
+import mcp.knowledgebase.nodes.Node;
 import mcp.knowledgebase.DataType;
 
 import java.util.*;
 
-public class PortState
+public enum PortState
 {
-	public static final DataType PORT_STATE = DataType.getByName("PORT_STATUS", "Port status");
+	OPEN("open"), 
+	OPEN_FILTERED("open|filtered"), 
+	FILTERED("filtered"),
+	CLOSED("closed"),
+	WRAPPED("wrapped"),
+	UNKNOWN("unknown");
 	
-	public static final Node PORT_OPEN = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Open".getBytes());
-	public static final Node PORT_OPEN_FILTERED = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Open|filtered".getBytes());
-	public static final Node PORT_FILTERED = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Filtered".getBytes());
-	public static final Node PORT_CLOSED = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Closed".getBytes());
-	public static final Node PORT_WRAPPED = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Wrapped".getBytes());
-	public static final Node PORT_UNKNOWN = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Unknown".getBytes());
 	
+	
+	private String description;
+	
+	private PortState(String description)
+	{
+		this.description = description;
+	}
 	
 
 
-	public static Node parseNmapText(String text)
+	public static PortState parseNmapText(String text)
 	{
 		switch (text.toLowerCase())
 		{
 			case "open":
-				return PORT_OPEN;
+				return OPEN;
 			case "open|filtered":
-				return PORT_OPEN_FILTERED;
+				return OPEN_FILTERED;
 			case "filtered":
-				return PORT_FILTERED;
+				return FILTERED;
 			case "closed":
-				return PORT_CLOSED;
+				return CLOSED;
 			case "wrapped":
-				return PORT_WRAPPED;
+				return WRAPPED;
 		}
-		return PORT_UNKNOWN;
+		return UNKNOWN;
 	}
 
 
-	private PortState()
+
+	public String getDescription()
 	{
+		return description;
 	}
+
+
 }

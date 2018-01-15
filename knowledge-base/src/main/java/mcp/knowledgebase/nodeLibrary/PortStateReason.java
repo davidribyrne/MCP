@@ -3,7 +3,7 @@ package mcp.knowledgebase.nodeLibrary;
 
 import mcp.knowledgebase.DataType;
 import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.Node;
+import mcp.knowledgebase.nodes.Node;
 import mcp.knowledgebase.DataType;
 
 

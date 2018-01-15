@@ -12,6 +12,7 @@ import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import mcp.knowledgebase.nodes.Node;
 import net.dacce.commons.general.FileUtils;
 import net.dacce.commons.general.NotImplementedException;
 import net.dacce.commons.general.UnexpectedException;

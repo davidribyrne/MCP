@@ -43,7 +43,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.Node;
 import mcp.knowledgebase.attributes.host.IcmpResponseType;
 import mcp.knowledgebase.attributes.host.OSGuess;
 import mcp.knowledgebase.attributes.port.PortResponse;
@@ -55,6 +54,7 @@ import mcp.knowledgebase.attributes.port.ServiceReason;
 import mcp.knowledgebase.nodes.Hostname;
 import mcp.knowledgebase.nodes.IPAddress;
 import mcp.knowledgebase.nodes.MacAddress;
+import mcp.knowledgebase.nodes.Node;
 import mcp.knowledgebase.nodes.Port;
 import mcp.knowledgebase.nodes.PortType;
 import mcp.knowledgebase.sources.NmapScanSource;

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.DataType;
 import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.Node;
+import mcp.knowledgebase.nodes.Node;
 import mcp.knowledgebase.DataType;
 
 import java.util.*;

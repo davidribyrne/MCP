@@ -3,7 +3,7 @@ package mcp.events.events;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import mcp.knowledgebase.Node;
+import mcp.knowledgebase.nodes.Node;
 
 
 public class NodeCreationEvent extends McpEvent

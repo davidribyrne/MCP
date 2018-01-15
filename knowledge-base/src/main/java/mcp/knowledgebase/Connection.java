@@ -5,6 +5,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import mcp.knowledgebase.nodes.Node;
+
 public class Connection extends ComponentWithAttributes
 {
 	private final static Logger logger = LoggerFactory.getLogger(Connection.class);

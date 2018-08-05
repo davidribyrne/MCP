@@ -4,9 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
 
-public class NodeType extends DataType
+public class NodeType extends UniqueDatum
 {
 	private final static Logger logger = LoggerFactory.getLogger(NodeType.class);
+
+	private static final Map<UUID, NodeType> uuids = new HashMap<UUID, NodeType>(5);
+	protected String name;
+	protected String description;
 
 
 	public NodeType()
@@ -16,7 +20,9 @@ public class NodeType extends DataType
 	
 	public NodeType(UUID uuid, String name, String description)
 	{
-		super(uuid, name, description);
+		super(uuid);
+		this.name = name;
+		this.description = description;
 	}
 
 
@@ -26,24 +32,33 @@ public class NodeType extends DataType
 	}
 
 
+
 	public static synchronized NodeType getByName(String name, String description)
 	{
+		
 		UUID uuid = UUID.nameUUIDFromBytes(name.getBytes());
-		DataType t = DataType.getByName(name);
-		if (t == null)
+		if (uuids.containsKey(uuid))
 		{
-			t = new NodeType(uuid, name, description);
-			DataType.addDataType(t);
+			return uuids.get(uuid);
 		}
-		try
-		{
-			return (NodeType) t;
-		}
-		catch (ClassCastException e)
-		{
-			logger.error("Node and attribute types have the same name (+ " + name + ")", e);
-			throw e;
-		}
+
+		NodeType type = new NodeType(uuid, name, description);
+		uuids.put(type.getID(), type);
+	
+		return type;
+		
+	}
+
+
+	public String getName()
+	{
+		return name;
+	}
+
+
+	public String getDescription()
+	{
+		return description;
 	}
 
 }

@@ -10,7 +10,7 @@
 	<name>mcp-commons</name>
 	<dependencies>
 		<dependency>
-			<groupId>net.dacce</groupId>
+			<groupId>space.dcce</groupId>
 			<artifactId>commons-general</artifactId>
 		</dependency>
 

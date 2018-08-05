@@ -12,8 +12,8 @@ import mcp.modules.nmap.NmapIcmp;
 import mcp.modules.nmap.NmapTcp;
 import mcp.modules.nmap.NmapUdp;
 import mcp.options.MCPOptions;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.general.UnexpectedException;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.general.UnexpectedException;
 
 
 

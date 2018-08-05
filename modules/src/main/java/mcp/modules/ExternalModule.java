@@ -1,7 +1,7 @@
 package mcp.modules;
 
-import net.dacce.commons.cli.ModuleOptions;
-import net.dacce.commons.cli.OptionContainer;
+import space.dcce.commons.cli.ModuleOptions;
+import space.dcce.commons.cli.OptionContainer;
 
 public abstract class ExternalModule extends Module
 {

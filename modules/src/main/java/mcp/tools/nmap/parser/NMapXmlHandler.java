@@ -59,10 +59,10 @@ import mcp.knowledgebase.nodes.Port;
 import mcp.knowledgebase.nodes.PortType;
 import mcp.knowledgebase.sources.NmapScanSource;
 import mcp.modules.GeneralOptions;
-import net.dacce.commons.netaddr.IPUtils;
-import net.dacce.commons.netaddr.InvalidIPAddressFormatException;
-import net.dacce.commons.netaddr.MacUtils;
-import net.dacce.commons.netaddr.SimpleInetAddress;
+import space.dcce.commons.netaddr.IPUtils;
+import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
+import space.dcce.commons.netaddr.MacUtils;
+import space.dcce.commons.netaddr.SimpleInetAddress;
 
 
 /**

@@ -16,14 +16,14 @@ import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.NodeType;
 import mcp.knowledgebase.nodeLibrary.Common;
 import mcp.knowledgebase.NodeType;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.dns.client.DnsTransaction;
-import net.dacce.commons.dns.exceptions.DnsClientConnectException;
-import net.dacce.commons.dns.exceptions.DnsResponseTimeoutException;
-import net.dacce.commons.dns.messages.QuestionRecord;
-import net.dacce.commons.dns.records.RecordType;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.general.StringUtils;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.dns.client.DnsTransaction;
+import space.dcce.commons.dns.exceptions.DnsClientConnectException;
+import space.dcce.commons.dns.exceptions.DnsResponseTimeoutException;
+import space.dcce.commons.dns.messages.QuestionRecord;
+import space.dcce.commons.dns.records.RecordType;
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.general.StringUtils;
 
 public class CommonHostnames extends HostnameDiscoveryModule implements NodeCreationListener
 {

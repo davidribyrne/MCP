@@ -13,9 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.nodes.Node;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.general.NotImplementedException;
-import net.dacce.commons.general.UnexpectedException;
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.general.NotImplementedException;
+import space.dcce.commons.general.UnexpectedException;
 
 
 public class KnowledgeBase
@@ -108,7 +108,7 @@ public class KnowledgeBase
 					"insert into NODES (id, type, time, value) values (?, ?, ?, ?)");
 
 			psInsert.setString(1, node.getID().toString());
-			psInsert.setString(2, node.getType().getID().toString());
+			psInsert.setString(2, node.getNodeType().getID().toString());
 			psInsert.setTimestamp(3, node.getCreationTime());
 			psInsert.setString(4, new String(node.getValue()));
 			psInsert.execute();
@@ -122,7 +122,7 @@ public class KnowledgeBase
 		
 	}
 
-	public void addNodeType(DataType nodeType)
+	public void addNodeType(NodeType nodeType)
 	{
 		try
 		{
@@ -142,22 +142,22 @@ public class KnowledgeBase
 		}
 	}
 	
-	public synchronized boolean createNodeIfPossible(DataType nodeType, byte[] value)
+	public synchronized boolean createNodeIfPossible(NodeType nodeType, byte[] value)
 	{
 		return NodeCache.getInstance().createNodeIfPossible(nodeType, value);
 	}
 	
-	public Node getOrCreateNode(DataType nodeType, byte[] value)
+	public Node getOrCreateNode(NodeType nodeType, byte[] value)
 	{
 		return NodeCache.getInstance().getOrCreateNode(nodeType, value);
 	}
 
-	public boolean nodeExists(DataType nodeType, byte[] value)
+	public boolean nodeExists(NodeType nodeType, byte[] value)
 	{
 		return NodeCache.getInstance().nodeExists(nodeType, value);
 	}
 
-	public Iterable<Node> getAllNodesByType(DataType type)
+	public Iterable<Node> getAllNodesByType(NodeType type)
 	{
 		throw new NotImplementedException();
 	}

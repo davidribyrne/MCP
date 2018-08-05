@@ -51,7 +51,7 @@ import org.xml.sax.SAXException;
 
 import mcp.knowledgebase.sources.NmapScanSource;
 import mcp.knowledgebase.sources.NmapScanSourceImpl;
-import net.dacce.commons.general.UnexpectedException;
+import space.dcce.commons.general.UnexpectedException;
 
 
 /**

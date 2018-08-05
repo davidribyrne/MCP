@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
 import mcp.modules.parsers.Parser;
 import mcp.modules.parsers.Parsers;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionContainer;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.general.FileUtils;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionContainer;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.general.FileUtils;
 
 public class InputFileMonitor extends Module
 {

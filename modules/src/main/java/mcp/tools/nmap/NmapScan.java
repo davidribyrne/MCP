@@ -18,10 +18,10 @@ import mcp.jobmanager.executors.JobCompleteCallback;
 import mcp.jobmanager.jobs.JobState;
 import mcp.modules.nmap.NmapGeneralOptions;
 import mcp.tools.nmap.parser.NmapXmlParser;
-import net.dacce.commons.general.CollectionUtils;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.general.UnexpectedException;
-import net.dacce.commons.netaddr.Addresses;
+import space.dcce.commons.general.CollectionUtils;
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.general.UnexpectedException;
+import space.dcce.commons.netaddr.Addresses;
 
 
 public class NmapScan implements JobCompleteCallback

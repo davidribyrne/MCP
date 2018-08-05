@@ -10,7 +10,7 @@ import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpCompleteListener;
 import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
-import net.dacce.commons.cli.ModuleOption;
+import space.dcce.commons.cli.ModuleOption;
 
 public class SampleModule extends ExternalModule implements McpStartListener, McpCompleteListener
 {

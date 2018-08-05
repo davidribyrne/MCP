@@ -14,16 +14,16 @@ import mcp.knowledgebase.NodeCache;
 import mcp.knowledgebase.nodeLibrary.Common;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Module;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.dns.client.Resolver;
-import net.dacce.commons.dns.client.cache.DnsDiskCache;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.validators.IPAddressValidator;
-import net.dacce.commons.validators.NumericValidator;
-import net.dacce.commons.validators.PathState;
-import net.dacce.commons.validators.PathValidator;
-import net.dacce.commons.validators.Requirement;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.dns.client.Resolver;
+import space.dcce.commons.dns.client.cache.DnsDiskCache;
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.validators.IPAddressValidator;
+import space.dcce.commons.validators.NumericValidator;
+import space.dcce.commons.validators.PathState;
+import space.dcce.commons.validators.PathValidator;
+import space.dcce.commons.validators.Requirement;
 
 public class HostnameDiscoveryGeneralOptions extends Module implements McpStartListener
 {

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.nodes.Node;
 
-public class Connection extends ComponentWithAttributes
+public class Connection extends UniqueDatum
 {
 	private final static Logger logger = LoggerFactory.getLogger(Connection.class);
 	private final Node nodeA;

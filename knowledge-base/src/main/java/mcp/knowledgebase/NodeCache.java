@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.nodes.Node;
-import net.dacce.commons.general.NotImplementedException;
+import space.dcce.commons.general.NotImplementedException;
 
 
 public class NodeCache
@@ -37,12 +37,12 @@ public class NodeCache
 	 * @param value
 	 * @return
 	 */
-	synchronized boolean createNodeIfPossible(DataType nodeType, byte[] value)
+	synchronized boolean createNodeIfPossible(NodeType nodeType, byte[] value)
 	{
 		throw new NotImplementedException();
 	}
 	
-	Node getOrCreateNode(DataType nodeType, byte[] value)
+	Node getOrCreateNode(NodeType nodeType, Object value)
 	{
 		if (nodeExists(nodeType, value))
 			return getNodeFromCache(nodeType, value);
@@ -50,21 +50,20 @@ public class NodeCache
 			return createNode(nodeType, value);
 	}
 
-	boolean nodeExists(DataType nodeType, byte[] value)
+	boolean nodeExists(NodeType nodeType, Object value)
 	{
 		throw new NotImplementedException();
 	}
 
-	private Node getNodeFromCache(DataType nodeType, byte[] value)
+	private Node getNodeFromCache(NodeType nodeType, Object value)
 	{
 		throw new NotImplementedException();
 	}
 	
-	private Node createNode(DataType nodeType, byte[] value)
+	private Node createNode(NodeType nodeType, Object value)
 	{
 		throw new NotImplementedException();
 	}
-
 
 
 	public static NodeCache getInstance()

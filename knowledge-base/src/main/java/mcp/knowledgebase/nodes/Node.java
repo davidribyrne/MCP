@@ -9,19 +9,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.Connection;
+import mcp.knowledgebase.NodeType;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.UniqueDatum;
-import net.dacce.commons.general.UniqueList;
+import space.dcce.commons.general.UniqueList;
 
 public abstract class Node extends UniqueDatum
 {
 	private final static Logger logger = LoggerFactory.getLogger(Node.class);
 	private final UniqueList<Connection> connections;
 	private final Timestamp creationTime;
+	private final NodeType nodeType;
+	private final String value;
 
-	public Node(	)
+
+
+	public Node(NodeType nodeType, String value)
 	{
 		super();
+		this.value = value;
+		this.nodeType = nodeType;
 		creationTime = Timestamp.from(Instant.now());
 		connections = new UniqueList<Connection>(1);
 		
@@ -36,9 +43,11 @@ public abstract class Node extends UniqueDatum
 	 * @param type
 	 * @param value
 	 */
-	Node(UUID uuid, Timestamp creationTime)
+	Node(NodeType NodeType, String value, UUID uuid, Timestamp creationTime)
 	{
 		super(uuid);
+		this.value = value;
+		this.nodeType = NodeType;
 		this.creationTime = creationTime;
 		this.connections = new UniqueList<Connection>(false);
 	}
@@ -60,5 +69,17 @@ public abstract class Node extends UniqueDatum
 	public Timestamp getCreationTime()
 	{
 		return creationTime;
+	}
+
+
+	public String getValue()
+	{
+		return value;
+	}
+
+
+	public NodeType getNodeType()
+	{
+		return nodeType;
 	}
 }

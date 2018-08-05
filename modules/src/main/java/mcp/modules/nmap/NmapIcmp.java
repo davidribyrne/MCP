@@ -7,8 +7,8 @@ import mcp.knowledgebase.Scope;
 import mcp.modules.GeneralOptions;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionGroup;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionGroup;
 
 
 public class NmapIcmp extends NmapModule implements McpStartListener

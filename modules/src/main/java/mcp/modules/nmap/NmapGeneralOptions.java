@@ -6,16 +6,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.modules.Module;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.general.BooleanFormatException;
-import net.dacce.commons.general.BooleanUtils;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.validators.BooleanValidator;
-import net.dacce.commons.validators.NumericValidator;
-import net.dacce.commons.validators.PathState;
-import net.dacce.commons.validators.PathValidator;
-import net.dacce.commons.validators.Requirement;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.general.BooleanFormatException;
+import space.dcce.commons.general.BooleanUtils;
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.validators.BooleanValidator;
+import space.dcce.commons.validators.NumericValidator;
+import space.dcce.commons.validators.PathState;
+import space.dcce.commons.validators.PathValidator;
+import space.dcce.commons.validators.Requirement;
 
 
 public class NmapGeneralOptions extends Module

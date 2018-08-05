@@ -15,11 +15,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.dacce</groupId>
+			<groupId>space.dcce</groupId>
 			<artifactId>commons-general</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.dacce</groupId>
+			<groupId>space.dcce</groupId>
 			<artifactId>commons-netaddr</artifactId>
 		</dependency>
 		<dependency>

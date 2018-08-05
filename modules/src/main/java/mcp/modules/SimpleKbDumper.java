@@ -11,9 +11,9 @@ import mcp.events.events.McpCompleteEvent;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.Scope;
-import net.dacce.commons.cli.OptionContainer;
-import net.dacce.commons.general.CollectionUtils;
-import net.dacce.commons.general.StringUtils;
+import space.dcce.commons.cli.OptionContainer;
+import space.dcce.commons.general.CollectionUtils;
+import space.dcce.commons.general.StringUtils;
 
 
 public class SimpleKbDumper extends Module

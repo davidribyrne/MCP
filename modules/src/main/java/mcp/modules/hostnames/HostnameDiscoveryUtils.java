@@ -13,16 +13,16 @@ import mcp.knowledgebase.NodeCache;
 import mcp.knowledgebase.Scope;
 import mcp.knowledgebase.nodeLibrary.Common;
 import mcp.knowledgebase.nodes.Node;
-import net.dacce.commons.dns.client.DnsTransaction;
-import net.dacce.commons.dns.client.Resolver;
-import net.dacce.commons.dns.exceptions.DnsClientConnectException;
-import net.dacce.commons.dns.exceptions.DnsNoRecordFoundException;
-import net.dacce.commons.dns.exceptions.DnsResponseTimeoutException;
-import net.dacce.commons.dns.records.AbstractAddressRecord;
-import net.dacce.commons.dns.records.AbstractHostnameRecord;
-import net.dacce.commons.dns.records.ResourceRecord;
-import net.dacce.commons.dns.utils.DomainUtils;
-import net.dacce.commons.netaddr.SimpleInetAddress;
+import space.dcce.commons.dns.client.DnsTransaction;
+import space.dcce.commons.dns.client.Resolver;
+import space.dcce.commons.dns.exceptions.DnsClientConnectException;
+import space.dcce.commons.dns.exceptions.DnsNoRecordFoundException;
+import space.dcce.commons.dns.exceptions.DnsResponseTimeoutException;
+import space.dcce.commons.dns.records.AbstractAddressRecord;
+import space.dcce.commons.dns.records.AbstractHostnameRecord;
+import space.dcce.commons.dns.records.ResourceRecord;
+import space.dcce.commons.dns.utils.DomainUtils;
+import space.dcce.commons.netaddr.SimpleInetAddress;
 
 
 public class HostnameDiscoveryUtils

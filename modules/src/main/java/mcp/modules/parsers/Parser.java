@@ -2,7 +2,7 @@ package mcp.modules.parsers;
 
 import java.io.File;
 
-import net.dacce.commons.cli.OptionContainer;
+import space.dcce.commons.cli.OptionContainer;
 
 public interface Parser
 {

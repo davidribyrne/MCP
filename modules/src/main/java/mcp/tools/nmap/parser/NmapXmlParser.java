@@ -49,8 +49,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import mcp.knowledgebase.sources.NmapScanSource;
-import mcp.knowledgebase.sources.NmapScanSourceImpl;
+import mcp.knowledgebase.Connection;
+import mcp.knowledgebase.KnowledgeBase;
+import mcp.knowledgebase.Node;
+import mcp.knowledgebase.nodeLibrary.General;
+import mcp.knowledgebase.nodeLibrary.Nmap;
 import space.dcce.commons.general.UnexpectedException;
 
 
@@ -123,7 +126,11 @@ public class NmapXmlParser
 		}
 		
 		
-		NmapScanSource source = new NmapScanSourceImpl(path, scanDescription, commandLine);
+		Node source = KnowledgeBase.getInstance().getOrCreateNode(Nmap.NMAP_SCAN_SOURCE, path);
+		Node description = KnowledgeBase.getInstance().getOrCreateNode(General.NOTE, scanDescription);
+		Node commandLineNode = KnowledgeBase.getInstance().getOrCreateNode(General.COMMAND_LINE, commandLine);
+		
+		Connection.getOrCreateConnection(source, description, commandLineNode);
 		
 		NMapXmlHandler nmxh = new NMapXmlHandler(scanTime, source);
 		SAXParserFactory spf = SAXParserFactory.newInstance();

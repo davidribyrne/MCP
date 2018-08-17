@@ -7,12 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import mcp.events.events.McpCompleteEvent;
 import mcp.events.events.McpStartEvent;
-import mcp.events.listeners.McpCompleteListener;
 import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import space.dcce.commons.cli.ModuleOption;
 
-public class SampleModule extends ExternalModule implements McpStartListener, McpCompleteListener
+public class SampleModule extends ExternalModule implements McpStartListener
 {
 	final static Logger logger = LoggerFactory.getLogger(SampleModule.class);
 

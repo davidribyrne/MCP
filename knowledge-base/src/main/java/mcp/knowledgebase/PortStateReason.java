@@ -1,4 +1,4 @@
-package mcp.knowledgebase.nodes;
+package mcp.knowledgebase;
 
 
 import java.util.HashMap;

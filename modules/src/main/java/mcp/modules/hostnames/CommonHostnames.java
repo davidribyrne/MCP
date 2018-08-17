@@ -14,7 +14,7 @@ import mcp.events.events.NodeCreationEvent;
 import mcp.events.listeners.NodeCreationListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.NodeType;
-import mcp.knowledgebase.nodeLibrary.Common;
+import mcp.knowledgebase.nodeLibrary.Hostnames;
 import mcp.knowledgebase.NodeType;
 import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.dns.client.DnsTransaction;
@@ -31,7 +31,7 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 
 	private List<String> commonNames;
 	@SuppressWarnings("rawtypes")
-	private final Collection nodeTypes = Collections.singletonList(Common.DOMAIN); 
+	private final Collection nodeTypes = Collections.singletonList(Hostnames.DOMAIN); 
 
 	public CommonHostnames()
 	{
@@ -90,7 +90,7 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 	@Override
 	public void handleEvent(NodeCreationEvent reconEvent)
 	{
-		String domainName = new String(reconEvent.getNode().getValue());
+		String domainName = new String(reconEvent.getNode().getValue().toString());
 		List<DnsTransaction> transactions = new ArrayList<DnsTransaction>(commonNames.size());
 		for (String name: commonNames)
 		{

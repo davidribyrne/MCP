@@ -9,7 +9,7 @@ import org.crsh.cli.spi.Completion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.dacce.commons.general.MapOfLists;
+import space.dcce.commons.general.MapOfLists;
 
 public class MappedListCompleter implements Completer
 {

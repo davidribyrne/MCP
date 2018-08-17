@@ -1,4 +1,4 @@
-package mcp.knowledgebase.nodes;
+package mcp.knowledgebase;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -8,17 +8,14 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.knowledgebase.Connection;
-import mcp.knowledgebase.NodeType;
-import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.UniqueDatum;
+import mcp.knowledgebase.primitives.Primitive;
 import space.dcce.commons.general.UniqueList;
 
-public abstract class Node extends UniqueDatum
+public class Node extends UniqueDatum
 {
 	private final static Logger logger = LoggerFactory.getLogger(Node.class);
 	private final UniqueList<Connection> connections;
-	private final Timestamp creationTime;
+//	private final Timestamp creationTime;
 	private final NodeType nodeType;
 	private final String value;
 
@@ -29,10 +26,9 @@ public abstract class Node extends UniqueDatum
 		super();
 		this.value = value;
 		this.nodeType = nodeType;
-		creationTime = Timestamp.from(Instant.now());
+//		creationTime = Timestamp.from(Instant.now());
 		connections = new UniqueList<Connection>(1);
-		
-		KnowledgeBase.getInstance().addNode(this);
+		NodeCache.getInstance().addItem(this);
 	}
 	
 	
@@ -43,13 +39,14 @@ public abstract class Node extends UniqueDatum
 	 * @param type
 	 * @param value
 	 */
-	Node(NodeType NodeType, String value, UUID uuid, Timestamp creationTime)
+	Node(NodeType NodeType, String value, UUID uuid)
 	{
 		super(uuid);
 		this.value = value;
 		this.nodeType = NodeType;
-		this.creationTime = creationTime;
+//		this.creationTime = creationTime;
 		this.connections = new UniqueList<Connection>(false);
+		NodeCache.getInstance().addItem(this);
 	}
 
 
@@ -66,10 +63,10 @@ public abstract class Node extends UniqueDatum
 	}
 
 
-	public Timestamp getCreationTime()
-	{
-		return creationTime;
-	}
+//	public Timestamp getCreationTime()
+//	{
+//		return creationTime;
+//	}
 
 
 	public String getValue()

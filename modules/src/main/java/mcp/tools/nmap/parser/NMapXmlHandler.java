@@ -42,22 +42,17 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import mcp.knowledgebase.Connection;
 import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.attributes.host.IcmpResponseType;
-import mcp.knowledgebase.attributes.host.OSGuess;
-import mcp.knowledgebase.attributes.port.PortResponse;
-import mcp.knowledgebase.attributes.port.PortState;
-import mcp.knowledgebase.attributes.port.PortStateImpl;
-import mcp.knowledgebase.attributes.port.PortStateReason;
-import mcp.knowledgebase.attributes.port.ServiceDescription;
-import mcp.knowledgebase.attributes.port.ServiceReason;
-import mcp.knowledgebase.nodes.Hostname;
-import mcp.knowledgebase.nodes.IPAddress;
-import mcp.knowledgebase.nodes.MacAddress;
-import mcp.knowledgebase.nodes.Node;
-import mcp.knowledgebase.nodes.Port;
-import mcp.knowledgebase.nodes.PortType;
-import mcp.knowledgebase.sources.NmapScanSource;
+import mcp.knowledgebase.Node;
+import mcp.knowledgebase.nodeLibrary.General;
+import mcp.knowledgebase.nodeLibrary.Hostnames;
+import mcp.knowledgebase.nodeLibrary.Icmp;
+import mcp.knowledgebase.nodeLibrary.Network;
+import mcp.knowledgebase.nodeLibrary.NetworkService;
+import mcp.knowledgebase.nodeLibrary.Port;
+import mcp.knowledgebase.nodeLibrary.SoftwareHardware;
+import mcp.knowledgebase.primitives.Primitive;
 import mcp.modules.GeneralOptions;
 import space.dcce.commons.netaddr.IPUtils;
 import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
@@ -82,28 +77,28 @@ public class NMapXmlHandler extends DefaultHandler
 
 
 	private boolean isCpeData = false;
-	private final NmapScanSource source;
+	// private final Node scanSource;
 	private Node currentIPAddress;
-	private Node tempIPAddress;
-	private Node currentPort;
+	private String tempIPAddress;
+	private Connection currentPort;
 	private Integer currentPortNumber;
-	private PortType currentPortType;
-	private Node currentPortResponse;
-	private OSGuess currentOSGuess;
-	private MacAddress currentMac;
+	private Node currentPortType;
+	private Node currentPortState;
+	private Node currentOSGuess;
+	private Node currentMac;
 	private final Instant scanTime;
 	private boolean trackAll;
 	private String currentServiceName;
-	private ServiceReason currentServiceReason;
-	private ServiceDescription currentServiceDescription;
-	private IcmpResponseType currentIcmpResponse;
+	private Node currentServiceReason;
+	private Node currentServiceDescription;
+	private Node currentIcmpResponse;
 	// https://svn.nmap.org/nmap/docs/nmap.dtd
 
 
-	public NMapXmlHandler(Instant scanTime, NmapScanSource source)
+	public NMapXmlHandler(Instant scanTime, Node source)
 	{
 		this.scanTime = scanTime;
-		this.source = source;
+		// this.scanSource = source;
 		trackAll = GeneralOptions.getInstance().getTrackAllData().isEnabled();
 	}
 
@@ -118,8 +113,8 @@ public class NMapXmlHandler extends DefaultHandler
 	{
 		if (currentOSGuess == null)
 		{
-			currentOSGuess = new OSGuessImpl(scanTime, source, currentIPAddress.getHost());
-			currentIPAddress.getHost().addOSGuess(currentOSGuess);
+			currentOSGuess = KnowledgeBase.getInstance().getOrCreateNode(SoftwareHardware.HOST_OS_GUESS, "");
+			Connection.getOrCreateConnection(currentOSGuess, currentIPAddress);
 		}
 	}
 
@@ -128,28 +123,32 @@ public class NMapXmlHandler extends DefaultHandler
 	{
 		if (currentIPAddress == null)
 		{
-			currentIPAddress = KnowledgeBase.getInstance().getOrCreateIPAddressNode(tempIPAddress);
+			currentIPAddress = KnowledgeBase.getInstance().getOrCreateNode(Network.IPV4_ADDRESS, tempIPAddress);
 		}
 		return currentIPAddress;
 	}
 
 
-	private Port getCurrentPort()
+	private Connection getCurrentPort()
 	{
 		if (currentPort == null)
 		{
-			currentPort = getCurrentIPAddress().getOrCreatePort(currentPortType, currentPortNumber);
+			Node portNumber = KnowledgeBase.getInstance().getOrCreateNode(mcp.knowledgebase.nodeLibrary.Port.PORT_NUMBER,
+					currentPortNumber + "");
+			currentPort = Connection.getOrCreateConnection(true, currentPortType, portNumber, currentIPAddress);
+			currentPort.addNodes(currentPortState, currentServiceDescription, currentServiceReason);
 		}
 		return currentPort;
 	}
 
 
-	private ServiceDescription getCurrentServiceDescription()
+	private Node getCurrentServiceDescription()
 	{
 		if (currentServiceDescription == null)
 		{
-			currentServiceDescription = new ServiceDescriptionImpl(getCurrentPort(), scanTime, source,
-					currentServiceName, currentServiceReason);
+			currentServiceDescription = KnowledgeBase.getInstance().getOrCreateNode(NetworkService.NETWORK_SERVICE_DESCRIPTION,
+					currentServiceName);
+			Connection.getOrCreateConnection(currentServiceDescription, currentServiceReason);
 		}
 		return currentServiceDescription;
 	}
@@ -183,17 +182,19 @@ public class NMapXmlHandler extends DefaultHandler
 				currentMac = null;
 				currentPortType = null;
 				currentPortNumber = null;
-				currentPortResponse = null;
+				currentPortState = null;
 				currentServiceName = null;
 				currentServiceReason = null;
 				currentIcmpResponse = null;
 			}
 			if (qName.equals(NmapDtdStrings.STATUS_TAG))
 			{
-				currentIcmpResponse = IcmpResponseType.parseFromNmap(attributes.getValue(NmapDtdStrings.REASON_ATTR));
+				currentIcmpResponse = Icmp.parseIcmpResponseFromNmap(attributes.getValue(NmapDtdStrings.REASON_ATTR));
+				// IcmpResponseType.parseFromNmap(attributes.getValue(NmapDtdStrings.REASON_ATTR));
 				if (currentIcmpResponse != null && currentIPAddress != null)
 				{
-					getCurrentIPAddress().setIcmpResponse(currentIcmpResponse);
+					Connection.getOrCreateConnection(getCurrentIPAddress(), currentIcmpResponse);
+					// getCurrentIPAddress().setIcmpResponse(currentIcmpResponse);
 				}
 			}
 			if (qName.equals(NmapDtdStrings.ADDRESS_TAG))
@@ -201,32 +202,27 @@ public class NMapXmlHandler extends DefaultHandler
 				String type = attributes.getValue(NmapDtdStrings.ADDRTYPE_ATTR).toLowerCase();
 				if (type.equals("ipv4"))
 				{
-					try
-					{
-						tempIPAddress = IPUtils.fromString(attributes.getValue(NmapDtdStrings.ADDR_ATTR));
+					// tempIPAddress = IPUtils.fromString(attributes.getValue(NmapDtdStrings.ADDR_ATTR));
+					tempIPAddress = attributes.getValue(NmapDtdStrings.ADDR_ATTR);
 
-						if (currentMac != null)
-						{
-							getCurrentIPAddress().setMacAddress(currentMac);
-						}
-						if (currentIcmpResponse != null)
-						{
-							getCurrentIPAddress().setIcmpResponse(currentIcmpResponse);
-						}
-					}
-					catch (InvalidIPAddressFormatException e)
+					if (currentMac != null)
 					{
-						logger.warn("Nmap seems to have put an invalid IP address (" + attributes.getValue(NmapDtdStrings.ADDR_ATTR) + ") in a file: "
-								+ e.getLocalizedMessage(), e);
+						Connection.getOrCreateConnection(getCurrentIPAddress(), currentMac);
+					}
+					if (currentIcmpResponse != null)
+					{
+						Connection.getOrCreateConnection(getCurrentIPAddress(), currentIcmpResponse);
 					}
 				}
 				else if (type.equals("mac"))
 				{
 					String rawMac = attributes.getValue(NmapDtdStrings.ADDR_ATTR);
 					byte[] hexMac = MacUtils.getMacFromString(rawMac);
-					currentMac = KnowledgeBase.getInstance().getOrCreateMacAddressNode(hexMac);
-					getCurrentIPAddress().setMacAddress(currentMac);
-					currentMac.setMacVendor(attributes.getValue(NmapDtdStrings.VENDOR_ATTR));
+					currentMac = KnowledgeBase.getInstance().getOrCreateNode(Network.MAC_ADDRESS, MacUtils.getHexString(hexMac));
+					Connection.getOrCreateConnection(currentMac, getCurrentIPAddress());
+					Node macVendor = KnowledgeBase.getInstance().getOrCreateNode(SoftwareHardware.VENDOR,
+							attributes.getValue(NmapDtdStrings.VENDOR_ATTR));
+					Connection.getOrCreateConnection(currentMac, macVendor);
 				}
 			}
 			if (qName.equals(NmapDtdStrings.HOSTNAMES_TAG))
@@ -234,41 +230,45 @@ public class NMapXmlHandler extends DefaultHandler
 			}
 			if (qName.equals(NmapDtdStrings.HOSTNAME_TAG))
 			{
-				Hostname hostname = KnowledgeBase.getInstance().getOrCreateHostname(attributes.getValue(NmapDtdStrings.NAME_ATTR));
-				hostname.addAddress(getCurrentIPAddress());
+				Node hostname = KnowledgeBase.getInstance().getOrCreateNode(Hostnames.HOSTNAME, attributes.getValue(NmapDtdStrings.NAME_ATTR));
+				Connection.getOrCreateConnection(getCurrentIPAddress(), hostname);
 			}
 			if (qName.equals(NmapDtdStrings.PORTS_TAG))
 			{
 			}
 			if (qName.equals(NmapDtdStrings.PORT_TAG))
 			{
-				currentPortType = PortType.fromNmap(attributes.getValue(NmapDtdStrings.PROTOCOL_ATTR));
+				currentPortType = Port.portTypeFromNmap(attributes.getValue(NmapDtdStrings.PROTOCOL_ATTR));
 				currentPortNumber = Integer.valueOf(attributes.getValue(NmapDtdStrings.PORTID_ATTR));
+
 			}
 			if (qName.equals(NmapDtdStrings.STATE_TAG))
 			{
-				currentPortResponse = PortState.parseNmapText(attributes.getValue(NmapDtdStrings.STATE_ATTR));
-				if (currentPortResponse == PortState.OPEN || trackAll)
+				currentPortState = Port.portStateFromNmap(attributes.getValue(NmapDtdStrings.STATE_ATTR));
+				if (currentPortState == Port.PORT_STATE_OPEN || trackAll)
 				{
-					PortState state = new PortStateImpl(getCurrentPort(), scanTime, source, currentPortResponse,
-							PortStateReason.parseNmapText(attributes.getValue(NmapDtdStrings.REASON_ATTR)));
-					getCurrentPort().addState(state);
+
+					Node stateReason = KnowledgeBase.getInstance().getOrCreateNode(Port.PORT_STATE, attributes.getValue(NmapDtdStrings.REASON_ATTR));
+
+					getCurrentPort().addNode(stateReason);
 
 					// If we've already parsed the service tag, handle it
 					if (currentServiceName != null)
 					{
-						getCurrentPort().setServiceDescription(getCurrentServiceDescription());
+
+						getCurrentPort().addNode(getCurrentServiceDescription());
 					}
 				}
 			}
 			if (qName.equals(NmapDtdStrings.SERVICE_TAG))
 			{
 				currentServiceName = attributes.getValue(NmapDtdStrings.NAME_ATTR);
-				currentServiceReason = ServiceReason.fromNmap(attributes.getValue(NmapDtdStrings.METHOD_ATTR));
+				currentServiceReason = NetworkService.serviceReasonFromNmap(attributes.getValue(NmapDtdStrings.METHOD_ATTR));
 				// If the port is open, or we're logging everything, put the service description in
-				if (PortState.OPEN.equals(currentPortResponse) || trackAll)
+				if (Port.PORT_STATE_OPEN.equals(currentPortState) || trackAll)
 				{
-					getCurrentPort().setServiceDescription(getCurrentServiceDescription());
+
+					getCurrentPort().addNode(getCurrentServiceDescription());
 				}
 			}
 			if (qName.equals(NmapDtdStrings.OS_TAG))
@@ -280,11 +280,18 @@ public class NMapXmlHandler extends DefaultHandler
 			if (qName.equals(NmapDtdStrings.OSCLASS_TAG))
 			{
 				makeCurrentOSGuess();
-				currentOSGuess.setDeviceType(attributes.getValue(NmapDtdStrings.TYPE_ATTR));
-				currentOSGuess.setVendor(attributes.getValue(NmapDtdStrings.VENDOR_ATTR));
-				currentOSGuess.setVersion(attributes.getValue(NmapDtdStrings.VERSION_ATTR));
-				currentOSGuess.setOsFamily(attributes.getValue(NmapDtdStrings.OSFAMILY_ATTR));
-				currentOSGuess.setConfidence(Integer.getInteger(attributes.getValue(NmapDtdStrings.ACCURACY_ATTR)));
+				Node deviceType = KnowledgeBase.getInstance().getOrCreateNode(SoftwareHardware.DEVICE_TYPE,
+						attributes.getValue(NmapDtdStrings.TYPE_ATTR));
+				Node vendor = KnowledgeBase.getInstance().getOrCreateNode(SoftwareHardware.VENDOR, attributes.getValue(NmapDtdStrings.VENDOR_ATTR));
+				Node version = KnowledgeBase.getInstance().getOrCreateNode(SoftwareHardware.SOFTWARE_PRODUCT_VERSION,
+						attributes.getValue(NmapDtdStrings.VERSION_ATTR));
+				Node family = KnowledgeBase.getInstance().getOrCreateNode(SoftwareHardware.SOFTWARE_PRODUCT_FAMILY,
+						attributes.getValue(NmapDtdStrings.OSFAMILY_ATTR));
+				Node confidence = KnowledgeBase.getInstance().getOrCreateNode(SoftwareHardware.HOST_OS_GUESS_CONFIDENCE,
+						attributes.getValue(NmapDtdStrings.ACCURACY_ATTR));
+
+				Connection c = Connection.getOrCreateConnection(true, currentOSGuess, currentIPAddress);
+				c.addNodes(deviceType, vendor, version, family, confidence);
 			}
 			if (qName.equals(NmapDtdStrings.OS_MATCH_TAG))
 			{
@@ -304,7 +311,9 @@ public class NMapXmlHandler extends DefaultHandler
 			}
 			if (qName.equals(NmapDtdStrings.UPTIME_TAG))
 			{
-				getCurrentIPAddress().getHost().addNote("Up since " + attributes.getValue(NmapDtdStrings.LASTBOOT_ATTR));
+				Node note = KnowledgeBase.getInstance().getOrCreateNode(General.NOTE,
+						"Up since " + attributes.getValue(NmapDtdStrings.LASTBOOT_ATTR));
+				Connection.getOrCreateConnection(getCurrentIPAddress(), note);
 			}
 			if (qName.equals(NmapDtdStrings.RUNSTATS_TAG))
 			{

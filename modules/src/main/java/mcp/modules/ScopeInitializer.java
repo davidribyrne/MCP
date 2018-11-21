@@ -28,16 +28,14 @@ public class ScopeInitializer extends Module
 	private final static Logger logger = LoggerFactory.getLogger(ScopeInitializer.class);
 	private final static ScopeInitializer instance = new ScopeInitializer();
 
-	private OptionGroup group;
-	private Option targetIPFile;
-	private Option targetIP;
-	private Option excludeIPFile;
-	private Option excludeIP;
+	private static OptionGroup group;
+	private static Option targetIPFile;
+	private static Option targetIP;
+	private static Option excludeIPFile;
+	private static Option excludeIP;
 
-
-	private ScopeInitializer()
+	static
 	{
-		super("Scope initializer");
 		targetIPFile = new Option(null, "ipsFile",
 				"File that contains a list of IP addresses to target. They can be in an nmap format (i.e. CIDRs and ranges).", true, true, "ips.txt",
 				"filename");
@@ -53,7 +51,6 @@ public class ScopeInitializer extends Module
 				"Manually exclude a targeted address/CIDR/address range. This allows a block of targets to be defined, but some of them to be excluded. It can be used multiple times.",
 				true, true, null, "IP-address|CIDR|IP-range");
 
-
 		PathState targetPathState = new PathState();
 		targetPathState.directory = Requirement.MUST_NOT;
 		targetPathState.readable = Requirement.MUST;
@@ -66,11 +63,19 @@ public class ScopeInitializer extends Module
 		targetIP.addValidator(ipValidator);
 		excludeIP.addValidator(ipValidator);
 
-		group = new OptionGroup("Scope", "Scope definition");
+		group = new OptionGroup("Scope Definition", "");
 		group.addChild(targetIPFile);
 		group.addChild(targetIP);
 		group.addChild(excludeIPFile);
 		group.addChild(excludeIP);
+
+	}
+	
+	
+	private ScopeInitializer()
+	{
+		super("Scope initializer");
+
 
 	}
 
@@ -179,8 +184,7 @@ public class ScopeInitializer extends Module
 	}
 
 
-	@Override
-	public OptionContainer getOptions()
+	public static OptionContainer getOptions()
 	{
 		return group;
 	}

@@ -16,7 +16,7 @@ public abstract class HostnameDiscoveryModule extends Module
 	public HostnameDiscoveryModule(String name)
 	{
 		super("Hostname discovery - " + name);
-		HostnameDiscoveryGeneralOptions.getInstance().getOptions().addChild(getOptionGroup());
+//		HostnameDiscoveryGeneralOptions.getInstance().getOptions().addChild();
 	}
 
 
@@ -27,10 +27,8 @@ public abstract class HostnameDiscoveryModule extends Module
 
 	}
 
-	protected abstract OptionGroup getOptionGroup();
 
-	@Override
-	final public OptionContainer getOptions()
+	static public OptionContainer getOptions()
 	{
 		return null;
 	}

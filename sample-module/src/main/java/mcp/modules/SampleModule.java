@@ -10,17 +10,26 @@ import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import space.dcce.commons.cli.ModuleOption;
+import space.dcce.commons.cli.ModuleOptions;
 
 public class SampleModule extends ExternalModule implements McpStartListener
 {
 	final static Logger logger = LoggerFactory.getLogger(SampleModule.class);
 
-	private ModuleOption testStringOption;
+	private static ModuleOptions options;
+	private static ModuleOption testStringOption;
+	static 
+	{
+		options = new ModuleOptions("sample-module-options", "Quoted option string passed to sample module", "Sample Module");
+		testStringOption = new ModuleOption("testString", "Just a test string to repeat.", true, true, "", "string");
+
+	}
+
+	
+	
 	public SampleModule()
 	{
 		super("Sample Module", "sample", "This is just a sample module");
-		testStringOption = new ModuleOption("testString", "Just a test string to repeat.", true, true, "", "string");
-		addOption(testStringOption);
 	}
 
 	// Do stuff before the module starts doing work

@@ -71,8 +71,7 @@ public class SimpleKbDumper extends Module
 		return sb.toString();
 	}
 	
-	@Override
-	public OptionContainer getOptions()
+	public static OptionContainer getOptions()
 	{
 		return null;
 	}

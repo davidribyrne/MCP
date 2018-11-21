@@ -113,8 +113,7 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 	}
 
 
-	@Override
-	protected OptionGroup getOptionGroup()
+	static protected OptionGroup getOptionGroup()
 	{
 		return null;
 	}

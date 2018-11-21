@@ -6,7 +6,7 @@ import space.dcce.commons.cli.OptionContainer;
 public abstract class Module
 {
 	public abstract void initialize();
-	public abstract OptionContainer getOptions();
+//	static public abstract OptionContainer getOptions();
 	private final String name;
 	protected Module(String name)
 	{

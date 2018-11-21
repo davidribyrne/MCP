@@ -34,7 +34,7 @@ public class NmapScan implements JobCompleteCallback
 	private final List<FlagPair> flags;
 	private final Addresses targets;
 	private final static String TARGET_IP_FILE_SUFFIX = "--target-ips.txt";
-	private final static String CONSOLE_OUT_FILE_SUFFIX = "--out";
+	private final static String CONSOLE_OUT_FILE_SUFFIX = "--stdout";
 	private final String jobName;
 	final static Logger logger = LoggerFactory.getLogger(NmapScan.class);
 	private String lastCommandLine;
@@ -117,7 +117,7 @@ public class NmapScan implements JobCompleteCallback
 		List<String> arguments = generateCommandArguments(status);
 		CommandLineExecutor executor = new CommandLineExecutor("Nmap", jobName, NmapGeneralOptions.getInstance()
 				.getNmapPath(), arguments, WorkingDirectories.getWorkingDirectory(),
-				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true, 0);
+				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true, 0, true);
 		executor.setCallback(this);
 		lastCommandLine = NmapGeneralOptions.getInstance().getNmapPath() + " " + CollectionUtils.joinObjects(" ", arguments);
 		ExecutionScheduler.getInstance().executeImmediately(executor);

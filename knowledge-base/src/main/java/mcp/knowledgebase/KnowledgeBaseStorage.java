@@ -25,7 +25,7 @@ public class KnowledgeBaseStorage
 
 	private final static String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
 	private java.sql.Connection dbConnection;
-
+	private final static String FILENAME = "mcp.db";
 
 	public KnowledgeBaseStorage()
 	{
@@ -51,22 +51,25 @@ public class KnowledgeBaseStorage
 	}
 
 
-	public void load(String path) throws FileNotFoundException, SQLException
+	public void loadOrCreate(String path) throws SQLException, IOException
 	{
-		if (!FileUtils.exists(path))
+		String file = path + File.separator + FILENAME;
+		if (!FileUtils.exists(file))
 		{
-			throw new FileNotFoundException("Couldn't find '" + path + "'");
+			createDb(file);
 		}
-
-		dbConnection = DriverManager.getConnection("jdbc:derby:" + path + ";create=false");
-		configureConnection();
+		else
+		{
+			dbConnection = DriverManager.getConnection("jdbc:derby:" + file + ";create=false");
+			configureConnection();
+		}
 		loadTypes();
 	}
 
 
 	private void loadTypes() throws SQLException
 	{
-		String query = "SELECT (id, name, description) FROM types";
+		String query = "SELECT id, name, description FROM types";
 
 		ResultSet rs = dbConnection.prepareStatement(query).executeQuery();
 		while (rs.next())
@@ -74,7 +77,7 @@ public class KnowledgeBaseStorage
 			UUID uuid = UUID.fromString(rs.getString(1));
 			String name = rs.getString(2);
 			String description = rs.getString(3);
-			new NodeType(uuid, name, description);
+			new NodeType(uuid, name, description, true);
 		}
 
 	}
@@ -266,6 +269,8 @@ public class KnowledgeBaseStorage
 			UUID nodeID = UUID.fromString(rs.getString(1));
 			connection.restoreNode(nodeID);
 		}
+		statement.close();
+		rs.close();
 		return connection;
 	}
 
@@ -278,7 +283,7 @@ public class KnowledgeBaseStorage
 
 			psInsert.setString(1, nodeType.getID().toString());
 			psInsert.setString(2, nodeType.getName());
-			psInsert.setString(1, nodeType.getDescription());
+			psInsert.setString(3, nodeType.getDescription());
 			psInsert.execute();
 			psInsert.close();
 		}

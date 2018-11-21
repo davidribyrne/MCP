@@ -15,16 +15,7 @@ public abstract class NmapModule extends Module
 	protected NmapModule(String name)
 	{
 		super("Nmap scan - " + name);
-		NmapGeneralOptions.getInstance().getOptions().addChild(getOptionGroup());
 	}
 
-	protected abstract OptionGroup getOptionGroup();
-	
-
-	@Override
-	final public OptionContainer getOptions()
-	{
-		return null;
-	}
 
 }

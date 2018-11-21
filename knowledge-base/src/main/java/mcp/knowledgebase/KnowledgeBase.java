@@ -31,6 +31,11 @@ public class KnowledgeBase
 		
 	}
 
+	public void initializeStorage(String path) throws SQLException, IOException
+	{
+		storage.loadOrCreate(path);
+	}
+	
 	public boolean createNodeIfPossible(NodeType nodeType, String value)
 	{
 		synchronized (this)

@@ -14,8 +14,13 @@ public class NodeType extends UniqueDatum
 	protected String description;
 	private Object lock = new Object();
 
-
+	
 	public NodeType(UUID uuid, String name, String description)
+	{
+		this(uuid, name, description, false);
+	}
+
+	public NodeType(UUID uuid, String name, String description, boolean restore)
 	{
 		super(uuid);
 		synchronized (lock)
@@ -27,7 +32,10 @@ public class NodeType extends UniqueDatum
 				throw new IllegalStateException("Type already existed in TYPES");
 			}
 			TYPES.put(getID(), this);
-			KnowledgeBase.getInstance().storeNewNodeType(this);
+			if (!restore)
+			{
+				KnowledgeBase.getInstance().storeNewNodeType(this);
+			}
 		}
 	}
 

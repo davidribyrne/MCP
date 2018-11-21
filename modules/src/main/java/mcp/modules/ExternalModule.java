@@ -1,13 +1,12 @@
 package mcp.modules;
 
+import javax.xml.ws.spi.WebServiceFeatureAnnotation;
+
 import space.dcce.commons.cli.ModuleOptions;
 import space.dcce.commons.cli.OptionContainer;
 
 public abstract class ExternalModule extends Module
 {
-	
-	private ModuleOptions options;
-
 	
 	/**
 	 * 
@@ -18,17 +17,16 @@ public abstract class ExternalModule extends Module
 	protected ExternalModule(String name, String optionName, String description)
 	{
 		super(name);
-		options = new ModuleOptions(optionName, description, name);
+		
 	}
 
-	@Override
-	public ModuleOptions getOptions()
-	{
-		return options;
-	}
+//	public static ModuleOptions getOptions()
+//	{
+//		return options;
+//	}
 	
-	protected void addOption(OptionContainer option)
-	{
-		options.getSubOptions().addOptionContainer(option);
-	}
+//	protected void addOption(OptionContainer option)
+//	{
+//		options.getSubOptions().addOptionContainer(option);
+//	}
 }

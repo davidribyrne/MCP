@@ -90,37 +90,37 @@
 
 
 			<dependency>
-				<groupId>net.dacce</groupId>
+				<groupId>space.dcce</groupId>
 				<artifactId>commons-gnu-cli</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>net.dacce</groupId>
+				<groupId>space.dcce</groupId>
 				<artifactId>commons-persistence</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>net.dacce</groupId>
+				<groupId>space.dcce</groupId>
 				<artifactId>commons-dns-client</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>net.dacce</groupId>
+				<groupId>space.dcce</groupId>
 				<artifactId>commons-general</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>net.dacce</groupId>
+				<groupId>space.dcce</groupId>
 				<artifactId>commons-netaddr</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>net.dacce</groupId>
+				<groupId>space.dcce</groupId>
 				<artifactId>commons-validation</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>net.dacce</groupId>
+				<groupId>space.dcce</groupId>
 				<artifactId>commons-simple-server</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</dependency>

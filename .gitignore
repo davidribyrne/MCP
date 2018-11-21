@@ -1,5 +1,7 @@
 **/target/**
 /scandata
+/temp
+/target
 *.bak
 *.log
 .DS_Store

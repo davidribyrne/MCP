@@ -7,14 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.commons.WorkingDirectories;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionContainer;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.validators.NumericValidator;
-import net.dacce.commons.validators.PathState;
-import net.dacce.commons.validators.PathValidator;
-import net.dacce.commons.validators.Requirement;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionContainer;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.validators.NumericValidator;
+import space.dcce.commons.validators.PathState;
+import space.dcce.commons.validators.PathValidator;
+import space.dcce.commons.validators.Requirement;
 
 
 public class GeneralOptions extends Module
@@ -30,20 +30,20 @@ public class GeneralOptions extends Module
 
 
 
-	private Option verboseOption;
-	private Option workingDirectoryOption;
+	private static Option verboseOption;
+	private static Option workingDirectoryOption;
 //	private Option continueAfterErrorOption;
-	private Option basicReconOption;
-	private Option trackAllData;
+	private static Option basicReconOption;
+	private static Option trackAllData;
 
-	private Option threadCount;
-	private OptionGroup interactiveOptions;
-	private Option interactiveConsoleOption;
-	private Option interactiveTelnetOption;
+	private static Option threadCount;
+	private static OptionGroup interactiveOptions;
+	private static Option interactiveConsoleOption;
+	private static Option interactiveTelnetOption;
+	private static Option sudoPasswordOption;
 
-	private GeneralOptions()
+	static
 	{
-		super("General options");
 		verboseOption = new Option("v", "verbose", "Output verbosity (0-6).", true, false, "2", "n");
 		workingDirectoryOption = new Option(null, "workingDirectory", "Working directory for Recon Master.", true, true, ".",
 				"directory path");
@@ -54,27 +54,37 @@ public class GeneralOptions extends Module
 		threadCount = new Option("t", "threads", "Working thread count.", true, true, "3", "n");
 		trackAllData = new Option("", "trackall", "Track all data, even negative results (e.g., non-open ports). This may significantly increase resource use");
 		verboseOption.addValidator(new NumericValidator(false, 0, 6));
+		sudoPasswordOption = new Option("", "sudoPassword", "Password to use with sudo for programs that need root", true, true, "", "password");
 		PathState workingDirState = new PathState();
 		workingDirState.directory = Requirement.MUST;
 		workingDirState.writeable = Requirement.MUST;
 		workingDirState.readable = Requirement.MUST;
 		workingDirectoryOption.addValidator(new PathValidator(workingDirState));
-
-		group = new OptionGroup("General", "General options");
+		
+		
+		
+		group = new OptionGroup("General Options", "");
 		group.addChild(verboseOption);
 		group.addChild(interactiveConsoleOption);
 		group.addChild(workingDirectoryOption);
 //		group.addChild(continueAfterErrorOption);
 		group.addChild(basicReconOption);
+		group.addChild(sudoPasswordOption);
 		group.addChild(threadCount);
 		group.addChild(trackAllData);
 
-		interactiveOptions = new OptionGroup("Interactive options", "Interactive options");
+		interactiveOptions = new OptionGroup("Interactive options", "");
 		interactiveConsoleOption = new Option("i", "interactive", "Run in interactive mode on the console.");
 		interactiveTelnetOption = new Option(null, "telnet", "Run interactive telnet server.", true, false, "2300", "port");
 		interactiveOptions.addChild(interactiveConsoleOption);
 		interactiveOptions.addChild(interactiveTelnetOption);
 		group.addChild(interactiveOptions);
+
+	}
+	
+	private GeneralOptions()
+	{
+		super("General options");
 	}
 
 
@@ -150,8 +160,7 @@ public class GeneralOptions extends Module
 	}
 
 
-	@Override
-	public OptionContainer getOptions()
+	public static OptionContainer getOptions()
 	{
 		return group;
 	}
@@ -184,6 +193,20 @@ public class GeneralOptions extends Module
 	public Option getTrackAllData()
 	{
 		return trackAllData;
+	}
+
+
+
+	public static Option getWorkingDirectoryOption()
+	{
+		return workingDirectoryOption;
+	}
+
+
+
+	public static Option getSudoPasswordOption()
+	{
+		return sudoPasswordOption;
 	}
 
 

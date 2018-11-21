@@ -14,7 +14,6 @@ public class Test
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException
 	{
-		KnowledgeBase kb = new KnowledgeBase();
-		kb.createDb("AAAAAAA.db");
+		KnowledgeBase.storage.createDb("AAAAAAA.db");
 	}
 }

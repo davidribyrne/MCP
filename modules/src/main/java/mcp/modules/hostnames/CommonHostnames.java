@@ -14,16 +14,16 @@ import mcp.events.events.NodeCreationEvent;
 import mcp.events.listeners.NodeCreationListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.NodeType;
-import mcp.knowledgebase.nodeLibrary.Common;
+import mcp.knowledgebase.nodeLibrary.Hostnames;
 import mcp.knowledgebase.NodeType;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.dns.client.DnsTransaction;
-import net.dacce.commons.dns.exceptions.DnsClientConnectException;
-import net.dacce.commons.dns.exceptions.DnsResponseTimeoutException;
-import net.dacce.commons.dns.messages.QuestionRecord;
-import net.dacce.commons.dns.records.RecordType;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.general.StringUtils;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.dns.client.DnsTransaction;
+import space.dcce.commons.dns.exceptions.DnsClientConnectException;
+import space.dcce.commons.dns.exceptions.DnsResponseTimeoutException;
+import space.dcce.commons.dns.messages.QuestionRecord;
+import space.dcce.commons.dns.records.RecordType;
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.general.StringUtils;
 
 public class CommonHostnames extends HostnameDiscoveryModule implements NodeCreationListener
 {
@@ -31,7 +31,7 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 
 	private List<String> commonNames;
 	@SuppressWarnings("rawtypes")
-	private final Collection nodeTypes = Collections.singletonList(Common.DOMAIN); 
+	private final Collection nodeTypes = Collections.singletonList(Hostnames.DOMAIN); 
 
 	public CommonHostnames()
 	{
@@ -90,7 +90,7 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 	@Override
 	public void handleEvent(NodeCreationEvent reconEvent)
 	{
-		String domainName = new String(reconEvent.getNode().getValue());
+		String domainName = new String(reconEvent.getNode().getValue().toString());
 		List<DnsTransaction> transactions = new ArrayList<DnsTransaction>(commonNames.size());
 		for (String name: commonNames)
 		{
@@ -113,8 +113,7 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 	}
 
 
-	@Override
-	protected OptionGroup getOptionGroup()
+	static protected OptionGroup getOptionGroup()
 	{
 		return null;
 	}

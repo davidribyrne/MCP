@@ -10,33 +10,30 @@ import org.slf4j.LoggerFactory;
 
 import mcp.commons.HttpTransaction;
 import mcp.modules.Module;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionContainer;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.simpleServer.Server;
-import net.dacce.commons.simpleServer.ThreadedWorker;
-import net.dacce.commons.simpleServer.Worker;
-import net.dacce.commons.validators.IPAddressValidator;
-import net.dacce.commons.validators.NumericValidator;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionContainer;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.simpleServer.Server;
+import space.dcce.commons.simpleServer.ThreadedWorker;
+import space.dcce.commons.simpleServer.Worker;
+import space.dcce.commons.validators.IPAddressValidator;
+import space.dcce.commons.validators.NumericValidator;
 
 
 public class HttpTransactionListener extends Module
 {
 	private final static Logger logger = LoggerFactory.getLogger(HttpTransactionListener.class);
 
-	private OptionGroup group;
-	private Option enabledOption;
-	private Option portNumberOption;
-	private Option listenAddressOption;
+	private static OptionGroup group;
+	private static Option enabledOption;
+	private static Option portNumberOption;
+	private static Option listenAddressOption;
 	private TransactionServer server;
 	private InetAddress hostAddress;
 	private int port;
 
-
-	public HttpTransactionListener()
+	static
 	{
-		super("HTTP Transaction Listener");
-
 		enabledOption = new Option(null, "transaction-listener", "Enable transaction listener", false, false, "", "");
 		listenAddressOption = new Option(null, "transaction-listener-address", "IP address to listen on. THIS SERVICE MAY NOT BE SECURE. BE CAREFUL.", true, true,
 				"127.0.0.1", "address|hostname");
@@ -51,6 +48,11 @@ public class HttpTransactionListener extends Module
 		group.addChild(enabledOption);
 		group.addChild(listenAddressOption);
 		group.addChild(portNumberOption);
+	}
+	
+	public HttpTransactionListener()
+	{
+		super("HTTP Transaction Listener");
 	}
 
 
@@ -85,8 +87,7 @@ public class HttpTransactionListener extends Module
 	}
 
 
-	@Override
-	public OptionContainer getOptions()
+	static public OptionContainer getOptions()
 	{
 		return group;
 	}

@@ -6,16 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.modules.Module;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.general.BooleanFormatException;
-import net.dacce.commons.general.BooleanUtils;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.validators.BooleanValidator;
-import net.dacce.commons.validators.NumericValidator;
-import net.dacce.commons.validators.PathState;
-import net.dacce.commons.validators.PathValidator;
-import net.dacce.commons.validators.Requirement;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.general.BooleanFormatException;
+import space.dcce.commons.general.BooleanUtils;
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.general.OSUtils;
+import space.dcce.commons.validators.BooleanValidator;
+import space.dcce.commons.validators.NumericValidator;
+import space.dcce.commons.validators.PathState;
+import space.dcce.commons.validators.PathValidator;
+import space.dcce.commons.validators.Requirement;
 
 
 public class NmapGeneralOptions extends Module
@@ -23,20 +24,18 @@ public class NmapGeneralOptions extends Module
 	final static Logger logger = LoggerFactory.getLogger(NmapGeneralOptions.class);
 	private static final NmapGeneralOptions instance = new NmapGeneralOptions();
 
-	private OptionGroup group;
-	private Option nmapPath;
-	private Option nmapSpeed;
-	private Option nmapResume;
+	private static OptionGroup group;
+	private static Option nmapPath;
+	private static Option nmapSpeed;
+	private static Option nmapResume;
 
 	
 	private String nmapPathValue;
 	private byte speed;
 	private boolean resume;
 
-
-	private NmapGeneralOptions()
+	static
 	{
-		super("Nmap general options");
 		nmapPath = new Option(null, "nmapPath", "Path to nmap binary. Defaults to environment path.", true, true, null, "filepath");
 		nmapSpeed = new Option(null, "nmapSpeed", "Nmap speed.", true, true, "4", "0-5");
 		nmapResume = new Option(null, "nmapResume", "Attempt to resume previously aborted nmap scans.", true, true, "true", "true/false");
@@ -49,10 +48,16 @@ public class NmapGeneralOptions extends Module
 		nmapPathState.exists = Requirement.MUST;
 		nmapPath.addValidator(new PathValidator(nmapPathState));
 
-		group = new OptionGroup("nmap", "Nmap options");
+		group = new OptionGroup("Nmap options", "");
 		group.addChild(nmapPath);
 		group.addChild(nmapSpeed);
 		group.addChild(nmapResume);
+
+	}
+
+	private NmapGeneralOptions()
+	{
+		super("Nmap general options");
 
 	}
 
@@ -66,11 +71,12 @@ public class NmapGeneralOptions extends Module
 		File nmapexecutable;
 		if (nmapPathValue == null)
 		{
-			String name = System.getProperty("os.name").toLowerCase().contains("windows") ? "nmap.exe" : "nmap";
+			String name = OSUtils.isWindows() ? "nmap.exe" : "nmap";
 			nmapPathValue = FileUtils.which(name);
 			if (nmapPathValue == null)
 			{
-				logger.warn("Nmap executable not found in system path. This will cause an error if an nmap scan is attempted.");
+				logger.warn("Nmap executable not found in system path (\"" + System.getenv("PATH") + "\"). "
+						+ "This will cause an error if an nmap scan is attempted.");
 				return;
 			}
 			nmapexecutable = new File(nmapPathValue);
@@ -140,8 +146,7 @@ public class NmapGeneralOptions extends Module
 		return resume;
 	}
 
-	@Override
-	public OptionGroup getOptions()
+	public static OptionGroup getOptions()
 	{
 		return group;
 	}

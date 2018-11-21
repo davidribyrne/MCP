@@ -10,7 +10,7 @@
 	<name>MCP -- modules</name>
 	<dependencies>
 		<dependency>
-			<groupId>net.dacce</groupId>
+			<groupId>space.dcce</groupId>
 			<artifactId>commons-dns-client</artifactId>
 		</dependency>
 		<dependency>
@@ -30,15 +30,15 @@
 			<artifactId>job-manager</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.dacce</groupId>
+			<groupId>space.dcce</groupId>
 			<artifactId>commons-gnu-cli</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.dacce</groupId>
+			<groupId>space.dcce</groupId>
 			<artifactId>commons-validation</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.dacce</groupId>
+			<groupId>space.dcce</groupId>
 			<artifactId>commons-simple-server</artifactId>
 		</dependency>
 

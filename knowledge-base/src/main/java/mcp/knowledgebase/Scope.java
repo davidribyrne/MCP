@@ -1,10 +1,10 @@
 package mcp.knowledgebase;
 
-import net.dacce.commons.general.CollectionUtils;
-import net.dacce.commons.general.StringUtils;
-import net.dacce.commons.netaddr.Addresses;
-import net.dacce.commons.netaddr.InvalidIPAddressFormatException;
-import net.dacce.commons.netaddr.SimpleInetAddress;
+import space.dcce.commons.general.CollectionUtils;
+import space.dcce.commons.general.StringUtils;
+import space.dcce.commons.netaddr.Addresses;
+import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
+import space.dcce.commons.netaddr.SimpleInetAddress;
 
 
 public class Scope

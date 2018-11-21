@@ -1,6 +1,9 @@
 package mcp;
 
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.SQLException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,7 @@ import mcp.commons.WorkingDirectories;
 import mcp.events.events.McpCompleteEvent;
 import mcp.events.events.McpStartEvent;
 import mcp.jobmanager.executors.ExecutionScheduler;
+import mcp.knowledgebase.KnowledgeBase;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Modules;
 import mcp.options.MCPOptions;
@@ -26,6 +30,7 @@ public class MCP
 	final static Logger logger = LoggerFactory.getLogger(MCP.class);
 	private boolean interactiveConsole;
 
+
 	public static void main(String[] args)
 	{
 		@SuppressWarnings("unused")
@@ -36,21 +41,44 @@ public class MCP
 	private MCP(String[] args)
 	{
 		setupOptions(args);
+		try
+		{
+			KnowledgeBase.getInstance().initializeStorage(GeneralOptions.getWorkingDirectoryOption().getValue());
+		}
+		catch (FileNotFoundException e)
+		{
+			logger.error("Could not open or create database file: " + e.getLocalizedMessage(), e);
+			System.exit(1);
+		}
+		catch (SQLException e)
+		{
+			logger.error("Problem loading or creating database: " + e.getLocalizedMessage(), e);
+			System.exit(2);
+		}
+		catch (IOException e)
+		{
+			logger.error("IO problem loading or creating database: " + e.getLocalizedMessage(), e);
+			System.exit(2);
+		}
+
+
+		Modules.getInstance().instantiateModules();
 		Modules.getInstance().initializeCoreModules();
 		setupLogger();
 		Modules.getInstance().initializeOtherModules();
 		ExecutionScheduler.getInstance().signalEvent(new McpStartEvent());
 		MCPShell.setupShell();
-		
+
 		waitForQueue();
 	}
 
+
 	private void waitForQueue()
 	{
-		while(!ExecutionScheduler.getInstance().isQueueEmpty() || MCPShell.isActive())
+		while (!ExecutionScheduler.getInstance().isQueueEmpty() || MCPShell.isActive())
 		{
 			Object o = new Object();
-			synchronized(o)
+			synchronized (o)
 			{
 				try
 				{
@@ -64,7 +92,8 @@ public class MCP
 		}
 
 	}
-	
+
+
 	private void setupOptions(String[] args)
 	{
 		Modules.getInstance().populateOptions();

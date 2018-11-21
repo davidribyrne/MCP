@@ -18,10 +18,10 @@ import mcp.jobmanager.executors.JobCompleteCallback;
 import mcp.jobmanager.jobs.JobState;
 import mcp.modules.nmap.NmapGeneralOptions;
 import mcp.tools.nmap.parser.NmapXmlParser;
-import net.dacce.commons.general.CollectionUtils;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.general.UnexpectedException;
-import net.dacce.commons.netaddr.Addresses;
+import space.dcce.commons.general.CollectionUtils;
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.general.UnexpectedException;
+import space.dcce.commons.netaddr.Addresses;
 
 
 public class NmapScan implements JobCompleteCallback
@@ -34,7 +34,7 @@ public class NmapScan implements JobCompleteCallback
 	private final List<FlagPair> flags;
 	private final Addresses targets;
 	private final static String TARGET_IP_FILE_SUFFIX = "--target-ips.txt";
-	private final static String CONSOLE_OUT_FILE_SUFFIX = "--out";
+	private final static String CONSOLE_OUT_FILE_SUFFIX = "--stdout";
 	private final String jobName;
 	final static Logger logger = LoggerFactory.getLogger(NmapScan.class);
 	private String lastCommandLine;
@@ -117,7 +117,7 @@ public class NmapScan implements JobCompleteCallback
 		List<String> arguments = generateCommandArguments(status);
 		CommandLineExecutor executor = new CommandLineExecutor("Nmap", jobName, NmapGeneralOptions.getInstance()
 				.getNmapPath(), arguments, WorkingDirectories.getWorkingDirectory(),
-				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true, 0);
+				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true, 0, true);
 		executor.setCallback(this);
 		lastCommandLine = NmapGeneralOptions.getInstance().getNmapPath() + " " + CollectionUtils.joinObjects(" ", arguments);
 		ExecutionScheduler.getInstance().executeImmediately(executor);

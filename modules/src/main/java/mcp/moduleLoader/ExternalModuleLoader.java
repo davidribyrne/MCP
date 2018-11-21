@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.modules.ExternalModule;
-import net.dacce.commons.general.UnexpectedException;
+import space.dcce.commons.general.UnexpectedException;
 
 
 public class ExternalModuleLoader
@@ -31,6 +31,76 @@ public class ExternalModuleLoader
 
 	private ExternalModuleLoader()
 	{
+	}
+
+
+	private static List<Class> getSuperClasses(Class clazz)
+	{
+		List<Class> superClasses = new ArrayList<Class>();
+		Class tmp = clazz.getSuperclass();
+		while (tmp != null)
+		{
+			superClasses.add(tmp);
+			tmp = tmp.getSuperclass();
+		}
+
+		return superClasses;
+	}
+
+
+	public static Class<? extends ExternalModule>[] getModuleClasses(String path)
+	{
+		List<Class<? extends ExternalModule>> classes = new ArrayList<Class<? extends ExternalModule>>();
+		// for (File jarPath : getJarURLs("d:\\seafile\\mcp\\mcp\\sample-module\\target"))
+		for (File jarPath : getJarURLs(path))
+		{
+			List<String> jarClassNames = getModuleClasses(jarPath);
+			if (!jarClassNames.isEmpty())
+			{
+				URL[] urls;
+				try
+				{
+					urls = new URL[] { jarPath.toURI().toURL() };
+				}
+				catch (MalformedURLException e1)
+				{
+					throw new UnexpectedException(e1);
+				}
+
+				URLClassLoader loader = new URLClassLoader(urls, ClassLoader.getSystemClassLoader());
+				for (String className : jarClassNames)
+				{
+					try
+					{
+						Class clazz = Class.forName(className, true, loader);
+
+						if (getSuperClasses(clazz).contains(ExternalModule.class))
+						{
+							classes.add(clazz);
+						}
+						else
+						{
+							logger.error("The class " + className + " in " + jarPath.toString() + " is not a subclass of "
+									+ ExternalModule.class.getSimpleName());
+						}
+					}
+					catch (ClassNotFoundException e)
+					{
+						logger.error("Failed to load " + className + " from " + jarPath.toString(), e);
+					}
+				}
+				try
+				{
+					loader.close();
+				}
+				catch (IOException e)
+				{
+					throw new UnexpectedException(e);
+				}
+			}
+		}
+
+		return classes.toArray(new Class[] {});
 	}
 
 

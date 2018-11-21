@@ -12,27 +12,32 @@ import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
 import mcp.modules.parsers.Parser;
 import mcp.modules.parsers.Parsers;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionContainer;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.general.FileUtils;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionContainer;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.general.FileUtils;
 
 public class InputFileMonitor extends Module
 {
 	private final static Logger logger = LoggerFactory.getLogger(InputFileMonitor.class);
 
-	private OptionGroup group;
-	private Option inputFilePathOption;
-	private Option forceReparseOption;
+	private static OptionGroup group;
+	private static Option inputFilePathOption;
+	private static Option forceReparseOption;
 	
-	
-	public InputFileMonitor()
+	static
 	{
-		super("Input file monitor");
+		group = new OptionGroup("Input File Monitor", "Monitors a directory for files to parse");
 		inputFilePathOption = new Option(null, "inputFilePath", 
 				"Path to directory of scan result files. Files placed here will be automatically parsed.", 
 				true, true, "input-files", "directory");
+		group.addChild(inputFilePathOption);
 		forceReparseOption = new Option(null, "forceReparse", "Force a reparse of all input files.");
+		group.addChild(forceReparseOption);
+	}
+	public InputFileMonitor()
+	{
+		super("Input file monitor");
 		
 	}
 	
@@ -78,11 +83,9 @@ public class InputFileMonitor extends Module
 		}
 	}
 
-	@Override
-	public OptionContainer getOptions()
+	static public OptionContainer getOptions()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return group;
 	}
 
 }

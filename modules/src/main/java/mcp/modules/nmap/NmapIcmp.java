@@ -7,23 +7,22 @@ import mcp.knowledgebase.Scope;
 import mcp.modules.GeneralOptions;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionGroup;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionGroup;
 
 
 public class NmapIcmp extends NmapModule implements McpStartListener
 {
 
-	private OptionGroup group;
-	private Option icmpEchoScan;
-	private Option icmpMaskScan;
-	private Option icmpTimeScan;
-	private Option protocolScan;
+	static private OptionGroup group;
+	static private Option icmpEchoScan;
+	static private Option icmpMaskScan;
+	static private Option icmpTimeScan;
+	static private Option protocolScan;
 
 
-	public NmapIcmp()
+	static
 	{
-		super("Nmap ICMP");
 		icmpEchoScan = new Option(null, "icmpEchoScan", "Run nmap ICMP echo (ping) scan.");
 		icmpMaskScan = new Option(null, "icmpMaskScan", "Run nmap ICMP netmask scan.");
 		icmpTimeScan = new Option(null, "icmpTimeScan", "Run nmap ICMP timestamp scan.");
@@ -34,6 +33,19 @@ public class NmapIcmp extends NmapModule implements McpStartListener
 		group.addChild(icmpMaskScan);
 		group.addChild(icmpTimeScan);
 		group.addChild(protocolScan);
+
+		NmapGeneralOptions.getOptions().addChild(group);
+
+	}
+	
+	static public OptionGroup getOptions()
+	{
+		return null;
+	}
+
+	public NmapIcmp()
+	{
+		super("Nmap ICMP");
 	}
 	
 
@@ -81,14 +93,6 @@ public class NmapIcmp extends NmapModule implements McpStartListener
 			echoScan.execute();
 		}
 
-	}
-
-
-
-	@Override
-	protected OptionGroup getOptionGroup()
-	{
-		return group;
 	}
 
 

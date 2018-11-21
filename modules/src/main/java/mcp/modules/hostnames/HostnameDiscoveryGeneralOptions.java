@@ -11,19 +11,19 @@ import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.NodeCache;
-import mcp.knowledgebase.nodeLibrary.Common;
+import mcp.knowledgebase.nodeLibrary.Hostnames;
 import mcp.modules.GeneralOptions;
 import mcp.modules.Module;
-import net.dacce.commons.cli.Option;
-import net.dacce.commons.cli.OptionGroup;
-import net.dacce.commons.dns.client.Resolver;
-import net.dacce.commons.dns.client.cache.DnsDiskCache;
-import net.dacce.commons.general.FileUtils;
-import net.dacce.commons.validators.IPAddressValidator;
-import net.dacce.commons.validators.NumericValidator;
-import net.dacce.commons.validators.PathState;
-import net.dacce.commons.validators.PathValidator;
-import net.dacce.commons.validators.Requirement;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.dns.client.Resolver;
+import space.dcce.commons.dns.client.cache.DnsDiskCache;
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.validators.IPAddressValidator;
+import space.dcce.commons.validators.NumericValidator;
+import space.dcce.commons.validators.PathState;
+import space.dcce.commons.validators.PathValidator;
+import space.dcce.commons.validators.Requirement;
 
 public class HostnameDiscoveryGeneralOptions extends Module implements McpStartListener
 {
@@ -31,36 +31,34 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 
 	private static final HostnameDiscoveryGeneralOptions instance = new HostnameDiscoveryGeneralOptions();
 
-	private OptionGroup group;
-	private Option dnsServersOption;
-	private Option publicDnsServersOption;
+	private static OptionGroup group;
+	private static Option dnsServersOption;
+	private static Option publicDnsServersOption;
 	
-	private Option enableHostnameDiscoveryOption;
+	private static Option enableHostnameDiscoveryOption;
 	
-	private Option testCommonHostnamesOption;
-	private Option commonHostnamesFileOption;
-	private Option autoAddDomainsOption;
-	private Option maxAutoAddDomainOption;
-	private Option autoAddSubDomainsOption;
-	private Option maxAutoAddSubDomainOption;
+	private static Option testCommonHostnamesOption;
+	private static Option commonHostnamesFileOption;
+	private static Option autoAddDomainsOption;
+	private static Option maxAutoAddDomainOption;
+	private static Option autoAddSubDomainsOption;
+	private static Option maxAutoAddSubDomainOption;
 	
-	private Option testSslCertsOption;
-	private Option testRootPagesOption;
-	private Option testZoneTransfersOption;
+	private static Option testSslCertsOption;
+	private static Option testRootPagesOption;
+	private static Option testZoneTransfersOption;
 	
-	private Option knownDomainsFileOption;
-	private Option knownDomainsOption;
-	private Option knownHostnamesFileOption;
-	private Option knownHostnamesOption;
-	private Option bannedDomainsOption;
+	private static Option knownDomainsFileOption;
+	private static Option knownDomainsOption;
+	private static Option knownHostnamesFileOption;
+	private static Option knownHostnamesOption;
+	private static Option bannedDomainsOption;
 
 	private int maxAutoAddDomains;
 	private int maxAutoAddSubDomains;
 	
-	
-	public HostnameDiscoveryGeneralOptions()
+	static
 	{
-		super("Hostname discovery general options");
 		dnsServersOption = new Option(null, "dnsServer", "DNS servers to use for hostname discovery. Seperate multiple values with commas.  "
 				+ "If no servers are provided, an attempt will be made to detect the system servers. This feature isn't built into Java, "
 				+ "so unusual systems may fail.", 
@@ -126,7 +124,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		maxAutoAddDomainOption.addValidator(countValidator);
 		maxAutoAddSubDomainOption.addValidator(countValidator);
 		
-		group = new OptionGroup("Hostname discovery", "Hostname Discovery");
+		group = new OptionGroup("Hostname discovery", "");
 		group.addChild(dnsServersOption);
 		group.addChild(publicDnsServersOption);
 		group.addChild(enableHostnameDiscoveryOption);
@@ -144,6 +142,13 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		group.addChild(knownHostnamesFileOption);
 		group.addChild(knownHostnamesOption);
 		group.addChild(bannedDomainsOption);
+	}
+	
+	
+	public HostnameDiscoveryGeneralOptions()
+	{
+		super("Hostname discovery general options");
+
 	}
 
 
@@ -236,7 +241,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		{
 			for (String domain: FileUtils.readLines(knownDomainsPath))
 			{
-				KnowledgeBase.getInstance().getOrCreateNode(Common.DOMAIN, domain.getBytes());
+				KnowledgeBase.getInstance().getOrCreateNode(Hostnames.DOMAIN, domain);
 			}
 		}
 		catch (IOException e)
@@ -246,13 +251,12 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		}
 		for (String domain: knownDomainsOption.getValues())
 		{
-			KnowledgeBase.getInstance().getOrCreateNode(Common.DOMAIN, domain.getBytes());
+			KnowledgeBase.getInstance().getOrCreateNode(Hostnames.DOMAIN, domain);
 		}
 
 	}
 
-	@Override
-	public OptionGroup getOptions()
+	public static OptionGroup getOptions()
 	{
 		return group;
 	}

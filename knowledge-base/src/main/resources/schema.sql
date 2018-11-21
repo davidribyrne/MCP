@@ -2,15 +2,13 @@ create table nodes(
 	id VARCHAR(36), 
 	type VARCHAR(36), 
 	time TIMESTAMP,
-	value VARCHAR(100))
+	value VARCHAR(200))
 	
 //////////
 	
 create table connections(
-	nodeAID VARCHAR(36), 
-	nodeBID VARCHAR(36), 
-	nodeAType VARCHAR(36), 
-	nodeBType VARCHAR(36))
+	id VARCHAR(36), 
+	nodeID VARCHAR(36))
 
 //////////
 

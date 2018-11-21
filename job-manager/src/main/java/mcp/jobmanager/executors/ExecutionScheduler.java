@@ -24,9 +24,9 @@ import mcp.events.listeners.McpStartListener;
 import mcp.events.listeners.ModuleRunCompleteListener;
 import mcp.events.listeners.NodeCreationListener;
 import mcp.jobmanager.jobs.JobState;
-import mcp.knowledgebase.DataType;
-import mcp.knowledgebase.nodes.Node;
-import net.dacce.commons.general.MapOfLists;
+import mcp.knowledgebase.Node;
+import mcp.knowledgebase.NodeType;
+import space.dcce.commons.general.MapOfLists;
 
 
 public class ExecutionScheduler implements Runnable
@@ -254,9 +254,9 @@ public class ExecutionScheduler implements Runnable
 		{
 			for (NodeCreationListener listener : nodeListeners)
 			{
-				for (DataType type : listener.getMonitorNodeTypes())
+				for (NodeType type : listener.getMonitorNodeTypes())
 				{
-					if (node.getType().equals(type))
+					if (node.getNodeType().equals(type))
 					{
 						scheduler.submit(new Runnable()
 						{

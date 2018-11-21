@@ -6,16 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.dacce.commons.dns.client.DnsTransaction;
-import net.dacce.commons.dns.client.Resolver;
-import net.dacce.commons.dns.exceptions.DnsClientConnectException;
-import net.dacce.commons.dns.exceptions.DnsNoRecordFoundException;
-import net.dacce.commons.dns.exceptions.DnsResponseTimeoutException;
-import net.dacce.commons.dns.messages.QuestionRecord;
-import net.dacce.commons.dns.records.RecordType;
-import net.dacce.commons.dns.records.ResourceRecord;
-import net.dacce.commons.general.CollectionUtils;
-import net.dacce.commons.general.FileUtils;
+import space.dcce.commons.dns.client.DnsTransaction;
+import space.dcce.commons.dns.client.Resolver;
+import space.dcce.commons.dns.exceptions.DnsClientConnectException;
+import space.dcce.commons.dns.exceptions.DnsNoRecordFoundException;
+import space.dcce.commons.dns.exceptions.DnsResponseTimeoutException;
+import space.dcce.commons.dns.messages.QuestionRecord;
+import space.dcce.commons.dns.records.RecordType;
+import space.dcce.commons.dns.records.ResourceRecord;
+import space.dcce.commons.general.CollectionUtils;
+import space.dcce.commons.general.FileUtils;
 
 public class Test
 {

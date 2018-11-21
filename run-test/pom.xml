@@ -10,7 +10,7 @@
 	<name>MCP -- run-test</name>
 	<dependencies>
 		<dependency>
-			<groupId>net.dacce</groupId>
+			<groupId>space.dcce</groupId>
 			<artifactId>commons-dns-client</artifactId>
 		</dependency>
 		<dependency>

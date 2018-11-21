@@ -9,11 +9,11 @@
   <name>MCP -- Options</name>
   <dependencies>
   	<dependency>
-  		<groupId>net.dacce</groupId>
+  		<groupId>space.dcce</groupId>
   		<artifactId>commons-gnu-cli</artifactId>
   	</dependency>
   	<dependency>
-  		<groupId>net.dacce</groupId>
+  		<groupId>space.dcce</groupId>
   		<artifactId>commons-general</artifactId>
   	</dependency>
   	<dependency>

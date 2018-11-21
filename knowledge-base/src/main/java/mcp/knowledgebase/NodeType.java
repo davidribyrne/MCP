@@ -4,46 +4,64 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.*;
 
-public class NodeType extends DataType
+
+public class NodeType extends UniqueDatum
 {
 	private final static Logger logger = LoggerFactory.getLogger(NodeType.class);
 
+	private static final Map<UUID, NodeType> TYPES = new HashMap<UUID, NodeType>(5);
+	protected String name;
+	protected String description;
+	private Object lock = new Object();
 
-	public NodeType()
-	{
-	}
-	
 	
 	public NodeType(UUID uuid, String name, String description)
 	{
-		super(uuid, name, description);
+		this(uuid, name, description, false);
 	}
 
-
-	public NodeType(UUID uuid)
+	public NodeType(UUID uuid, String name, String description, boolean restore)
 	{
 		super(uuid);
+		synchronized (lock)
+		{
+			this.name = name;
+			this.description = description;
+			if (TYPES.containsKey(getID()))
+			{
+				throw new IllegalStateException("Type already existed in TYPES");
+			}
+			TYPES.put(getID(), this);
+			if (!restore)
+			{
+				KnowledgeBase.getInstance().storeNewNodeType(this);
+			}
+		}
 	}
 
 
 	public static synchronized NodeType getByName(String name, String description)
 	{
+
 		UUID uuid = UUID.nameUUIDFromBytes(name.getBytes());
-		DataType t = DataType.getByName(name);
-		if (t == null)
+		if (TYPES.containsKey(uuid))
 		{
-			t = new NodeType(uuid, name, description);
-			DataType.addDataType(t);
+			return TYPES.get(uuid);
 		}
-		try
-		{
-			return (NodeType) t;
-		}
-		catch (ClassCastException e)
-		{
-			logger.error("Node and attribute types have the same name (+ " + name + ")", e);
-			throw e;
-		}
+
+		return new NodeType(uuid, name, description);
+	}
+
+
+	public String getName()
+	{
+		return name;
+	}
+
+
+	public String getDescription()
+	{
+		return description;
 	}
 
 }

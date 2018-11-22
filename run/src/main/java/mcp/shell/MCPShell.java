@@ -39,10 +39,10 @@ import org.crsh.cli.impl.lang.Instance;
 import org.crsh.cli.impl.lang.ObjectCommandDescriptor;
 import org.crsh.cli.impl.lang.Util;
 import org.crsh.console.jline.JLineProcessor;
-import org.crsh.console.jline.Terminal;
-import org.crsh.console.jline.TerminalFactory;
-import org.crsh.console.jline.console.ConsoleReader;
-import org.crsh.console.jline.internal.Configuration;
+//import org.crsh.console.jline.Terminal;
+//import org.crsh.console.jline.TerminalFactory;
+//import org.crsh.console.jline.console.ConsoleReader;
+//import org.crsh.console.jline.internal.Configuration;
 import org.crsh.shell.Shell;
 import org.crsh.shell.ShellFactory;
 import org.crsh.util.InterruptHandler;
@@ -119,70 +119,70 @@ public class MCPShell
 
 
 
-	@Command
-	public void main() throws Exception
-	{
-		Commands.loadCommands();
-		boolean interactive = GeneralOptions.getInstance().isInteractiveConsole();
-
-		// Do bootstrap
-		bootstrap.bootstrap();
-		if (interactive)
-		{
-			Runtime.getRuntime().addShutdownHook(new Thread()
-			{
-				@Override
-				public void run()
-				{
-					bootstrap.stop();
-				}
-			});
-
-			ShellFactory factory = bootstrap.getContext().getPlugin(ShellFactory.class);
-			Shell shell = factory.create(null);
-
-			//
-			final Terminal term = TerminalFactory.create();
-
-			//
-			String encoding = Configuration.getEncoding();
-
-			// Use AnsiConsole only if term doesn't support Ansi
-			PrintStream out;
-			boolean ansi;
-			if (term.isAnsiSupported())
-			{
-				out = new PrintStream(new BufferedOutputStream(term.wrapOutIfNeeded(new FileOutputStream(FileDescriptor.out)), 16384), false,
-						encoding);
-				ansi = true;
-			}
-			else
-			{
-				out = AnsiConsole.out;
-				ansi = false;
-			}
-			FileInputStream in = new FileInputStream(FileDescriptor.in);
-			ConsoleReader reader = new ConsoleReader(in, out);
-
-			processor = new JLineProcessor(ansi, shell, reader, out);
-			InterruptHandler interruptHandler = new InterruptHandler(new Runnable()
-			{
-				@Override
-				public void run()
-				{
-					processor.interrupt();
-				}
-			});
-			interruptHandler.install();
-
-
-			//
-			shellThread = new Thread(processor);
-			shellThread.setName("MCP shell");
-			shellThread.setDaemon(true);
-			shellThread.start();
-		}
-	}
+//	@Command
+//	public void main() throws Exception
+//	{
+//		Commands.loadCommands();
+//		boolean interactive = GeneralOptions.getInstance().isInteractiveConsole();
+//
+//		// Do bootstrap
+//		bootstrap.bootstrap();
+//		if (interactive)
+//		{
+//			Runtime.getRuntime().addShutdownHook(new Thread()
+//			{
+//				@Override
+//				public void run()
+//				{
+//					bootstrap.stop();
+//				}
+//			});
+//
+//			ShellFactory factory = bootstrap.getContext().getPlugin(ShellFactory.class);
+//			Shell shell = factory.create(null);
+//
+//			//
+//			final Terminal term = TerminalFactory.create();
+//
+//			//
+//			String encoding = Configuration.getEncoding();
+//
+//			// Use AnsiConsole only if term doesn't support Ansi
+//			PrintStream out;
+//			boolean ansi;
+//			if (term.isAnsiSupported())
+//			{
+//				out = new PrintStream(new BufferedOutputStream(term.wrapOutIfNeeded(new FileOutputStream(FileDescriptor.out)), 16384), false,
+//						encoding);
+//				ansi = true;
+//			}
+//			else
+//			{
+//				out = AnsiConsole.out;
+//				ansi = false;
+//			}
+//			FileInputStream in = new FileInputStream(FileDescriptor.in);
+//			ConsoleReader reader = new ConsoleReader(in, out);
+//
+//			processor = new JLineProcessor(ansi, shell, reader, out);
+//			InterruptHandler interruptHandler = new InterruptHandler(new Runnable()
+//			{
+//				@Override
+//				public void run()
+//				{
+//					processor.interrupt();
+//				}
+//			});
+//			interruptHandler.install();
+//
+//
+//			//
+//			shellThread = new Thread(processor);
+//			shellThread.setName("MCP shell");
+//			shellThread.setDaemon(true);
+//			shellThread.start();
+//		}
+//	}
 
 
 	public MCPBootstrap getBootstrap()

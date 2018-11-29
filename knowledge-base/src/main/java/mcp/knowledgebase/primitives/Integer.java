@@ -1,9 +1,5 @@
 package mcp.knowledgebase.primitives;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.util.*;
-
 public class Integer extends Primitive
 {
 	private long value;

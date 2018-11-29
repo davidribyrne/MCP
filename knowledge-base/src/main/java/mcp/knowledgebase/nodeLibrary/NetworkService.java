@@ -3,12 +3,9 @@ package mcp.knowledgebase.nodeLibrary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.knowledgebase.NodeType;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.Node;
 import mcp.knowledgebase.NodeType;
-
-import java.util.*;
 
 public class NetworkService
 {
@@ -18,10 +15,10 @@ public class NetworkService
 	public static final NodeType NETWORK_SERVICE_SOFTWARE_GUESS = NodeType.getByName("NETWORK_SERVICE_SOFTWARE_GUESS", "Service software guess");
 	public static final NodeType NETWORK_SERVICE_DESCRIPTION_REASON = NodeType.getByName("NETWORK_SERVICE_DESCRIPTION_REASON", "Service description reason");
 
-	public static final Node NETWORK_SERVICE_DESCRIPTION_REASON_UNKNOWN = KnowledgeBase.getInstance().getOrCreateNode(NETWORK_SERVICE_DESCRIPTION_REASON, "Unknown");
-	public static final Node NETWORK_SERVICE_DESCRIPTION_REASON_TABLE = KnowledgeBase.getInstance().getOrCreateNode(NETWORK_SERVICE_DESCRIPTION_REASON, "Table");
-	public static final Node NETWORK_SERVICE_DESCRIPTION_REASON_SCAN = KnowledgeBase.getInstance().getOrCreateNode(NETWORK_SERVICE_DESCRIPTION_REASON, "Scan");
-	public static final Node NETWORK_SERVICE_DESCRIPTION_REASON_INTERACTION = KnowledgeBase.getInstance().getOrCreateNode(NETWORK_SERVICE_DESCRIPTION_REASON, "Interaction");
+	public static final Node NETWORK_SERVICE_DESCRIPTION_REASON_UNKNOWN = KnowledgeBase.instance.getOrCreateNode(NETWORK_SERVICE_DESCRIPTION_REASON, "Unknown");
+	public static final Node NETWORK_SERVICE_DESCRIPTION_REASON_TABLE = KnowledgeBase.instance.getOrCreateNode(NETWORK_SERVICE_DESCRIPTION_REASON, "Table");
+	public static final Node NETWORK_SERVICE_DESCRIPTION_REASON_SCAN = KnowledgeBase.instance.getOrCreateNode(NETWORK_SERVICE_DESCRIPTION_REASON, "Scan");
+	public static final Node NETWORK_SERVICE_DESCRIPTION_REASON_INTERACTION = KnowledgeBase.instance.getOrCreateNode(NETWORK_SERVICE_DESCRIPTION_REASON, "Interaction");
 
 	public static Node serviceReasonFromNmap(String reason)
 	{

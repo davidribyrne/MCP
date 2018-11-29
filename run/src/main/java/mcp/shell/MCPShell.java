@@ -19,14 +19,8 @@ package mcp.shell;
  */
 
 
-import java.io.BufferedOutputStream;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 
-import org.crsh.cli.Command;
 import org.crsh.cli.Named;
 import org.crsh.cli.impl.SyntaxException;
 import org.crsh.cli.impl.descriptor.HelpDescriptor;
@@ -39,23 +33,14 @@ import org.crsh.cli.impl.lang.Instance;
 import org.crsh.cli.impl.lang.ObjectCommandDescriptor;
 import org.crsh.cli.impl.lang.Util;
 import org.crsh.console.jline.JLineProcessor;
-//import org.crsh.console.jline.Terminal;
-//import org.crsh.console.jline.TerminalFactory;
-//import org.crsh.console.jline.console.ConsoleReader;
-//import org.crsh.console.jline.internal.Configuration;
-import org.crsh.shell.Shell;
-import org.crsh.shell.ShellFactory;
-import org.crsh.util.InterruptHandler;
 import org.crsh.util.Utils;
 import org.crsh.vfs.FS;
 import org.crsh.vfs.spi.file.FileMountFactory;
 import org.crsh.vfs.spi.url.ClassPathMountFactory;
-import org.fusesource.jansi.AnsiConsole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.modules.GeneralOptions;
-import mcp.shell.commands.Commands;
 
 
 @Named("crash")

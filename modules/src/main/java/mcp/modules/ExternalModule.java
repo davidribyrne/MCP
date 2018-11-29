@@ -1,10 +1,5 @@
 package mcp.modules;
 
-import javax.xml.ws.spi.WebServiceFeatureAnnotation;
-
-import space.dcce.commons.cli.ModuleOptions;
-import space.dcce.commons.cli.OptionContainer;
-
 public abstract class ExternalModule extends Module
 {
 	

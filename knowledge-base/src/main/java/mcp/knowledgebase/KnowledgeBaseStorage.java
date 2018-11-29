@@ -1,21 +1,25 @@
 package mcp.knowledgebase;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import space.dcce.commons.general.FileUtils;
-import space.dcce.commons.general.UnexpectedException;
-
+import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.file.FileAlreadyExistsException;
+import java.sql.Clob;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.UUID;
+
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import space.dcce.commons.general.FileUtils;
+import space.dcce.commons.general.UnexpectedException;
 
 
 public class KnowledgeBaseStorage
@@ -26,6 +30,8 @@ public class KnowledgeBaseStorage
 	private final static String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
 	private java.sql.Connection dbConnection;
 	private final static String FILENAME = "mcp.db";
+	private final static int MAX_VALUE_LENGTH = 65536;
+
 
 	public KnowledgeBaseStorage()
 	{
@@ -74,7 +80,7 @@ public class KnowledgeBaseStorage
 		ResultSet rs = dbConnection.prepareStatement(query).executeQuery();
 		while (rs.next())
 		{
-			UUID uuid = UUID.fromString(rs.getString(1));
+			UUID uuid = readUUID(rs, 1);
 			String name = rs.getString(2);
 			String description = rs.getString(3);
 			new NodeType(uuid, name, description, true);
@@ -120,17 +126,24 @@ public class KnowledgeBaseStorage
 	}
 
 
-	public void addNode(Node node)
+
+	void addNode(Node node)
 	{
 		try
 		{
 			PreparedStatement psInsert = dbConnection.prepareStatement(
 					"INSERT INTO nodes (id, type, value) VALUES (?, ?, ?)");
-
-			psInsert.setString(1, node.getID().toString());
-			psInsert.setString(2, node.getNodeType().getID().toString());
-			// psInsert.setTimestamp(3, node.getCreationTime());
-			psInsert.setString(3, new String(node.getValue()));
+			addUUID(psInsert, 1, node.getID());
+			addUUID(psInsert, 2, node.getNodeType().getID());
+			String value = node.getValue();
+			if (value.length() > MAX_VALUE_LENGTH)
+			{
+				value = value.substring(0, MAX_VALUE_LENGTH);
+			}
+//			Clob valueClob = dbConnection.createClob();
+//			valueClob.setString(1, value);
+//			psInsert.setClob(3, valueClob);
+			psInsert.setAsciiStream(3, new ByteArrayInputStream(value.getBytes()));
 			psInsert.execute();
 			psInsert.close();
 		}
@@ -142,22 +155,26 @@ public class KnowledgeBaseStorage
 	}
 
 
-	public void addConnection(UUID id, Node... nodes) throws UnexpectedException
+	void addConnection(UUID connectionId, Node... nodes) throws UnexpectedException
+	{
+		for (Node node : nodes)
+		{
+			updateConnection(connectionId, node);
+		}
+	}
+
+
+	void updateConnection(UUID connectionId, Node node) throws UnexpectedException
 	{
 		try
 		{
 			PreparedStatement psInsert = dbConnection.prepareStatement(
 					"INSERT INTO connections (id, nodeID) VALUES (?, ?)");
 
-			for (Node node : nodes)
-			{
-
-				psInsert.setString(1, id.toString());
-				psInsert.setString(2, node.getID().toString());
-				psInsert.execute();
-			}
+			addUUID(psInsert, 1, connectionId);
+			addUUID(psInsert, 2, node.getID());
+			psInsert.execute();
 			psInsert.close();
-
 		}
 		catch (SQLException e)
 		{
@@ -168,105 +185,87 @@ public class KnowledgeBaseStorage
 	}
 
 
-	public boolean nodeExists(NodeType nodeType, String value)
+	public boolean nodeExists(NodeType nodeType, String value) throws UnexpectedException, IllegalStateException
 	{
-		String query = "SELECT id "
+		String query = "SELECT COUNT(id) "
 				+ "FROM nodes "
 				+ "WHERE "
 				+ "type = ? "
-				+ "AND value = ? ";
-
+				+ "AND id = ? ";
 
 		PreparedStatement statement;
 		try
 		{
 			statement = dbConnection.prepareStatement(query);
-			statement.setString(1, nodeType.getID().toString());
-			statement.setString(2, value);
+			addUUID(statement, 1, nodeType.getID());
+			addUUID(statement, 2, UUID.nameUUIDFromBytes(value.getBytes()));
 			ResultSet rs = statement.executeQuery();
-			if (rs.next())
-			{
+			rs.next();
+			int count = rs.getInt(1);
+			if (count == 0)
+				return false;
+			else if (count == 1)
 				return true;
-			}
-
+			throw new IllegalStateException("More than one node discovered");
 		}
 		catch (SQLException e)
 		{
 			throw new UnexpectedException("Unexpected problem running SQL for nodeExists", e);
 		}
-		return false;
 	}
 
 
 	public Node getNode(NodeType nodeType, String value) throws SQLException, IllegalStateException
 	{
-		String query = "SELECT id "
-				+ "FROM nodes "
-				+ "WHERE "
-				+ "type = ? "
-				+ "AND value = ? ";
-
-
-		PreparedStatement statement = dbConnection.prepareStatement(query);
-		statement.setString(1, nodeType.getID().toString());
-		statement.setString(2, value);
-		ResultSet rs = statement.executeQuery();
-		UUID id = null;
-		if (rs.next())
+		/*
+		 * This will need to actually go to the database if additional fields are added to Node
+		 */
+		if (nodeExists(nodeType, value))
 		{
-			id = UUID.fromString(rs.getString(1));
-
+			Node node = new Node(nodeType, value);
+			getNodeConnections(node);
+			return node;
 		}
-		else
-		{
-			throw new IllegalStateException("Node not found");
-		}
-
-		if (rs.next())
-		{
-			throw new IllegalStateException("More than one node returned to getNode");
-		}
-
-		Node node = new Node(nodeType, value, id);
-		loadNodeConnections(node);
-		return node;
+		return null;
 	}
 
-	private void loadNodeConnections(Node node) throws SQLException
+
+	private void getNodeConnections(Node node) throws SQLException
 	{
 		String query = "SELECT id "
 				+ "FROM connections "
 				+ "WHERE nodeID = ?";
-		
+
 		PreparedStatement statement = dbConnection.prepareStatement(query);
-		statement.setString(1, node.getID().toString());
+		addUUID(statement, 1, node.getID());
 		ResultSet rs = statement.executeQuery();
 		while (rs.next())
 		{
-			UUID uuid = UUID.fromString(rs.getString(1));
+			UUID uuid = readUUID(rs, 1);
 			Connection c = ConnectionCache.instance.getConnection(uuid);
 			if (c == null)
 			{
-				c = loadConnection(uuid);
+				c = getConnection(uuid);
 			}
 			node.addConnection(c);
 		}
 
 	}
-	
-	private Connection loadConnection(UUID uuid) throws SQLException
+
+
+	public Connection getConnection(UUID uuid) throws SQLException
 	{
 		String query = "SELECT nodeID "
 				+ "FROM connections "
 				+ "WHERE id = ?";
-		
+
 		PreparedStatement statement = dbConnection.prepareStatement(query);
-		statement.setString(1, uuid.toString());
+		addUUID(statement, 1, uuid);
 		ResultSet rs = statement.executeQuery();
 		Connection connection = new Connection(uuid);
 		while (rs.next())
 		{
-			UUID nodeID = UUID.fromString(rs.getString(1));
+			UUID nodeID = readUUID(rs, 1);
 			connection.restoreNode(nodeID);
 		}
 		statement.close();
@@ -274,14 +273,15 @@ public class KnowledgeBaseStorage
 		return connection;
 	}
 
-	public void addNodeType(NodeType nodeType)
+
+	void addNodeType(NodeType nodeType)
 	{
 		try
 		{
 			PreparedStatement psInsert = dbConnection.prepareStatement(
 					"INSERT INTO types (id, name, description) VALUES (?, ?, ?)");
 
-			psInsert.setString(1, nodeType.getID().toString());
+			addUUID(psInsert, 1, nodeType.getID());
 			psInsert.setString(2, nodeType.getName());
 			psInsert.setString(3, nodeType.getDescription());
 			psInsert.execute();
@@ -294,5 +294,53 @@ public class KnowledgeBaseStorage
 		}
 	}
 
+	private static void addUUID(PreparedStatement ps, int position, UUID uuid) throws SQLException
+	{
+		addBinary(ps, position, uuidToBytes(uuid));
+	}
+
+	private static void addBinary(PreparedStatement ps, int position, byte[] data) throws SQLException
+	{
+		ByteArrayInputStream bais = new ByteArrayInputStream(data);
+		ps.setBinaryStream(position, bais);
+	}
+
+	private static UUID readUUID(ResultSet rs, int position) throws SQLException, UnexpectedException
+	{
+		return bytesToUUID(readBinary(rs, position));
+	}
+	
+	private static byte[] readBinary(ResultSet rs, int position) throws SQLException, UnexpectedException
+	{
+		InputStream is = rs.getBinaryStream(position);
+		try
+		{
+			return IOUtils.toByteArray(is);
+		}
+		catch (IOException e)
+		{
+			logger.error("Unexpected problem reading SQL result", e);
+			throw new UnexpectedException(e);
+		}
+	}
+
+	private static byte[] uuidToBytes(UUID uuid)
+	{
+		ByteBuffer buffer = ByteBuffer.allocate(16);
+		buffer.putLong(uuid.getMostSignificantBits());
+		buffer.putLong(uuid.getLeastSignificantBits());
+		return buffer.array();
+	}
+
+
+	private static UUID bytesToUUID(byte[] bytes)
+	{
+		ByteBuffer buffer = ByteBuffer.allocate(16);
+		buffer.put(bytes);
+		buffer.flip();
+		long mostSignificant = buffer.getLong();
+		long leastSignificant = buffer.getLong();
+		return new UUID(mostSignificant, leastSignificant);
+	}
 
 }

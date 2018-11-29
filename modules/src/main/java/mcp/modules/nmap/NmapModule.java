@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.modules.Module;
-import space.dcce.commons.cli.OptionContainer;
-import space.dcce.commons.cli.OptionGroup;
 
 public abstract class NmapModule extends Module
 {

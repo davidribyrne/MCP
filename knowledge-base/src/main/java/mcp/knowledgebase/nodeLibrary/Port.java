@@ -7,8 +7,6 @@ import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.Node;
 import mcp.knowledgebase.NodeType;
 
-import java.util.*;
-
 public class Port
 {
 	final static Logger logger = LoggerFactory.getLogger(Port.class);
@@ -18,19 +16,19 @@ public class Port
 	public static final NodeType PORT_STATE_REASON = NodeType.getByName("PORT_STATE_REASON", "Port state reason");
 	public static final NodeType PORT_NUMBER = NodeType.getByName("PORT_NUMBER", "Port number");
 
-	public static final Node PORT_STATE_OPEN = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Open");
-	public static final Node PORT_STATE_OPEN_FILTERERD = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Open or filtered");
-	public static final Node PORT_STATE_FILTERED = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Filtered");
-	public static final Node PORT_STATE_CLOSED = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Closed");
-	public static final Node PORT_STATE_WRAPPED = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Wrapped");
-	public static final Node PORT_STATE_UNKNOWN = KnowledgeBase.getInstance().getOrCreateNode(PORT_STATE, "Unknown");
+	public static final Node PORT_STATE_OPEN = KnowledgeBase.instance.getOrCreateNode(PORT_STATE, "Open");
+	public static final Node PORT_STATE_OPEN_FILTERERD = KnowledgeBase.instance.getOrCreateNode(PORT_STATE, "Open or filtered");
+	public static final Node PORT_STATE_FILTERED = KnowledgeBase.instance.getOrCreateNode(PORT_STATE, "Filtered");
+	public static final Node PORT_STATE_CLOSED = KnowledgeBase.instance.getOrCreateNode(PORT_STATE, "Closed");
+	public static final Node PORT_STATE_WRAPPED = KnowledgeBase.instance.getOrCreateNode(PORT_STATE, "Wrapped");
+	public static final Node PORT_STATE_UNKNOWN = KnowledgeBase.instance.getOrCreateNode(PORT_STATE, "Unknown");
 
 	
-	public static final Node PORT_TYPE_UDP = KnowledgeBase.getInstance().getOrCreateNode(PORT_TYPE, "UDP");
-	public static final Node PORT_TYPE_TCP = KnowledgeBase.getInstance().getOrCreateNode(PORT_TYPE, "TCP");
-	public static final Node PORT_TYPE_IP = KnowledgeBase.getInstance().getOrCreateNode(PORT_TYPE, "IP");
-	public static final Node PORT_TYPE_STCP = KnowledgeBase.getInstance().getOrCreateNode(PORT_TYPE, "STCP");
-	public static final Node PORT_TYPE_UNKNOWN = KnowledgeBase.getInstance().getOrCreateNode(PORT_TYPE, "Unknown");
+	public static final Node PORT_TYPE_UDP = KnowledgeBase.instance.getOrCreateNode(PORT_TYPE, "UDP");
+	public static final Node PORT_TYPE_TCP = KnowledgeBase.instance.getOrCreateNode(PORT_TYPE, "TCP");
+	public static final Node PORT_TYPE_IP = KnowledgeBase.instance.getOrCreateNode(PORT_TYPE, "IP");
+	public static final Node PORT_TYPE_STCP = KnowledgeBase.instance.getOrCreateNode(PORT_TYPE, "STCP");
+	public static final Node PORT_TYPE_UNKNOWN = KnowledgeBase.instance.getOrCreateNode(PORT_TYPE, "Unknown");
 
 	
 	public static Node portStateFromNmap(String text)

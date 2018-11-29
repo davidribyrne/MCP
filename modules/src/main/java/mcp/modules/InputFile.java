@@ -17,6 +17,7 @@ import space.dcce.commons.general.FileUtils;
 
 public class InputFile
 {
+	@SuppressWarnings("unused")
 	private final static Logger logger = LoggerFactory.getLogger(InputFile.class);
 
 	public InputFile(String filename, String directory)

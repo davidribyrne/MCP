@@ -1,8 +1,11 @@
 package mcp.knowledgebase;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.*;
 
 
 public class NodeType extends UniqueDatum
@@ -15,7 +18,7 @@ public class NodeType extends UniqueDatum
 	private Object lock = new Object();
 
 	
-	public NodeType(UUID uuid, String name, String description)
+	private NodeType(UUID uuid, String name, String description)
 	{
 		this(uuid, name, description, false);
 	}
@@ -34,7 +37,7 @@ public class NodeType extends UniqueDatum
 			TYPES.put(getID(), this);
 			if (!restore)
 			{
-				KnowledgeBase.getInstance().storeNewNodeType(this);
+				KnowledgeBase.instance.storeNewNodeType(this);
 			}
 		}
 	}
@@ -42,7 +45,6 @@ public class NodeType extends UniqueDatum
 
 	public static synchronized NodeType getByName(String name, String description)
 	{
-
 		UUID uuid = UUID.nameUUIDFromBytes(name.getBytes());
 		if (TYPES.containsKey(uuid))
 		{

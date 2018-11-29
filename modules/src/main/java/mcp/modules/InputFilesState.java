@@ -48,7 +48,7 @@ public class InputFilesState implements PersistedObject
 		Collection<File> files = FileUtils.listFiles(path.toFile(), null, false);
 		for(File file: files)
 		{
-			
+			//TODO finish
 		}
 		path.register(fileWatcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
 	}

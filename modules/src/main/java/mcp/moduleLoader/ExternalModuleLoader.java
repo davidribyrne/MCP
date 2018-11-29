@@ -34,6 +34,7 @@ public class ExternalModuleLoader
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	private static List<Class> getSuperClasses(Class clazz)
 	{
 		List<Class> superClasses = new ArrayList<Class>();
@@ -72,7 +73,8 @@ public class ExternalModuleLoader
 				{
 					try
 					{
-						Class clazz = Class.forName(className, true, loader);
+						@SuppressWarnings("unchecked")
+						Class<? extends ExternalModule> clazz = (Class<? extends ExternalModule>) Class.forName(className, true, loader);
 
 						if (getSuperClasses(clazz).contains(ExternalModule.class))
 						{
@@ -104,6 +106,7 @@ public class ExternalModuleLoader
 	}
 
 
+	@SuppressWarnings("rawtypes")
 	public static Map<Class<? extends ExternalModule>, ExternalModule> loadModules(String path)
 	{
 		Map<Class<? extends ExternalModule>, ExternalModule> modules = new HashMap<Class<? extends ExternalModule>, ExternalModule>();

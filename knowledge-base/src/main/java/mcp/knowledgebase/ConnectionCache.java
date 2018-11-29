@@ -1,10 +1,9 @@
 package mcp.knowledgebase;
 
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-import java.util.*;
 
 public class ConnectionCache extends Cache<Connection>
 {

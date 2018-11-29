@@ -1,19 +1,10 @@
 package mcp.modules;
 
-import java.util.List;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.events.events.McpCompleteEvent;
-import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.Scope;
 import space.dcce.commons.cli.OptionContainer;
-import space.dcce.commons.general.CollectionUtils;
-import space.dcce.commons.general.StringUtils;
 
 
 public class SimpleKbDumper extends Module
@@ -33,7 +24,7 @@ public class SimpleKbDumper extends Module
 
 	public String getKBDump()
 	{
-		KnowledgeBase kb = KnowledgeBase.getInstance();
+//		KnowledgeBase kb = KnowledgeBase.instance;
 		StringBuilder sb = new StringBuilder();
 //		sb.append("Simple KB dumper output:\n");
 //		sb.append("Scope:\n");

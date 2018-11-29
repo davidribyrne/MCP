@@ -1,6 +1,5 @@
 package mcp.jobmanager.executors;
 
-import java.awt.geom.GeneralPath;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import mcp.jobmanager.jobs.JobState;
 import space.dcce.commons.general.CollectionUtils;
 import space.dcce.commons.general.FileUtils;
-import space.dcce.commons.general.OSUtils;
 
 
 public class CommandLineExecutor extends Executor<Process>
@@ -31,7 +29,7 @@ public class CommandLineExecutor extends Executor<Process>
 	private String programName;
 	private JobState state = JobState.UNSTARTED;
 	private int expectedExitValue;
-	private boolean requiresRoot;
+//	private boolean requiresRoot;
 
 	final static Logger logger = LoggerFactory.getLogger(CommandLineExecutor.class);
 	private String rootPassword;
@@ -48,7 +46,7 @@ public class CommandLineExecutor extends Executor<Process>
 	 * @param appendOutput
 	 */
 	public CommandLineExecutor(String programName, String jobName, String executable, List<String> arguments, String startingDirectory,
-			String stdoutFilename, String stderrFilename, boolean appendOutput, int expectedExitValue, boolean requiresRoot)
+			String stdoutFilename, String stderrFilename, boolean appendOutput, int expectedExitValue)
 	{
 		super(jobName);
 		this.executable = executable;
@@ -59,7 +57,7 @@ public class CommandLineExecutor extends Executor<Process>
 		this.appendOutput = appendOutput;
 		this.programName = programName;
 		this.expectedExitValue = expectedExitValue;
-		this.requiresRoot = requiresRoot;
+//		this.requiresRoot = requiresRoot;
 	}
 
 
@@ -69,6 +67,7 @@ public class CommandLineExecutor extends Executor<Process>
 		boolean sudo = false;
 		List<String> args = new ArrayList<String>(arguments.size() + 1);
 
+		/*
 		if (requiresRoot && !OSUtils.isRoot())
 		{
 			sudo = true;
@@ -77,7 +76,7 @@ public class CommandLineExecutor extends Executor<Process>
 			args.add("sudo");
 			args.add("-S");
 		}
-
+*/
 		args.add(executable);
 		args.addAll(arguments);
 

@@ -14,9 +14,6 @@ import mcp.knowledgebase.Node;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.modules.Modules;
 import mcp.modules.SimpleKbDumper;
-import space.dcce.commons.general.UnexpectedException;
-import space.dcce.commons.netaddr.IP4Utils;
-import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
 
 
 @Usage("Knowledge Base interaction\n"
@@ -70,7 +67,7 @@ public class kb extends BaseCommand
 		{
 			if ("addresses".equalsIgnoreCase(section))
 			{
-				for (Node address : KnowledgeBase.getInstance().getAllNodesByType(Network.IPV4_ADDRESS))
+				for (Node address : KnowledgeBase.instance.getAllNodesByType(Network.IPV4_ADDRESS))
 				{
 					sb.append(address.getValue()).append("\n");
 				}

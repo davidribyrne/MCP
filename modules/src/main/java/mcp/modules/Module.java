@@ -1,8 +1,5 @@
 package mcp.modules;
 
-import space.dcce.commons.cli.OptionContainer;
-
-
 public abstract class Module
 {
 	public abstract void initialize();

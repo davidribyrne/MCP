@@ -79,7 +79,7 @@ public class NmapXmlParser
 	{
 	}
 
-	public static void parse(File xmlResultsFile, String scanDescription, String commandLine)
+	public static void parse(File xmlResultsFile, String scanDescription)
 	{
 		Pattern endTimePattern = Pattern.compile("<runstats><finished time=\"(\\d+)" );
 		String xmlResults;
@@ -126,13 +126,12 @@ public class NmapXmlParser
 		}
 		
 		
-		Node source = KnowledgeBase.getInstance().getOrCreateNode(Nmap.NMAP_SCAN_SOURCE, path);
-		Node description = KnowledgeBase.getInstance().getOrCreateNode(General.NOTE, scanDescription);
-		Node commandLineNode = KnowledgeBase.getInstance().getOrCreateNode(General.COMMAND_LINE, commandLine);
+		Node source = KnowledgeBase.instance.getOrCreateNode(Nmap.NMAP_SCAN_SOURCE, path);
+		Node description = KnowledgeBase.instance.getOrCreateNode(General.NOTE, scanDescription);
 		
-		Connection.getOrCreateConnection(source, description, commandLineNode);
+		Connection scan = KnowledgeBase.instance.getOrCreateConnection(source, description);
 		
-		NMapXmlHandler nmxh = new NMapXmlHandler(scanTime, source);
+		NMapXmlHandler nmxh = new NMapXmlHandler(scan);
 		SAXParserFactory spf = SAXParserFactory.newInstance();
 
 		SAXParser sp;

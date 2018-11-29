@@ -7,13 +7,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.knowledgebase.KnowledgeBase;
 import mcp.moduleLoader.ExternalModuleLoader;
 import mcp.modules.hostnames.CommonHostnames;
 import mcp.modules.hostnames.HostnameDiscoveryGeneralOptions;
 import mcp.modules.listeners.HttpTransactionListener;
 import mcp.modules.nmap.NmapGeneralOptions;
 import mcp.modules.nmap.NmapIcmp;
+import mcp.modules.nmap.NmapSubNetScan;
 import mcp.modules.nmap.NmapTcp;
 import mcp.modules.nmap.NmapUdp;
 import mcp.options.MCPOptions;
@@ -44,6 +44,7 @@ public class Modules
 				NmapIcmp.class,
 				NmapTcp.class,
 				NmapUdp.class,
+				NmapSubNetScan.class,
 				SimpleKbDumper.class,
 				HttpTransactionListener.class
 		};

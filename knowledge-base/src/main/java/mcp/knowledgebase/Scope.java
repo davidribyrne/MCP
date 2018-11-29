@@ -34,6 +34,10 @@ public class Scope
 	}
 
 
+	/**
+	 * 
+	 * @return All in-scope addresses
+	 */
 	public Addresses getTargetAddresses()
 	{
 		synchronized (this)

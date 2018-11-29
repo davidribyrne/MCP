@@ -1,11 +1,6 @@
 package mcp.knowledgebase;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -18,81 +13,36 @@ import space.dcce.commons.general.UniqueList;
 public class Connection extends UniqueDatum
 {
 	private final static Logger logger = LoggerFactory.getLogger(Connection.class);
-	private final NoNullHashSet<UUID> nodes;
+	private final UniqueList<UUID> nodes;
 
 
-	private Connection(Node... nodes)
+	/**
+	 * Saves to the database
+	 * @param nodes
+	 */
+	Connection(Node... nodes)
 	{
 		this(null, nodes);
+		KnowledgeBase.storage.addConnection(getID(), nodes);
 	}
 
 
 	/**
-	 * Use only from KnowledgeBase
+	 * Use only from KnowledgeBaseStorage and internally. 
+	 * It does NOT save to the database.  
 	 * 
 	 * @param uuid
 	 */
 	Connection(UUID uuid, Node... nodes)
 	{
 		super(uuid);
-		this.nodes = new NoNullHashSet<UUID>();
+		this.nodes = new UniqueList<UUID>(false);
 		for (Node node: nodes)
 		{
 			addNode(node);
 		}
 		ConnectionCache.instance.addItem(this);
 	}
-
-	/**
-	 * 
-	 * Requires complete match of all nodes
-	 * @param nodes
-	 * @return
-	 */
-	static public Connection getOrCreateConnection(Node... nodes)
-	{
-		return getOrCreateConnection(false, nodes);
-	}
-
-	/**
-	 * 
-	 * @param acceptPartial
-	 *            Return a connection that contains all of the specified nodes, but may contain other nodes too
-	 * @param nodes
-	 * @return
-	 */
-	static public Connection getOrCreateConnection(boolean acceptPartial, Node... nodes)
-	{
-		// First, check to see if the connection already exists
-
-		for (Node node : nodes)
-		{
-			for (Connection c : node.getConnections())
-			{
-				if (acceptPartial)
-				{
-					if (c.containsNodes(nodes))
-						return c;
-				}
-				else
-				{
-					if (c.nodesMatch(nodes))
-						return c;
-				}
-			}
-		}
-
-		// No match, so create new connection
-
-		Connection c = new Connection(nodes);
-		for (Node node : nodes)
-		{
-			node.addConnection(c);
-		}
-
-		return c;
-	}
-
 
 
 	/**
@@ -126,17 +76,17 @@ public class Connection extends UniqueDatum
 	 * 
 	 * @return read-only list of nodes
 	 */
-	public Set<UUID> getNodes()
+	public Iterable<UUID> getNodes()
 	{
-		return Collections.unmodifiableSet(nodes);
+		return Collections.unmodifiableList(nodes);
 	}
 
 
-	public void addNode(Node node)
+	synchronized public void addNode(Node node)
 	{
 		nodes.add(node.getID());
 		node.addConnection(this);
-		KnowledgeBase.storage.addConnection(getID(), node);
+		KnowledgeBase.storage.updateConnection(getID(), node);
 	}
 
 	void restoreNode(UUID id)

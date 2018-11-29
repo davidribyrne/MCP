@@ -12,12 +12,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.events.events.NodeCreationEvent;
 import mcp.events.events.ExecutorCompleteEvent;
-import mcp.events.events.McpCompleteEvent;
 import mcp.events.events.McpEvent;
 import mcp.events.events.McpStartEvent;
 import mcp.events.events.ModuleRunCompleteEvent;
+import mcp.events.events.NodeCreationEvent;
 import mcp.events.listeners.ExecutorCompleteListener;
 import mcp.events.listeners.McpEventListener;
 import mcp.events.listeners.McpStartListener;
@@ -37,7 +36,7 @@ public class ExecutionScheduler implements Runnable
 	private Thread thread;
 	private boolean running;
 	private ScheduledThreadPoolExecutor scheduler;
-
+	private boolean startSignaled;
 
 	private final MapOfLists<Class<? extends McpEvent>, McpEventListener> listeners;
 	private final List<NodeCreationListener> nodeListeners;
@@ -124,48 +123,79 @@ public class ExecutionScheduler implements Runnable
 	@Override
 	public void run()
 	{
-		Object o = new Object();
-		while (running)
+		try
 		{
-			synchronized (this)
+			Object o = new Object();
+			long count = 0;
+			while (running)
 			{
-				Executor<?>[] tmpJobs = jobs.get(JobState.RUNNING).toArray(new Executor<?>[0]);
-				for (Executor<?> executor : tmpJobs)
+				synchronized (this)
 				{
-					if (!executor.isRunning())
+					if (count++ % 600 == 0)
+						logStatus();
+					Executor<?>[] tmpJobs = jobs.get(JobState.RUNNING).toArray(new Executor<?>[0]);
+					for (Executor<?> executor : tmpJobs)
 					{
-						jobs.get(JobState.RUNNING).remove(executor);
-						ExecutorCompleteEvent event = new ExecutorCompleteEvent(executor.getProgramName(), executor.getName(),
-								executor.getState() == JobState.COMPLETE);
-						jobs.get(executor.getState()).add(executor);
-						executor.signalCallback();
-						signalEvent(event);
+						if (!executor.isRunning())
+						{
+							jobs.get(JobState.RUNNING).remove(executor);
+							ExecutorCompleteEvent event = new ExecutorCompleteEvent(executor.getProgramName(), executor.getName(),
+									executor.getState() == JobState.COMPLETE);
+							jobs.get(executor.getState()).add(executor);
+							executor.signalCallback();
+							signalEvent(event);
+						}
+					}
+				}
+				synchronized (o)
+				{
+					try
+					{
+						o.wait(100);
+					}
+					catch (InterruptedException e)
+					{
+						logger.debug("ExecutorManager interupted", e);
+					}
+				}
+				synchronized (this)
+				{
+					if (isQueueEmpty())
+					{
+						running = false;
+						logger.info("Queues are empty, shutting down.");
+						logStatus();
 					}
 				}
 			}
-			synchronized (o)
-			{
-				try
-				{
-					o.wait(100);
-				}
-				catch (InterruptedException e)
-				{
-					logger.debug("ExecutorManager interupted", e);
-				}
-			}
 		}
+		catch (Throwable t)
+		{
+			logger.error("Uncaught exception in ExecutionScheduler.run: " + t.getLocalizedMessage(), t);
+		}
+	}
+
+
+	private void logStatus()
+	{
+		logger.trace("Execution queue status:\n"
+				+ "Jobs: \n"
+				+ JobState.RUNNING.name() + ": " + jobs.get(JobState.RUNNING).size() + "\n"
+				+ JobState.COMPLETE.name() + ": " + jobs.get(JobState.COMPLETE).size() + "\n"
+				+ JobState.FAILED.name() + ": " + jobs.get(JobState.FAILED).size() + "\n"
+				+ JobState.UNSTARTED.name() + ": " + jobs.get(JobState.UNSTARTED).size() + "\n"
+				+ "Scheduler: \n"
+				+ "Active: " + scheduler.getActiveCount() + "\n"
+				+ "Completed: " + scheduler.getCompletedTaskCount());
 	}
 
 
 	public boolean isQueueEmpty()
 	{
-		synchronized (this)
-		{
-			return jobs.get(JobState.RUNNING).isEmpty()
-					&& scheduler.getActiveCount() == 0
-					&& scheduler.getQueue().isEmpty();
-		}
+		return jobs.get(JobState.UNSTARTED).isEmpty()
+				&& jobs.get(JobState.RUNNING).isEmpty()
+				&& scheduler.getActiveCount() == 0
+				&& scheduler.getQueue().isEmpty();
 	}
 
 
@@ -220,7 +250,15 @@ public class ExecutionScheduler implements Runnable
 				@Override
 				public void run()
 				{
-					listener.handleEvent(event);
+					try
+					{
+						listener.handleEvent(event);
+					}
+					catch (Throwable t)
+					{
+						logger.error("Uncaught exception in ExecutionScheduler.signalEvent - ExecutorCompleteEvent(" + event.toString() + "): "
+								+ t.getLocalizedMessage(), t);
+					}
 				}
 			});
 		}
@@ -239,7 +277,15 @@ public class ExecutionScheduler implements Runnable
 					@Override
 					public void run()
 					{
-						((ModuleRunCompleteListener) listener).handleEvent(event);
+						try
+						{
+							((ModuleRunCompleteListener) listener).handleEvent(event);
+						}
+						catch (Throwable t)
+						{
+							logger.error("Uncaught exception in ExecutionScheduler.signalEvent - ModuleRunCompleteEvent(" + event.toString() + "): "
+									+ t.getLocalizedMessage(), t);
+						}
 					}
 				});
 			}
@@ -263,7 +309,15 @@ public class ExecutionScheduler implements Runnable
 							@Override
 							public void run()
 							{
-								listener.handleEvent(event);
+								try
+								{
+									listener.handleEvent(event);
+								}
+								catch (Throwable t)
+								{
+									logger.error("Uncaught exception in ExecutionScheduler.signalEvent - NodeCreationEvent(" + event.toString()
+											+ "): " + t.getLocalizedMessage(), t);
+								}
 							}
 						});
 					}
@@ -284,11 +338,22 @@ public class ExecutionScheduler implements Runnable
 					@Override
 					public void run()
 					{
-						((McpStartListener) listener).handleEvent(event);
+						try
+						{
+							((McpStartListener) listener).handleEvent(event);
+						}
+						catch (Throwable t)
+						{
+							logger.error(
+									"Uncaught exception in ExecutionScheduler.signalEvent - McpStartEvent(" + event.toString() + "): "
+											+ t.getLocalizedMessage(),
+									t);
+						}
 					}
 				});
 			}
 		}
+		startSignaled = true;
 	}
 
 

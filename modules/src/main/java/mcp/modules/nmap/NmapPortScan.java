@@ -7,9 +7,6 @@ import mcp.knowledgebase.Scope;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
 import space.dcce.commons.cli.Option;
-import space.dcce.commons.cli.OptionGroup;
-import space.dcce.commons.validators.NumericListValidator;
-import space.dcce.commons.validators.NumericValidator;
 
 
 public abstract class NmapPortScan extends NmapModule implements McpStartListener

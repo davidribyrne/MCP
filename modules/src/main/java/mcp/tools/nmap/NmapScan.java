@@ -37,7 +37,6 @@ public class NmapScan implements JobCompleteCallback
 	private final static String CONSOLE_OUT_FILE_SUFFIX = "--stdout";
 	private final String jobName;
 	final static Logger logger = LoggerFactory.getLogger(NmapScan.class);
-	private String lastCommandLine;
 
 	public NmapScan(String jobName, Addresses targets)
 	{
@@ -117,9 +116,8 @@ public class NmapScan implements JobCompleteCallback
 		List<String> arguments = generateCommandArguments(status);
 		CommandLineExecutor executor = new CommandLineExecutor("Nmap", jobName, NmapGeneralOptions.getInstance()
 				.getNmapPath(), arguments, WorkingDirectories.getWorkingDirectory(),
-				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true, 0, true);
+				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true, 0);
 		executor.setCallback(this);
-		lastCommandLine = NmapGeneralOptions.getInstance().getNmapPath() + " " + CollectionUtils.joinObjects(" ", arguments);
 		ExecutionScheduler.getInstance().executeImmediately(executor);
 	}
 
@@ -212,7 +210,7 @@ public class NmapScan implements JobCompleteCallback
 		{
 			throw new FileNotFoundException("Nmap output file (" + f.getAbsolutePath() + ") not found for the " + jobName + " scan.");
 		}
-		NmapXmlParser.parse(f, jobName, lastCommandLine);
+		NmapXmlParser.parse(f, jobName);
 	}
 
 
@@ -245,6 +243,6 @@ public class NmapScan implements JobCompleteCallback
 		return new ToStringBuilder(this).append("resume", resume).append("speed", speed)
 				.append("outputFileName", outputFileName).append("resolve", resolve)
 				.append("flags", flags).append("targets", targets).append("jobName", jobName)
-				.append("lastCommandLine", lastCommandLine).build();
+				.build();
 	}
 }

@@ -7,8 +7,6 @@ import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.Node;
 import mcp.knowledgebase.NodeType;
 
-import java.util.*;
-
 
 public class Icmp
 {
@@ -21,10 +19,10 @@ public class Icmp
 
 	public static final NodeType ICMP_RESPONSE_TYPE = NodeType.getByName("ICMP_RESPONSE_TYPE", "ICMP RESPONSE TYPE");
 	
-	public static final Node ICMP_RESPONSE_ARP = KnowledgeBase.getInstance().getOrCreateNode(ICMP_RESPONSE_TYPE, "arp response");
-	public static final Node ICMP_RESPONSE_ECHO = KnowledgeBase.getInstance().getOrCreateNode(ICMP_RESPONSE_TYPE, "echo reply");
-	public static final Node ICMP_RESPONSE_LOCALHOST = KnowledgeBase.getInstance().getOrCreateNode(ICMP_RESPONSE_TYPE, "localhost response");
-	public static final Node ICMP_RESPONSE_TIMESTAMP = KnowledgeBase.getInstance().getOrCreateNode(ICMP_RESPONSE_TYPE, "timestamp response");
+	public static final Node ICMP_RESPONSE_ARP = KnowledgeBase.instance.getOrCreateNode(ICMP_RESPONSE_TYPE, "arp response");
+	public static final Node ICMP_RESPONSE_ECHO = KnowledgeBase.instance.getOrCreateNode(ICMP_RESPONSE_TYPE, "echo reply");
+	public static final Node ICMP_RESPONSE_LOCALHOST = KnowledgeBase.instance.getOrCreateNode(ICMP_RESPONSE_TYPE, "localhost response");
+	public static final Node ICMP_RESPONSE_TIMESTAMP = KnowledgeBase.instance.getOrCreateNode(ICMP_RESPONSE_TYPE, "timestamp response");
 
 
 	// ARP(-1), LOCALHOST(-2), ECHO(8), TIMESTAMP(14), MASK(18);

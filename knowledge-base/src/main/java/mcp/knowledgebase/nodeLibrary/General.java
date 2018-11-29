@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.NodeType;
 
-import java.util.*;
-
 public class General
 {
 	private final static Logger logger = LoggerFactory.getLogger(General.class);

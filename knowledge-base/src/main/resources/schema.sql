@@ -1,19 +1,18 @@
 create table nodes(
-	id VARCHAR(36), 
-	type VARCHAR(36), 
-	time TIMESTAMP,
-	value VARCHAR(200))
+	id CHAR(16) FOR BIT DATA, 
+	type CHAR(16) FOR BIT DATA, 
+	value CLOB(64K))
 	
 //////////
 	
 create table connections(
-	id VARCHAR(36), 
-	nodeID VARCHAR(36))
+	id CHAR(16) FOR BIT DATA, 
+	nodeID CHAR(16) FOR BIT DATA)
 
 //////////
 
 create table types(
-	id VARCHAR(36), 
+	id CHAR(16) FOR BIT DATA, 
 	name VARCHAR(50),
 	description VARCHAR(200))
 	

@@ -7,10 +7,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.knowledgebase.Connection;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.Node;
-import mcp.knowledgebase.NodeCache;
 import mcp.knowledgebase.Scope;
 import mcp.knowledgebase.nodeLibrary.Hostnames;
 import mcp.knowledgebase.nodeLibrary.Network;
@@ -111,9 +109,9 @@ public class HostnameDiscoveryUtils
 		if (Scope.instance.isInScope(address))
 		{
 			logger.debug("Hostname " + hostname + "->" + address.toString() + " was discovered and is in-scope.");
-			Node addressNode = KnowledgeBase.getInstance().getOrCreateNode(Network.IPV4_ADDRESS, address.toString());
-			Node hostnameNode = KnowledgeBase.getInstance().getOrCreateNode(Hostnames.HOSTNAME, hostname);
-			Connection.getOrCreateConnection(addressNode, hostnameNode);
+			Node addressNode = KnowledgeBase.instance.getOrCreateNode(Network.IPV4_ADDRESS, address.toString());
+			Node hostnameNode = KnowledgeBase.instance.getOrCreateNode(Hostnames.HOSTNAME, hostname);
+			KnowledgeBase.instance.getOrCreateConnection(addressNode, hostnameNode);
 			registerDomainsInHostname(hostname);
 		}
 		else
@@ -143,7 +141,7 @@ public class HostnameDiscoveryUtils
 				int limit = HostnameDiscoveryGeneralOptions.getInstance().getMaxAutoAddDomains();
 				if (autoRegisteredDomains < limit)
 				{
-					if (KnowledgeBase.getInstance().createNodeIfPossible(Hostnames.DOMAIN, domain))
+					if (KnowledgeBase.instance.createNodeIfPossible(Hostnames.DOMAIN, domain))
 						autoRegisteredDomains++;
 				}
 				else
@@ -164,7 +162,7 @@ public class HostnameDiscoveryUtils
 				{
 					for (String subdomain : DomainUtils.getSubdomains(hostname))
 					{
-						if (KnowledgeBase.getInstance().createNodeIfPossible(Hostnames.DOMAIN, subdomain))
+						if (KnowledgeBase.instance.createNodeIfPossible(Hostnames.DOMAIN, subdomain))
 							autoRegisteredSubDomains.put(subdomain, count + 1);
 					}
 				}

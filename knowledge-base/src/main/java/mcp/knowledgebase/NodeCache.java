@@ -1,7 +1,6 @@
 package mcp.knowledgebase;
 
-import java.util.*;
-import java.lang.ref.*;
+import java.lang.ref.WeakReference;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +51,12 @@ public class NodeCache extends Cache<Node>
 		prune();
 		synchronized (cacheLock)
 		{
-			return cache.get(new NodeKey(nodeType, value)).get();
+			WeakReference wr = cache.get(new NodeKey(nodeType, value));
+			if (wr == null)
+			{
+				return null;
+			}
+			return (Node) wr.get();
 		}
 	}
 	

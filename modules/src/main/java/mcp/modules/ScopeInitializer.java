@@ -41,6 +41,7 @@ public class ScopeInitializer extends Module
 				"filename");
 		targetIP = new Option(null, "target",
 				"Manually add a targeted address/CIDR/address range. This can be used multiple times.", true, true, null, "IP-address|CIDR|IP-range");
+		targetIP.setMultipleCalls(true);
 		excludeIPFile = new Option(null, "excludeIpsFile",
 				"File that contains a list of IP addresses to exclude. They can be in an nmap format (i.e. CIDRs and ranges).", true, true,
 				"exclude-ips.txt",
@@ -88,7 +89,7 @@ public class ScopeInitializer extends Module
 
 	private Addresses parseTargetFile(String filename, String description, Option option)
 	{
-		Addresses addresses = new Addresses();
+		Addresses addresses = new Addresses(100000);
 		try
 		{
 			for (String l : FileUtils.readLines(filename))
@@ -124,6 +125,7 @@ public class ScopeInitializer extends Module
 		{
 			throw new IllegalArgumentException("Problem reading IP " + description + " file (" + filename + ")", e);
 		}
+		addresses.trimToSize();
 		return addresses;
 	}
 

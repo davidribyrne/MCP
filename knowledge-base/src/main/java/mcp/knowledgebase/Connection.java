@@ -1,6 +1,9 @@
 package mcp.knowledgebase;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -13,7 +16,7 @@ import space.dcce.commons.general.UniqueList;
 public class Connection extends UniqueDatum
 {
 	private final static Logger logger = LoggerFactory.getLogger(Connection.class);
-	private final UniqueList<UUID> nodes;
+	private final UniqueList<UUID> connectionNodes;
 
 
 	/**
@@ -36,12 +39,12 @@ public class Connection extends UniqueDatum
 	Connection(UUID uuid, Node... nodes)
 	{
 		super(uuid);
-		this.nodes = new UniqueList<UUID>(false);
+		this.connectionNodes = new UniqueList<UUID>(false);
 		for (Node node: nodes)
 		{
 			addNode(node);
 		}
-		ConnectionCache.instance.addItem(this);
+		KnowledgeBase.connectionCache.addItem(this);
 	}
 
 
@@ -52,7 +55,7 @@ public class Connection extends UniqueDatum
 	 */
 	public boolean nodesMatch(Node... nodes)
 	{
-		return this.nodes.equals(new NoNullHashSet<Node>(nodes));
+		return this.connectionNodes.equals(new NoNullHashSet<Node>(nodes));
 	}
 
 
@@ -68,7 +71,50 @@ public class Connection extends UniqueDatum
 		{
 			temp.add(node.getID());
 		}
-		return this.nodes.containsAll(temp);
+		return this.connectionNodes.containsAll(temp);
+	}
+
+	/**
+	 * 
+	 * @param nodes
+	 * @return true if any of the passed nodes are part of the connection. Other nodes may be in the connection too.
+	 */
+	public boolean containsAnyNode(Node... nodes)
+	{
+		for (Node node: nodes)
+		{
+			 if (connectionNodes.contains(node.getID()))
+				 return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param nodes
+	 * @return true if there are any connected nodes with the p.
+	 */
+	public boolean containsAnyNode(NodeType... types)
+	{
+		List<NodeType> typeList = Arrays.asList(types);
+
+//		for (Node node: types)
+//		{
+//			for (Node node: get)
+//			 if (connectionNodes.contains(node.getID()))
+//				 return true;
+//		}
+		return false;
+	}
+
+	public Iterable<Node> getNodes()
+	{
+		List<Node> n = new ArrayList<Node>(connectionNodes.size());
+		for (UUID id: connectionNodes)
+		{
+			n.add(KnowledgeBase.instance.getNode(id));
+		}
+		return Collections.unmodifiableList(n);
 	}
 
 
@@ -76,22 +122,22 @@ public class Connection extends UniqueDatum
 	 * 
 	 * @return read-only list of nodes
 	 */
-	public Iterable<UUID> getNodes()
+	public Iterable<UUID> getNodeIDs()
 	{
-		return Collections.unmodifiableList(nodes);
+		return Collections.unmodifiableList(connectionNodes);
 	}
 
 
 	synchronized public void addNode(Node node)
 	{
-		nodes.add(node.getID());
+		connectionNodes.add(node.getID());
 		node.addConnection(this);
 		KnowledgeBase.storage.updateConnection(getID(), node);
 	}
 
 	void restoreNode(UUID id)
 	{
-		nodes.add(id);
+		connectionNodes.add(id);
 	}
 
 
@@ -108,14 +154,14 @@ public class Connection extends UniqueDatum
 	public boolean equals(Object obj)
 	{
 		Connection c = (Connection) obj;
-		return nodes.equals(c.nodes);
+		return connectionNodes.equals(c.connectionNodes);
 	}
 
 
 	@Override
 	public int hashCode()
 	{
-		return nodes.hashCode();
+		return connectionNodes.hashCode();
 	}
 
 }

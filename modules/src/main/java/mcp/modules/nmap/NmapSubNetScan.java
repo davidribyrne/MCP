@@ -1,5 +1,9 @@
 package mcp.modules.nmap;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,14 +12,23 @@ import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.jobmanager.jobs.JobState;
 import mcp.knowledgebase.KnowledgeBase;
+import mcp.knowledgebase.KnowledgeBaseUtils;
+import mcp.knowledgebase.Node;
 import mcp.knowledgebase.Scope;
+import mcp.knowledgebase.nodeLibrary.Icmp;
+import mcp.knowledgebase.nodeLibrary.Network;
+import mcp.knowledgebase.nodeLibrary.Port;
 import mcp.modules.GeneralOptions;
 import mcp.modules.InputFileMonitor;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
 import space.dcce.commons.cli.Option;
 import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.general.UnexpectedException;
 import space.dcce.commons.netaddr.Addresses;
+import space.dcce.commons.netaddr.IP4Utils;
+import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
+import space.dcce.commons.netaddr.SimpleInetAddress;
 
 
 public class NmapSubNetScan extends NmapModule implements McpStartListener
@@ -25,6 +38,8 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 	static private OptionGroup group;
 	static private Option subnetMask;
 	static private Option enableSubnetScans;
+	private int mask;
+	private int position;
 
 
 	static
@@ -39,7 +54,8 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 
 	}
 
-	private  
+	private Map<SimpleInetAddress, Addresses> subnets;
+
 
 	static public OptionGroup getOptions()
 	{
@@ -56,7 +72,7 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 	@Override
 	public void initialize()
 	{
-		int mask;
+		position = 0;
 		try
 		{
 			mask = Integer.valueOf(subnetMask.getValue());
@@ -72,28 +88,96 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 			logger.error("Subnet mask must be from 0-32 inclusive");
 			throw new IllegalArgumentException("Subnet mask must be from 0-32 inclusive");
 		}
-		
-				
-		if (enableSubnetScans.isEnabled())
+
+
+		if (!enableSubnetScans.isEnabled())
 		{
-			
-			ExecutionScheduler.getInstance().registerListener(McpStartEvent.class, this);
+			return;
 		}
+		
+		
+		
+		subnets = new HashMap<SimpleInetAddress, Addresses>();
+		sortIntoSubnets();
+		
+		ExecutionScheduler.getInstance().registerListener(McpStartEvent.class, this);
+		
 	}
 
+	private void sortIntoSubnets()
+	{
+		Addresses allAddresses = Scope.instance.getTargetAddresses();
+		for (SimpleInetAddress address: allAddresses.getAddresses())
+		{
+			SimpleInetAddress subnet = address.getNetworkAddress(mask);
+			if (!subnets.containsKey(subnet))
+			{
+				subnets.put(subnet, new Addresses(300));
+			}
+			Addresses subnetContents = subnets.get(subnet);
+			subnetContents.add(address);
+		}
+		for (Addresses a: subnets.values())
+		{
+			a.trimToSize();
+		}
+	}
+	
+	private void pruneActiveSubnets()
+	{
+		Map<SimpleInetAddress, Addresses> tmpSubnets = Collections.unmodifiableMap(subnets); 
+		
+		for(SimpleInetAddress subnet: tmpSubnets.keySet())
+		{
+			Addresses subnetAddresses = tmpSubnets.get(subnet);
+			for (SimpleInetAddress address: subnetAddresses.getAddresses())
+			{
+				Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, address.toString());
+				if (KnowledgeBaseUtils.IsAddressActive(addressNode))
+				{
+					subnets.remove(subnet);
+					break;
+				}
+			}
+		}
+	}
+	
+	private void runNextScan()
+	{
+		Addresses targets = new Addresses(1000);
+		pruneActiveSubnets();
+		
+		for(SimpleInetAddress subnet: subnets.keySet())
+		{
+			try
+			{
+				SimpleInetAddress target = subnet.addressAddition(position);
+				if (Scope.instance.isInScope(target))
+				{
+					targets.add(target);
+				}
+			}
+			catch (InvalidIPAddressFormatException e)
+			{
+				throw new UnexpectedException(e);
+			}
+		}
+		targets.trimToSize();
+		position++;
+		
+		NmapScan pingScan = new NmapScan("Subnet scan", targets);
+		pingScan.setResolve(false);
+		pingScan.addFlag(NmapFlag.MIN_PROBE_PARALLELIZATION, "1000");
+		pingScan.addFlag(NmapFlag.MAX_RETRIES, "2");
+		pingScan.addFlag(NmapFlag.PING_SCAN);
+		pingScan.execute();
+	}
+	
 
 	@Override
 	public void handleEvent(McpStartEvent event)
 	{
-		
-		NmapScan echoScan = new NmapScan("ICMP Echo", Scope.instance.getTargetAddresses());
-		echoScan.setResolve(false);
-		echoScan.addFlag(NmapFlag.ICMP_ECHO_DISCOVERY);
-		echoScan.addFlag(NmapFlag.PING_SCAN);
-		echoScan.execute();
-
-		Addresses all = Scope.instance.getTargetAddresses();
-		
+		runNextScan();
 	}
 
 

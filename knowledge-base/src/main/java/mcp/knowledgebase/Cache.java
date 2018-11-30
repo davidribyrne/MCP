@@ -30,6 +30,10 @@ public abstract class Cache<T>
 		cache = new HashMap<Object, WeakReference<T>>(1000);
 	}
 
+	public boolean containsKey(Object key)
+	{
+		return cache.containsKey(key);
+	}
 
 	public void addItem(T item)
 	{

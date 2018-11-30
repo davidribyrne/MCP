@@ -1,6 +1,8 @@
 package mcp.knowledgebase;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -38,17 +40,28 @@ public class Node extends UniqueDatum
 		this.value = value;
 		this.nodeType = nodeType;
 		this.connections = new UniqueList<UUID>(false);
-		NodeCache.getInstance().addItem(this);
+		KnowledgeBase.nodeCache.addItem(this);
 	}
 
-	private static UUID constructUUID(NodeType nodeType, String value)
+	public static UUID constructUUID(NodeType nodeType, String value)
 	{
 		return UUID.nameUUIDFromBytes((nodeType.getID().toString() + value).getBytes());
 	}
 
-	public Iterable<UUID> getConnections()
+	public Iterable<UUID> getConnectionUUIDs()
 	{
 		return Collections.unmodifiableList(connections);
+	}
+	
+	public Iterable<Connection> getConnections()
+	{
+		List<Connection> c = new ArrayList<Connection>(connections.size());
+		for (UUID u: connections)
+		{
+			c.add(KnowledgeBase.instance.getConnection(u));
+		}
+		
+		return Collections.unmodifiableList(c);
 	}
 
 
@@ -61,6 +74,40 @@ public class Node extends UniqueDatum
 		connections.add(connection.getID());
 	}
 
+	/**
+	 * 
+	 * @param node
+	 * @return The first connection found that has this node and one of the passed nodes. Null if none are found.
+	 */
+	public Connection hasConnectionTo(Node... nodes)
+	{
+		for (Connection connection: getConnections())
+		{
+			if (connection.containsAnyNode(nodes))
+			{
+				return connection;
+			}
+		}
+		return null;
+	}
+
+
+	/**
+	 * 
+	 * @param node
+	 * @return The first connection found that has this node and one of the passed nodes. Null if none are found.
+	 */
+	public Connection hasConnectionToTypes(NodeType... types)
+	{
+		for (Connection connection: getConnections())
+		{
+			if (connection.containsAnyNode(types))
+			{
+				return connection;
+			}
+		}
+		return null;
+	}
 
 //	public Timestamp getCreationTime()
 //	{

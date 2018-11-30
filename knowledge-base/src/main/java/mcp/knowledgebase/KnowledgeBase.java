@@ -19,6 +19,8 @@ public class KnowledgeBase
 
 	public static KnowledgeBaseStorage storage = new KnowledgeBaseStorage();
 
+	public final static UniqueDatumCache<Connection> connectionCache = new UniqueDatumCache<Connection>();
+	public final static UniqueDatumCache<Node> nodeCache = new UniqueDatumCache<Node>();
 
 	private KnowledgeBase()
 	{
@@ -53,12 +55,36 @@ public class KnowledgeBase
 		/*
 		 * First, try cache, then try database. If those don't work, return null;
 		 */
-		Connection c = ConnectionCache.instance.getConnection(uuid);
+		Connection c = connectionCache.getValue(uuid);
 		if (c != null)
 			return c;
 		try
 		{
 			return storage.getConnection(uuid);
+		}
+		catch (SQLException e)
+		{
+			throw new UnexpectedException("Database error: " + e.getMessage(), e);
+		}
+	}
+
+
+	/**
+	 * 
+	 * @param uuid
+	 * @return Null if node not found
+	 */
+	public Node getNode(UUID uuid)
+	{
+		/*
+		 * First, try cache, then try database. If those don't work, return null;
+		 */
+		Node n = KnowledgeBase.nodeCache.getValue(uuid);
+		if (n != null)
+			return n;
+		try
+		{
+			return storage.getNode(uuid);
 		}
 		catch (SQLException e)
 		{
@@ -94,7 +120,7 @@ public class KnowledgeBase
 
 			for (Node node : nodes)
 			{
-				for (UUID uuid : node.getConnections())
+				for (UUID uuid : node.getConnectionUUIDs())
 				{
 					Connection c = getConnection(uuid);
 					if (acceptPartial)
@@ -135,17 +161,18 @@ public class KnowledgeBase
 	}
 
 
-	private Node getNode(NodeType nodeType, String value)
+	public Node getNode(NodeType nodeType, String value)
 	{
+		UUID id = Node.constructUUID(nodeType, value);
 		/*
-		 * First, try cache, then try database. If those don't work, it must not exist, so create it.
+		 * First, try cache, then try database. If those don't work, it must not exist, so return null
 		 */
-		Node n = NodeCache.getInstance().getNode(nodeType, value);
+		Node n = nodeCache.getValue(id);
 		if (n != null)
 			return n;
 		try
 		{
-			return storage.getNode(nodeType, value);
+			return storage.getNode(id);
 		}
 		catch (SQLException e)
 		{
@@ -162,7 +189,8 @@ public class KnowledgeBase
 
 	private boolean nodeExists(NodeType nodeType, String value)
 	{
-		return (NodeCache.getInstance().isNodeInCache(nodeType, value) || storage.nodeExists(nodeType, value));
+		UUID id = Node.constructUUID(nodeType, value);
+		return (nodeCache.containsKey(id) || storage.nodeExists(id));
 	}
 
 

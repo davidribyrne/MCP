@@ -19,8 +19,8 @@ public class Scope
 
 	private Scope()
 	{
-		includeAddresses = new Addresses();
-		excludeAddresses = new Addresses();
+		includeAddresses = new Addresses(100000);
+		excludeAddresses = new Addresses(50);
 		changed = false;
 	}
 
@@ -44,7 +44,7 @@ public class Scope
 		{
 			if ((targetAddresses == null) || changed)
 			{
-				targetAddresses = new Addresses();
+				targetAddresses = new Addresses(targetAddresses.size() - excludeAddresses.size());
 				for (SimpleInetAddress address : includeAddresses.getAddresses())
 				{
 					if (!excludeAddresses.contains(address))
@@ -54,7 +54,7 @@ public class Scope
 				}
 				changed = false;
 			}
-
+			targetAddresses.trimToSize();
 			return targetAddresses;
 		}
 	}
@@ -66,6 +66,7 @@ public class Scope
 		{
 			changed = true;
 			includeAddresses.add(addressBlock);
+			includeAddresses.trimToSize();
 		}
 	}
 

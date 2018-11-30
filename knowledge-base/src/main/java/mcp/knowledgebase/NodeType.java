@@ -42,6 +42,10 @@ public class NodeType extends UniqueDatum
 		}
 	}
 
+	public static synchronized NodeType getByID(UUID id)
+	{
+		return TYPES.get(id);
+	}
 
 	public static synchronized NodeType getByName(String name, String description)
 	{

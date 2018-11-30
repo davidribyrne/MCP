@@ -89,7 +89,7 @@ public class ScopeInitializer extends Module
 
 	private Addresses parseTargetFile(String filename, String description, Option option)
 	{
-		Addresses addresses = new Addresses(100000);
+		Addresses addresses = new Addresses();
 		try
 		{
 			for (String l : FileUtils.readLines(filename))
@@ -125,7 +125,6 @@ public class ScopeInitializer extends Module
 		{
 			throw new IllegalArgumentException("Problem reading IP " + description + " file (" + filename + ")", e);
 		}
-		addresses.trimToSize();
 		return addresses;
 	}
 

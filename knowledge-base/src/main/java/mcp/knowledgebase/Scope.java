@@ -1,9 +1,18 @@
 package mcp.knowledgebase;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.Range;
+
 import space.dcce.commons.general.CollectionUtils;
+import space.dcce.commons.general.NotImplementedException;
 import space.dcce.commons.general.StringUtils;
 import space.dcce.commons.netaddr.Addresses;
+import space.dcce.commons.netaddr.IP4Range;
 import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
+import space.dcce.commons.netaddr.SimpleInet4Address;
+import space.dcce.commons.netaddr.SimpleInet6Address;
 import space.dcce.commons.netaddr.SimpleInetAddress;
 
 
@@ -19,19 +28,25 @@ public class Scope
 
 	private Scope()
 	{
-		includeAddresses = new Addresses(100000);
-		excludeAddresses = new Addresses(50);
+		includeAddresses = new Addresses();
+		excludeAddresses = new Addresses();
 		changed = false;
 	}
 
 
 	public boolean isInScope(SimpleInetAddress address)
 	{
+		if (address instanceof SimpleInet6Address)
+		{
+			throw new NotImplementedException();
+		}
+		SimpleInet4Address a = (SimpleInet4Address) address;
 		synchronized (this)
 		{
-			return includeAddresses.contains(address) && !excludeAddresses.contains(address);
+			return includeAddresses.contains(a) && !excludeAddresses.contains(a);
 		}
 	}
+	
 
 
 	/**
@@ -42,19 +57,51 @@ public class Scope
 	{
 		synchronized (this)
 		{
+			
 			if ((targetAddresses == null) || changed)
 			{
-				targetAddresses = new Addresses(targetAddresses.size() - excludeAddresses.size());
-				for (SimpleInetAddress address : includeAddresses.getAddresses())
+				targetAddresses = new Addresses();
+				
+				List<IP4Range> tmpRanges = new ArrayList<IP4Range>(includeAddresses.getBlocks());
+				
+				while (!tmpRanges.isEmpty())
 				{
-					if (!excludeAddresses.contains(address))
+					IP4Range range = tmpRanges.remove(0);
+					boolean include = true;
+					for (IP4Range exBlock: excludeAddresses.getBlocks())
 					{
-						targetAddresses.add(address);
+						
+						int exStart = exBlock.getStart();
+						int exEnd = exBlock.getEnd();
+						
+						if (range.contains(exStart - 1))
+						{
+							tmpRanges.add(new IP4Range(range.getStart(), exStart - 1));
+							if (range.contains(exEnd + 1))
+							{
+								tmpRanges.add(new IP4Range(exEnd + 1, range.getEnd()));
+							}
+							include = false;
+						}
+						else if (range.contains(exEnd + 1))
+						{
+							tmpRanges.add(new IP4Range(exEnd + 1, range.getEnd()));
+							include = false;
+						}
+						else if (range.getStart() >=  exStart && range.getEnd() <= exEnd )
+						{
+							// The entire include block is excluded
+							include = false;
+							break;
+						}
+					}
+					if (include)
+					{
+						targetAddresses.add(range);
 					}
 				}
 				changed = false;
 			}
-			targetAddresses.trimToSize();
 			return targetAddresses;
 		}
 	}
@@ -66,7 +113,6 @@ public class Scope
 		{
 			changed = true;
 			includeAddresses.add(addressBlock);
-			includeAddresses.trimToSize();
 		}
 	}
 
@@ -120,8 +166,6 @@ public class Scope
 				sb.append(StringUtils.indentText(1, true, excludeAddresses.toString()));
 			}
 
-			sb.append("\n\nCalculated targets:\n");
-			sb.append(StringUtils.indentText(1, true, CollectionUtils.joinObjects(", ", getTargetAddresses().getAddresses())));
 			return sb.toString();
 		}
 	}

@@ -1,8 +1,9 @@
 package mcp.modules.nmap;
 
-import java.util.Collections;
+import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,9 @@ import space.dcce.commons.general.UnexpectedException;
 import space.dcce.commons.netaddr.Addresses;
 import space.dcce.commons.netaddr.IP4Utils;
 import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
+import space.dcce.commons.netaddr.SimpleInet4Address;
 import space.dcce.commons.netaddr.SimpleInetAddress;
+import space.dcce.commons.validators.NumericValidator;
 
 
 public class NmapSubNetScan extends NmapModule implements McpStartListener
@@ -50,11 +53,12 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 		group.addChild(enableSubnetScans);
 
 		subnetMask = new Option(null, "subnetMask", "Run nmap ICMP echo (ping) scan.", true, true, "24", "bits");
+		subnetMask.addValidator(new NumericValidator(false, 1, 32));
 		group.addChild(subnetMask);
 
 	}
 
-	private Map<SimpleInetAddress, Addresses> subnets;
+	private Map<Integer, List<Integer>> subnets;
 
 
 	static public OptionGroup getOptions()
@@ -73,104 +77,102 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 	public void initialize()
 	{
 		position = 0;
-		try
-		{
-			mask = Integer.valueOf(subnetMask.getValue());
-		}
-		catch (NumberFormatException e)
-		{
-			logger.error("Subnet mask value is not a number");
-			throw new IllegalArgumentException("Subnet mask value is not a number", e);
-		}
-
-		if (mask < 0 || mask > 32)
-		{
-			logger.error("Subnet mask must be from 0-32 inclusive");
-			throw new IllegalArgumentException("Subnet mask must be from 0-32 inclusive");
-		}
+		mask = Integer.valueOf(subnetMask.getValue());
 
 
 		if (!enableSubnetScans.isEnabled())
 		{
 			return;
 		}
-		
-		
-		
-		subnets = new HashMap<SimpleInetAddress, Addresses>();
+
+
+		subnets = new HashMap<Integer, List<Integer>>();
 		sortIntoSubnets();
-		
+
 		ExecutionScheduler.getInstance().registerListener(McpStartEvent.class, this);
-		
+
 	}
+
 
 	private void sortIntoSubnets()
 	{
-		Addresses allAddresses = Scope.instance.getTargetAddresses();
-		for (SimpleInetAddress address: allAddresses.getAddresses())
+		int[] allAddresses = Scope.instance.getTargetAddresses().getAllAddresses();
+		int bitmask = 0xFFFFFFFF << mask;
+		for (int address : allAddresses)
 		{
-			SimpleInetAddress subnet = address.getNetworkAddress(mask);
+			int subnet = bitmask & address;
+
 			if (!subnets.containsKey(subnet))
 			{
-				subnets.put(subnet, new Addresses(300));
+				subnets.put(subnet, new LinkedList<Integer>());
 			}
-			Addresses subnetContents = subnets.get(subnet);
+			List<Integer> subnetContents = subnets.get(subnet);
 			subnetContents.add(address);
 		}
-		for (Addresses a: subnets.values())
-		{
-			a.trimToSize();
-		}
 	}
-	
+
+
 	private void pruneActiveSubnets()
 	{
-		Map<SimpleInetAddress, Addresses> tmpSubnets = Collections.unmodifiableMap(subnets); 
-		
-		for(SimpleInetAddress subnet: tmpSubnets.keySet())
+		Map<Integer, List<Integer>> tmpSubnets = Collections.unmodifiableMap(subnets);
+
+		for (Integer subnet : tmpSubnets.keySet())
 		{
-			Addresses subnetAddresses = tmpSubnets.get(subnet);
-			for (SimpleInetAddress address: subnetAddresses.getAddresses())
+			List<Integer> subnetAddresses = tmpSubnets.get(subnet);
+			if (subnetAddresses.isEmpty())
 			{
-				Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, address.toString());
-				if (KnowledgeBaseUtils.IsAddressActive(addressNode))
+				subnets.remove(subnet);
+			}
+			else
+			{
+				for (Integer address : subnetAddresses)
 				{
-					subnets.remove(subnet);
-					break;
+					Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, address.toString());
+					if (KnowledgeBaseUtils.IsAddressActive(addressNode))
+					{
+						subnets.remove(subnet);
+						break;
+					}
 				}
 			}
 		}
 	}
-	
+
+
 	private void runNextScan()
 	{
-		Addresses targets = new Addresses(1000);
+		List<Integer> targets = new ArrayList<Integer>(subnets.size());
 		pruneActiveSubnets();
-		
-		for(SimpleInetAddress subnet: subnets.keySet())
+
+		for (List<Integer> subnet : subnets.values())
 		{
-			try
-			{
-				SimpleInetAddress target = subnet.addressAddition(position);
-				if (Scope.instance.isInScope(target))
-				{
-					targets.add(target);
-				}
-			}
-			catch (InvalidIPAddressFormatException e)
-			{
-				throw new UnexpectedException(e);
-			}
+			targets.add(subnet.remove(0));
 		}
-		targets.trimToSize();
 		position++;
-		
-		NmapScan pingScan = new NmapScan("Subnet scan", targets);
+
+		SubnetScan pingScan = new SubnetScan("Subnet scan", intsToAddresses(targets));
 		pingScan.setResolve(false);
 		pingScan.addFlag(NmapFlag.MIN_PROBE_PARALLELIZATION, "1000");
 		pingScan.addFlag(NmapFlag.MAX_RETRIES, "2");
 		pingScan.addFlag(NmapFlag.PING_SCAN);
 		pingScan.execute();
+	}
+
+	private Addresses intsToAddresses(Iterable<Integer> ints)
+	{
+		Addresses a = new Addresses();
+		for (int i: ints)
+		{
+			try
+			{
+				a.add(IP4Utils.decimalToAddress(i));
+			}
+			catch (InvalidIPAddressFormatException e)
+			{
+				throw new UnexpectedException("An invalid IP address shouldn't be possible here.", e);
+			}
+		}
+		return a;
 	}
 	
 
@@ -188,7 +190,7 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 		public void jobComplete(JobState result)
 		{
 			super.jobComplete(result);
-			
+
 		}
 
 

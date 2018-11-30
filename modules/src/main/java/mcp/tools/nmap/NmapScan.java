@@ -38,6 +38,7 @@ public class NmapScan implements JobCompleteCallback
 	private final String jobName;
 	final static Logger logger = LoggerFactory.getLogger(NmapScan.class);
 
+	
 	public NmapScan(String jobName, Addresses targets)
 	{
 		this.jobName = jobName;

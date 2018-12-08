@@ -90,15 +90,8 @@ public class NmapScan implements JobCompleteCallback
 		ScanStatus status = checkNmapScanStatus();
 		if (status == ScanStatus.COMPLETE)
 		{
-			try
-			{
-				parseResults();
-				return;
-			}
-			catch (FileNotFoundException e)
-			{
-				logger.warn(jobName + " nmap scan marked complete but output file not found. Re-running scan.", e);
-			}
+			jobComplete(JobState.ALREADY_RUN);
+			return;
 		}
 
 		String targetFile = outputFileName + TARGET_IP_FILE_SUFFIX;
@@ -119,6 +112,8 @@ public class NmapScan implements JobCompleteCallback
 				.getNmapPath(), arguments, WorkingDirectories.getWorkingDirectory(),
 				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true, 0);
 		executor.setCallback(this);
+		logger.trace("Starting execution for " + executor.toString());
+
 		ExecutionScheduler.getInstance().executeImmediately(executor);
 	}
 

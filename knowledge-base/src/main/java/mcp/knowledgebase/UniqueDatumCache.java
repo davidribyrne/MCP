@@ -1,5 +1,6 @@
 package mcp.knowledgebase;
 
+import java.lang.ref.SoftReference;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -26,6 +27,9 @@ public class UniqueDatumCache<D extends UniqueDatum> extends Cache<D>
 		prune();
 		synchronized (cacheLock)
 		{
+			SoftReference<D> wr = cache.get(id);
+			if (wr == null)
+				return null;
 			return cache.get(id).get();
 		}
 	}

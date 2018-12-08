@@ -1,5 +1,6 @@
 **/target/**
 /scandata
+/scan-run
 /temp
 /target
 *.bak

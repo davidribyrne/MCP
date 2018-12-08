@@ -41,7 +41,8 @@ public class MCP
 		setupOptions(args);
 		try
 		{
-			KnowledgeBase.instance.initializeStorage(GeneralOptions.getWorkingDirectoryOption().getValue());
+			String path = GeneralOptions.getWorkingDirectoryOption().getValue();
+			KnowledgeBase.instance.initializeStorage(path);
 		}
 		catch (FileNotFoundException e)
 		{
@@ -64,7 +65,7 @@ public class MCP
 		Modules.getInstance().initializeCoreModules();
 		MCPLogging.setupLogger();
 		Modules.getInstance().initializeOtherModules();
-		ExecutionScheduler.getInstance().signalEvent(new McpStartEvent());
+		ExecutionScheduler.getInstance().start();
 		MCPShell.setupShell();
 
 		waitForQueue();

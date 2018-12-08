@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.nodeLibrary.Hostnames;
-import mcp.knowledgebase.nodeLibrary.Icmp;
+import mcp.knowledgebase.nodeLibrary.HostStatusReason;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.knowledgebase.nodeLibrary.Port;
 import space.dcce.commons.general.UnexpectedException;
@@ -26,14 +26,14 @@ public class KnowledgeBaseUtils
 	{
 		NodeType type = address.getNodeType();
 		
-		if (type == Network.IPV4_ADDRESS || type == Network.IPV6_ADDRESS)
+		if (!(type == Network.IPV4_ADDRESS || type == Network.IPV6_ADDRESS))
 		{
 			throw new IllegalArgumentException("Node must be an IP address type");
 		}
 		
 		
-		return null != address.hasConnectionTo(Port.PORT_STATE_OPEN, Icmp.ICMP_RESPONSE_ARP, Icmp.ICMP_RESPONSE_ECHO,
-				Icmp.ICMP_RESPONSE_LOCALHOST, Icmp.ICMP_RESPONSE_TIMESTAMP) ||
+		return null != address.hasConnectionTo(Port.PORT_STATE_OPEN, HostStatusReason.HOST_REASON_ARP, HostStatusReason.HOST_REASON_ICMP_ECHO,
+				HostStatusReason.HOST_REASON_ICMP_LOCALHOST, HostStatusReason.HOST_REASON_ICMP_TIMESTAMP) ||
 				null != address.hasConnectionToTypes(Hostnames.HOSTNAME);
 	}
 	

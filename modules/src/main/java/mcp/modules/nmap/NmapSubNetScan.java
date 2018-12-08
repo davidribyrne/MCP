@@ -1,5 +1,6 @@
 package mcp.modules.nmap;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.KnowledgeBaseUtils;
 import mcp.knowledgebase.Node;
 import mcp.knowledgebase.Scope;
-import mcp.knowledgebase.nodeLibrary.Icmp;
+import mcp.knowledgebase.nodeLibrary.HostStatusReason;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.knowledgebase.nodeLibrary.Port;
 import mcp.modules.GeneralOptions;
@@ -42,17 +43,16 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 	static private Option subnetMask;
 	static private Option enableSubnetScans;
 	private int mask;
-	private int position;
-
+	int count = 0;
 
 	static
 	{
-		group = new OptionGroup("Subnet", "Nmap subnet scans");
+		group = new OptionGroup("Subnets", "Nmap subnet scans. If one active device is discovered in a subnet, the rest of the subnet is scanned.");
 
 		enableSubnetScans = new Option(null, "subnetScan", "Run subnet scans.");
 		group.addChild(enableSubnetScans);
 
-		subnetMask = new Option(null, "subnetMask", "Run nmap ICMP echo (ping) scan.", true, true, "24", "bits");
+		subnetMask = new Option(null, "subnetMask", "Assumed subnet mask.", true, true, "24", "bits");
 		subnetMask.addValidator(new NumericValidator(false, 1, 32));
 		group.addChild(subnetMask);
 
@@ -76,28 +76,16 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 	@Override
 	public void initialize()
 	{
-		position = 0;
 		mask = Integer.valueOf(subnetMask.getValue());
-
-
-		if (!enableSubnetScans.isEnabled())
-		{
-			return;
-		}
-
-
-		subnets = new HashMap<Integer, List<Integer>>();
-		sortIntoSubnets();
-
 		ExecutionScheduler.getInstance().registerListener(McpStartEvent.class, this);
-
 	}
 
 
 	private void sortIntoSubnets()
 	{
 		int[] allAddresses = Scope.instance.getTargetAddresses().getAllAddresses();
-		int bitmask = 0xFFFFFFFF << mask;
+		logger.trace("Sorting into subnets. This may take a while for large ranges");
+		int bitmask = 0xFFFFFFFF << (32 - mask);
 		for (int address : allAddresses)
 		{
 			int subnet = bitmask & address;
@@ -109,59 +97,59 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 			List<Integer> subnetContents = subnets.get(subnet);
 			subnetContents.add(address);
 		}
+		logger.trace("Done sorting into subnets.");
 	}
 
 
 	private void pruneActiveSubnets()
 	{
-		Map<Integer, List<Integer>> tmpSubnets = Collections.unmodifiableMap(subnets);
+		logger.trace("Starting to prune active subnets");
 
-		for (Integer subnet : tmpSubnets.keySet())
+		for (Iterator<Integer> iterator = subnets.keySet().iterator(); iterator.hasNext();)
 		{
-			List<Integer> subnetAddresses = tmpSubnets.get(subnet);
-			if (subnetAddresses.isEmpty())
+			Integer subnet = iterator.next();
+			List<Integer> subnetAddresses = subnets.get(subnet);
+
+			int lastIP = subnetAddresses.remove(0);
+			Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, IP4Utils.decimalToString(lastIP));
+			if (subnetAddresses.isEmpty() || (addressNode != null && KnowledgeBaseUtils.IsAddressActive(addressNode)))
 			{
-				subnets.remove(subnet);
-			}
-			else
-			{
-				for (Integer address : subnetAddresses)
-				{
-					Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, address.toString());
-					if (KnowledgeBaseUtils.IsAddressActive(addressNode))
-					{
-						subnets.remove(subnet);
-						break;
-					}
-				}
+				iterator.remove();
 			}
 		}
+		logger.trace("Finished pruning active subnets");
+
 	}
 
 
 	private void runNextScan()
 	{
+		logger.trace("Starting subnet scan #" + ++count);
 		List<Integer> targets = new ArrayList<Integer>(subnets.size());
-		pruneActiveSubnets();
+		if (count > 1)
+		{
+			pruneActiveSubnets();
+		}
 
 		for (List<Integer> subnet : subnets.values())
 		{
-			targets.add(subnet.remove(0));
+			targets.add(subnet.get(0));
 		}
-		position++;
 
-		SubnetScan pingScan = new SubnetScan("Subnet scan", intsToAddresses(targets));
+		SubnetScan pingScan = new SubnetScan("Subnet scan " + count, intsToAddresses(targets));
 		pingScan.setResolve(false);
 		pingScan.addFlag(NmapFlag.MIN_PROBE_PARALLELIZATION, "1000");
 		pingScan.addFlag(NmapFlag.MAX_RETRIES, "2");
 		pingScan.addFlag(NmapFlag.PING_SCAN);
+
 		pingScan.execute();
 	}
+
 
 	private Addresses intsToAddresses(Iterable<Integer> ints)
 	{
 		Addresses a = new Addresses();
-		for (int i: ints)
+		for (int i : ints)
 		{
 			try
 			{
@@ -174,12 +162,17 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 		}
 		return a;
 	}
-	
+
 
 	@Override
 	public void handleEvent(McpStartEvent event)
 	{
-		runNextScan();
+		if (enableSubnetScans.isEnabled())
+		{
+			subnets = new HashMap<Integer, List<Integer>>();
+			sortIntoSubnets();
+			runNextScan();
+		}
 	}
 
 
@@ -190,7 +183,23 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 		public void jobComplete(JobState result)
 		{
 			super.jobComplete(result);
+			Runnable r = new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					try
+					{
+						runNextScan();
+					}
+					catch (Throwable t)
+					{
+						logger.error("Throwable caught in NmapSubNetScan: " + t.getLocalizedMessage(), t);
+					}
 
+				}
+			};
+			ExecutionScheduler.getInstance().executeImmediately(r);
 		}
 
 

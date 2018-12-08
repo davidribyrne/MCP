@@ -3,6 +3,8 @@ package mcp.knowledgebase;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +24,12 @@ public class KnowledgeBase
 	public final static UniqueDatumCache<Connection> connectionCache = new UniqueDatumCache<Connection>();
 	public final static UniqueDatumCache<Node> nodeCache = new UniqueDatumCache<Node>();
 
+	private final ReadWriteLock readWriteLock;
+
+
 	private KnowledgeBase()
 	{
+		readWriteLock = new ReentrantReadWriteLock();
 
 	}
 
@@ -41,9 +47,11 @@ public class KnowledgeBase
 			if (nodeExists(nodeType, value))
 				return false;
 			new Node(nodeType, value);
-			return true;
+
 		}
+		return true;
 	}
+
 
 	/**
 	 * 
@@ -91,6 +99,7 @@ public class KnowledgeBase
 			throw new UnexpectedException("Database error: " + e.getMessage(), e);
 		}
 	}
+
 
 	/**
 	 * 
@@ -183,7 +192,10 @@ public class KnowledgeBase
 
 	public void storeNewNodeType(NodeType nodeType)
 	{
-		storage.addNodeType(nodeType);
+		synchronized (this)
+		{
+			storage.addNodeType(nodeType);
+		}
 	}
 
 

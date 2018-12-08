@@ -47,7 +47,7 @@ import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.Node;
 import mcp.knowledgebase.nodeLibrary.General;
 import mcp.knowledgebase.nodeLibrary.Hostnames;
-import mcp.knowledgebase.nodeLibrary.Icmp;
+import mcp.knowledgebase.nodeLibrary.HostStatusReason;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.knowledgebase.nodeLibrary.NetworkService;
 import mcp.knowledgebase.nodeLibrary.Port;
@@ -64,6 +64,7 @@ import space.dcce.commons.netaddr.MacUtils;
  * can if you want to).
  *
  * @author jsvede
+ * @author david
  *
  */
 public class NMapXmlHandler extends DefaultHandler
@@ -73,16 +74,13 @@ public class NMapXmlHandler extends DefaultHandler
 
 
 	private boolean isCpeData = false;
-	// private final Node scanSource;
 	private Node currentIPAddress;
-//	private String tempIPAddress;
 	private Connection currentPort;
 	private Integer currentPortNumber;
 	private Node currentPortType;
 	private Node currentPortState;
 	private Node currentOSGuess;
 	private Node currentMac;
-//	private final Instant scanTime;
 	private boolean trackAll;
 	private String currentServiceName;
 	private Node currentServiceReason;
@@ -189,7 +187,7 @@ public class NMapXmlHandler extends DefaultHandler
 			}
 			if (qName.equals(NmapDtdStrings.STATUS_TAG))
 			{
-				currentIcmpResponse = Icmp.parseIcmpResponseFromNmap(attributes.getValue(NmapDtdStrings.REASON_ATTR));
+				currentIcmpResponse = HostStatusReason.parseIcmpResponseFromNmap(attributes.getValue(NmapDtdStrings.REASON_ATTR));
 				// IcmpResponseType.parseFromNmap(attributes.getValue(NmapDtdStrings.REASON_ATTR));
 				if (currentIcmpResponse != null && currentIPAddress != null)
 				{

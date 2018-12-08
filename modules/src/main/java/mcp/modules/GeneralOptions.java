@@ -44,7 +44,7 @@ public class GeneralOptions extends Module
 
 	static
 	{
-		verboseOption = new Option("v", "verbose", "Output verbosity (0-6).", true, false, "2", "n");
+		verboseOption = new Option("v", "verbose", "Output verbosity (0-6).", true, false, "3", "n");
 		workingDirectoryOption = new Option(null, "workingDirectory", "Working directory for Recon Master.", true, true, ".",
 				"directory path");
 //		continueAfterErrorOption = new Option(null, "continueAfterError", "Continue trying to run scans if something goes wrong.");
@@ -118,18 +118,7 @@ public class GeneralOptions extends Module
 			logger.error("Failed to create working directory: " + e1.toString());
 		}
 
-		try
-		{
-			verbose = Integer.valueOf(verboseOption.getValue());
-		}
-		catch (NumberFormatException e)
-		{
-			throw new IllegalArgumentException("Verbose option requires an integer argument.", e);
-		}
-		if ((verbose > 6) || (verbose < 0))
-		{
-			throw new IllegalArgumentException("Verbose option out of range.");
-		}
+		verbose = Integer.valueOf(verboseOption.getValue());
 		
 		interactiveConsole = interactiveConsoleOption.isEnabled();
 	}

@@ -1,8 +1,9 @@
 package mcp.knowledgebase;
 
-import java.lang.ref.WeakReference;
+import java.lang.ref.SoftReference;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +23,12 @@ public abstract class Cache<T>
 	protected abstract Object getKey(T value);
 
 
-	protected HashMap<Object, WeakReference<T>> cache;
+	protected HashMap<Object, SoftReference<T>> cache;
 
 
 	protected Cache()
 	{
-		cache = new HashMap<Object, WeakReference<T>>(1000);
+		cache = new HashMap<Object, SoftReference<T>>(1000);
 	}
 
 	public boolean containsKey(Object key)
@@ -43,15 +44,17 @@ public abstract class Cache<T>
 			Object key = getKey(item);
 			if (cache.containsKey(key))
 			{
+				SoftReference wr = cache.get(key);
+				Object duplicate = wr.get();
 				throw new IllegalStateException("Item already exists in cache");
 			}
-			cache.put(key, new WeakReference<T>(item));
+			cache.put(key, new SoftReference<T>(item));
 		}
 		prune();
 	}
 
 
-	protected synchronized int prune()
+	protected synchronized void prune()
 	{
 		if (++operationCount >= 1000)
 		{
@@ -59,19 +62,22 @@ public abstract class Cache<T>
 			synchronized (cacheLock)
 			{
 
-				int count = 0;
-				for (Object key : Collections.unmodifiableSet(cache.keySet()))
-				{
-					if (cache.get(key).get() == null)
-					{
-						cache.remove(key);
-					}
-				}
+				cache.keySet().removeIf(k -> cache.get(k).get() == null);
 
-				return count;
+//				int count = 0;
+//				for (Object key : Collections.unmodifiableSet(cache.keySet()))
+//				for(Iterator<Object> iterator = cache.keySet().iterator(); iterator.hasNext();)
+//				{
+//					Object key = iterator.next();
+//					if (cache.get(key).get() == null)
+//					{
+//						iterator.remove(key);
+//					}
+//				}
+//
+//				return count;
 			}
 		}
-		return 0;
 	}
 
 

@@ -13,6 +13,7 @@ public abstract class Executor<T> implements Callable<T>
 	private final String name;
 	private JobCompleteCallback callbackObject;
 	private Future<T> future;
+	protected JobState state = JobState.UNSTARTED;
 
 	public Executor(String name)
 	{
@@ -36,10 +37,13 @@ public abstract class Executor<T> implements Callable<T>
 	}
 
 
-	public abstract String getProgramName();
+//	public abstract String getProgramName();
 
 
-	public abstract JobState getState();
+	public JobState getState()
+	{
+		return state;
+	}
 
 
 	public void signalCallback()

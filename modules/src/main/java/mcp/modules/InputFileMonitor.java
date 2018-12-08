@@ -17,6 +17,7 @@ import space.dcce.commons.cli.OptionContainer;
 import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.general.FileUtils;
 
+//TODO Finish InputFileMonitor
 public class InputFileMonitor extends Module
 {
 	private final static Logger logger = LoggerFactory.getLogger(InputFileMonitor.class);
@@ -42,27 +43,6 @@ public class InputFileMonitor extends Module
 	}
 	
 	
-	@Override
-	public String toString()
-	{
-		return new ToStringBuilder(this)
-				.toString();
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return new HashCodeBuilder()
-				.toHashCode();
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		return new EqualsBuilder()
-				.isEquals();
-	}
-
 
 	@Override
 	public void initialize()

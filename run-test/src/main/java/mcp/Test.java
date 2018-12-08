@@ -31,10 +31,10 @@ public class Test
 
 	public static void main(String[] args) throws DnsClientConnectException, InvalidIPAddressFormatException
 	{
-		SimpleInetAddress a = SimpleInetAddress.getByAddress(new byte[] {10,1,2,15});
-		SimpleInetAddress n = a.getNetworkAddress(16);
-		SimpleInetAddress h = a.getHostAddress(16);
-		
+		int mask = 24;
+		int bitmask = 0xFFFFFFFF << (32-mask);
+		int address = 0x0a010203;
+		int subnet = bitmask & address;
 				
 		
 	}

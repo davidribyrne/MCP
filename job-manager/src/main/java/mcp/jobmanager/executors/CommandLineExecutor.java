@@ -27,7 +27,6 @@ public class CommandLineExecutor extends Executor<Process>
 	private boolean appendOutput;
 	private Process process;
 	private String programName;
-	private JobState state = JobState.UNSTARTED;
 	private int expectedExitValue;
 //	private boolean requiresRoot;
 
@@ -166,7 +165,6 @@ public class CommandLineExecutor extends Executor<Process>
 	}
 
 
-	@Override
 	public String getProgramName()
 	{
 		return programName;

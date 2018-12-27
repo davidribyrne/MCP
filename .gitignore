@@ -32,3 +32,5 @@
 hs_err_pid*
 run/mcp.db
 run/scandata
+ips.txt
+routing-table.txt

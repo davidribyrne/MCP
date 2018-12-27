@@ -3,15 +3,10 @@ package mcp.modules;
 public abstract class Module
 {
 	public abstract void initialize();
-//	static public abstract OptionContainer getOptions();
 	private final String name;
 	protected Module(String name)
 	{
 		this.name = name;
-//		if (register)
-//		{
-//			Modules.getInstance().registerNormalModule(this);
-//		}
 	}
 	
 	public String getName()
@@ -19,19 +14,5 @@ public abstract class Module
 		return name;
 	}
 	
-	// Template:
-	//
-	// private static List<ReconOption> options;
-	//
-	// public static Collection<ReconOption> getOptions()
-	// {
-	// if (options == null)
-	// {
-	// options = new ArrayList<ReconOption>();
-	//
-	// }
-	// return options;
-	// }
-	//
 
 }

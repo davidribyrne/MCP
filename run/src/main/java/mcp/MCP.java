@@ -62,8 +62,10 @@ public class MCP
 
 
 		Modules.getInstance().instantiateModules();
-		Modules.getInstance().initializeCoreModules();
+		GeneralOptions.getInstance().initialize();
 		MCPLogging.setupLogger();
+
+		Modules.getInstance().initializeCoreModules();
 		Modules.getInstance().initializeOtherModules();
 		ExecutionScheduler.getInstance().start();
 		MCPShell.setupShell();

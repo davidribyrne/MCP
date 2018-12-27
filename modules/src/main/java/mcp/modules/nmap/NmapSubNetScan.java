@@ -111,7 +111,7 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 			List<Integer> subnetAddresses = subnets.get(subnet);
 
 			int lastIP = subnetAddresses.remove(0);
-			Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, IP4Utils.decimalToString(lastIP));
+			Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, IP4Utils.intToString(lastIP));
 			if (subnetAddresses.isEmpty() || (addressNode != null && KnowledgeBaseUtils.IsAddressActive(addressNode)))
 			{
 				iterator.remove();
@@ -153,7 +153,7 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 		{
 			try
 			{
-				a.add(IP4Utils.decimalToAddress(i));
+				a.add(IP4Utils.intToAddress(i));
 			}
 			catch (InvalidIPAddressFormatException e)
 			{

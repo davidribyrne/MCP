@@ -16,6 +16,7 @@ import mcp.modules.nmap.NmapIcmp;
 import mcp.modules.nmap.NmapSubNetScan;
 import mcp.modules.nmap.NmapTcp;
 import mcp.modules.nmap.NmapUdp;
+import mcp.modules.scope.ScopeInitializer;
 import mcp.options.MCPOptions;
 import space.dcce.commons.cli.OptionContainer;
 import space.dcce.commons.cli.OptionGroup;
@@ -149,9 +150,9 @@ public class Modules
 	}
 
 
+
 	public void initializeCoreModules()
 	{
-		GeneralOptions.getInstance().initialize();
 		ScopeInitializer.getInstance().initialize();
 		NmapGeneralOptions.getInstance().initialize();
 	}

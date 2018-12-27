@@ -1,15 +1,15 @@
 package mcp.knowledgebase;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang3.Range;
 
 import space.dcce.commons.general.CollectionUtils;
 import space.dcce.commons.general.NotImplementedException;
+import space.dcce.commons.general.Range;
 import space.dcce.commons.general.StringUtils;
 import space.dcce.commons.netaddr.Addresses;
-import space.dcce.commons.netaddr.IP4Range;
 import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
 import space.dcce.commons.netaddr.SimpleInet4Address;
 import space.dcce.commons.netaddr.SimpleInet6Address;
@@ -22,6 +22,8 @@ public class Scope
 	private Addresses excludeAddresses;
 	private boolean changed;
 	private Addresses targetAddresses;
+	private Addresses unroutableAddresses;
+	private Addresses routingTable;
 
 	public static final Scope instance = new Scope();
 
@@ -30,6 +32,10 @@ public class Scope
 	{
 		includeAddresses = new Addresses();
 		excludeAddresses = new Addresses();
+		routingTable = new Addresses();
+
+		// We'll assume everything is routable unless a table is provided
+		routingTable.add(new Range(0, 0xFFFFFFFF));
 		changed = false;
 	}
 
@@ -43,10 +49,9 @@ public class Scope
 		SimpleInet4Address a = (SimpleInet4Address) address;
 		synchronized (this)
 		{
-			return includeAddresses.contains(a) && !excludeAddresses.contains(a);
+			return includeAddresses.contains(a) && !excludeAddresses.contains(a) && routingTable.contains(a);
 		}
 	}
-	
 
 
 	/**
@@ -57,49 +62,11 @@ public class Scope
 	{
 		synchronized (this)
 		{
-			
-			if ((targetAddresses == null) || changed)
+			if (changed)
 			{
-				targetAddresses = new Addresses();
-				
-				List<IP4Range> tmpRanges = new ArrayList<IP4Range>(includeAddresses.getBlocks());
-				
-				while (!tmpRanges.isEmpty())
-				{
-					IP4Range range = tmpRanges.remove(0);
-					boolean include = true;
-					for (IP4Range exBlock: excludeAddresses.getBlocks())
-					{
-						
-						int exStart = exBlock.getStart();
-						int exEnd = exBlock.getEnd();
-						
-						if (range.contains(exStart - 1))
-						{
-							tmpRanges.add(new IP4Range(range.getStart(), exStart - 1));
-							if (range.contains(exEnd + 1))
-							{
-								tmpRanges.add(new IP4Range(exEnd + 1, range.getEnd()));
-							}
-							include = false;
-						}
-						else if (range.contains(exEnd + 1))
-						{
-							tmpRanges.add(new IP4Range(exEnd + 1, range.getEnd()));
-							include = false;
-						}
-						else if (range.getStart() >=  exStart && range.getEnd() <= exEnd )
-						{
-							// The entire include block is excluded
-							include = false;
-							break;
-						}
-					}
-					if (include)
-					{
-						targetAddresses.add(range);
-					}
-				}
+				Addresses beforeRouting = includeAddresses.difference(excludeAddresses);
+				targetAddresses = beforeRouting.intersection(routingTable);
+				unroutableAddresses = beforeRouting.difference(targetAddresses);
 				changed = false;
 			}
 			return targetAddresses;
@@ -147,26 +114,48 @@ public class Scope
 	}
 
 
+	public void setRoutingTable(Addresses routingTable)
+	{
+		synchronized (this)
+		{
+			changed = true;
+			this.routingTable = routingTable;
+		}
+	}
+
+
 	@Override
 	public String toString()
 	{
 		synchronized (this)
 		{
 			StringBuilder sb = new StringBuilder();
-			sb.append("Include:\n");
-			sb.append(StringUtils.indentText(1, true, includeAddresses.toString()));
-			
-			sb.append("\n\nExclude:\n");
+			sb.append("MCP Scope:\n\tInclude:\n");
+			sb.append(StringUtils.indentText(2, true, includeAddresses.toString()));
+
+			sb.append("\n\n\tExclude:\n");
 			if (excludeAddresses.isEmpty())
 			{
-				sb.append("\tnone");
+				sb.append("\t\tnone");
 			}
 			else
 			{
-				sb.append(StringUtils.indentText(1, true, excludeAddresses.toString()));
+				sb.append(StringUtils.indentText(2, true, excludeAddresses.toString()));
 			}
 
+//			sb.append("\n\n\tRoutable addresses:\n");
+//			sb.append(StringUtils.indentText(2, true, routingTable.toString()));
+
+			sb.append("\n\n\tTargeted addresses:\n");
+			sb.append(StringUtils.indentText(2, true, getTargetAddresses().toString(false)));
+
+			sb.append("\n\n\tUnroutable addresses:\n");
+			sb.append(StringUtils.indentText(2, true, unroutableAddresses.toString(false)));
+
+			
 			return sb.toString();
 		}
 	}
+
+
 }

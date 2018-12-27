@@ -1,11 +1,13 @@
 package mcp;
 
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +33,9 @@ public class Test
 
 	public static void main(String[] args) throws DnsClientConnectException, InvalidIPAddressFormatException
 	{
-		int mask = 24;
-		int bitmask = 0xFFFFFFFF << (32-mask);
-		int address = 0x0a010203;
-		int subnet = bitmask & address;
-				
 		
+		
+
 	}
 	
 

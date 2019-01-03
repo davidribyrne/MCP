@@ -6,8 +6,6 @@ import org.crsh.cli.Command;
 import org.crsh.cli.Option;
 import org.crsh.cli.Usage;
 import org.crsh.command.BaseCommand;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.jobmanager.executors.Executor;
@@ -15,7 +13,6 @@ import mcp.jobmanager.jobs.JobState;
 
 public class ps extends BaseCommand
 {
-	private final static Logger logger = LoggerFactory.getLogger(ps.class);
 
 	@Usage("show job data")
 	@Command

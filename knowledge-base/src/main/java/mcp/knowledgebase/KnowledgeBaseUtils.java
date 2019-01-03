@@ -1,21 +1,15 @@
 package mcp.knowledgebase;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import mcp.knowledgebase.nodeLibrary.Hostnames;
 import mcp.knowledgebase.nodeLibrary.HostStatusReason;
+import mcp.knowledgebase.nodeLibrary.Hostnames;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.knowledgebase.nodeLibrary.Port;
 import space.dcce.commons.general.UnexpectedException;
 import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
 import space.dcce.commons.netaddr.SimpleInetAddress;
 
-import java.util.*;
-
 public class KnowledgeBaseUtils
 {
-	private final static Logger logger = LoggerFactory.getLogger(KnowledgeBaseUtils.class);
 
 	private KnowledgeBaseUtils()
 	{

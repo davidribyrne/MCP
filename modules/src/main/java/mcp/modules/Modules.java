@@ -117,7 +117,7 @@ public class Modules
 			{
 				MCPOptions.getInstance().addChild((OptionContainer) clazz.getDeclaredMethod("getOptions").invoke(null));
 			}
-			catch (NoSuchMethodException e)
+			catch (@SuppressWarnings("unused") NoSuchMethodException e)
 			{
 				logger.trace("Class " + clazz.getName() + " does not have a static getOptions method");
 			}

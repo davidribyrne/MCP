@@ -216,7 +216,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 				HostnameDiscoveryUtils.resolveAndReviewHostname(hostname);
 			}
 		}
-		catch (IOException e)
+		catch (@SuppressWarnings("unused") IOException e)
 		{
 			logger.debug("Failed to read known hostnames file (" + hostnamesPath + "). "
 					+ "This is only a problem if you expected data to be there.");

@@ -91,7 +91,7 @@ public class HostnameDiscoveryUtils
 			logger.warn("Problem resolving \"" + hostname + "\": " + e.getLocalizedMessage(), e);
 			return null;
 		}
-		catch (DnsNoRecordFoundException e)
+		catch (@SuppressWarnings("unused") DnsNoRecordFoundException e)
 		{
 			logger.trace("No record for \"" + hostname + "\"");
 			return null;

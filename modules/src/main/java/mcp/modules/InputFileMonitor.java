@@ -3,9 +3,6 @@ package mcp.modules;
 import java.io.File;
 import java.nio.file.FileAlreadyExistsException;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,7 +53,7 @@ public class InputFileMonitor extends Module
 			{
 				FileUtils.createDirectory(dir);
 			}
-			catch (FileAlreadyExistsException e)
+			catch (@SuppressWarnings("unused") FileAlreadyExistsException e)
 			{
 				logger.error("Failed trying to create " + name + " directory. It already exists, but is a file.");
 			}

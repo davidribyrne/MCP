@@ -3,11 +3,6 @@ package mcp.knowledgebase;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import space.dcce.commons.general.NotImplementedException;
 import space.dcce.commons.general.UnexpectedException;
@@ -15,7 +10,6 @@ import space.dcce.commons.general.UnexpectedException;
 
 public class KnowledgeBase
 {
-	private final static Logger logger = LoggerFactory.getLogger(KnowledgeBase.class);
 
 	public static final KnowledgeBase instance = new KnowledgeBase();
 
@@ -24,12 +18,10 @@ public class KnowledgeBase
 	public final static UniqueDatumCache<Connection> connectionCache = new UniqueDatumCache<Connection>();
 	public final static UniqueDatumCache<Node> nodeCache = new UniqueDatumCache<Node>();
 
-	private final ReadWriteLock readWriteLock;
 
 
 	private KnowledgeBase()
 	{
-		readWriteLock = new ReentrantReadWriteLock();
 
 	}
 

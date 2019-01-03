@@ -1,13 +1,9 @@
 package mcp.knowledgebase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import space.dcce.commons.general.NoNullHashSet;
 import space.dcce.commons.general.UniqueList;
@@ -15,7 +11,6 @@ import space.dcce.commons.general.UniqueList;
 
 public class Connection extends UniqueDatum
 {
-	private final static Logger logger = LoggerFactory.getLogger(Connection.class);
 	private final UniqueList<UUID> connectionNodes;
 
 
@@ -96,14 +91,16 @@ public class Connection extends UniqueDatum
 	 */
 	public boolean containsAnyNode(NodeType... types)
 	{
-		List<NodeType> typeList = Arrays.asList(types);
-
-//		for (Node node: types)
-//		{
-//			for (Node node: get)
-//			 if (connectionNodes.contains(node.getID()))
-//				 return true;
-//		}
+		for (Node node: getNodes())
+		{
+			for (NodeType type: types)
+			{
+				if (node.getNodeType().equals(type))
+				{
+					return true;
+				}
+			}
+		}
 		return false;
 	}
 

@@ -6,14 +6,11 @@ import java.util.Map;
 import org.crsh.cli.descriptor.ParameterDescriptor;
 import org.crsh.cli.spi.Completer;
 import org.crsh.cli.spi.Completion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import space.dcce.commons.general.MapOfLists;
 
 public class MappedListCompleter implements Completer
 {
-	private final static Logger logger = LoggerFactory.getLogger(MappedListCompleter.class);
 
 	private final MapOfLists<String, String> values;
 

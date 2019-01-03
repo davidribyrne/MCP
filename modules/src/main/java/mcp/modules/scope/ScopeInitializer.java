@@ -11,7 +11,6 @@ import mcp.commons.WorkingDirectories;
 import mcp.knowledgebase.Scope;
 import mcp.modules.Module;
 import space.dcce.commons.cli.Option;
-import space.dcce.commons.cli.OptionContainer;
 import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.general.FileUtils;
 import space.dcce.commons.general.InitializationException;

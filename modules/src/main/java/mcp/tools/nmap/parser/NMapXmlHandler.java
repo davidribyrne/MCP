@@ -34,8 +34,6 @@
  */
 package mcp.tools.nmap.parser;
 
-import java.time.Instant;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -46,8 +44,8 @@ import mcp.knowledgebase.Connection;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.Node;
 import mcp.knowledgebase.nodeLibrary.General;
-import mcp.knowledgebase.nodeLibrary.Hostnames;
 import mcp.knowledgebase.nodeLibrary.HostStatusReason;
+import mcp.knowledgebase.nodeLibrary.Hostnames;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.knowledgebase.nodeLibrary.NetworkService;
 import mcp.knowledgebase.nodeLibrary.Port;

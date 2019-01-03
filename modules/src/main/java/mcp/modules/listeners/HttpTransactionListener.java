@@ -120,6 +120,7 @@ public class HttpTransactionListener extends Module
 				}
 				catch (IOException e)
 				{
+					logger.warn("Some problem closing socket", e);
 				}
 			}
 		}

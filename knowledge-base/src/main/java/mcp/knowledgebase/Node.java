@@ -5,14 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import space.dcce.commons.general.UniqueList;
 
 public class Node extends UniqueDatum
 {
-	private final static Logger logger = LoggerFactory.getLogger(Node.class);
 	private final UniqueList<UUID> connections;
 	private final NodeType nodeType;
 	private final String value;

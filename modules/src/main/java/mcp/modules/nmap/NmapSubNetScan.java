@@ -1,10 +1,11 @@
 package mcp.modules.nmap;
 
-import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +18,7 @@ import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.KnowledgeBaseUtils;
 import mcp.knowledgebase.Node;
 import mcp.knowledgebase.Scope;
-import mcp.knowledgebase.nodeLibrary.HostStatusReason;
 import mcp.knowledgebase.nodeLibrary.Network;
-import mcp.knowledgebase.nodeLibrary.Port;
-import mcp.modules.GeneralOptions;
-import mcp.modules.InputFileMonitor;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
 import space.dcce.commons.cli.Option;
@@ -30,8 +27,6 @@ import space.dcce.commons.general.UnexpectedException;
 import space.dcce.commons.netaddr.Addresses;
 import space.dcce.commons.netaddr.IP4Utils;
 import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
-import space.dcce.commons.netaddr.SimpleInet4Address;
-import space.dcce.commons.netaddr.SimpleInetAddress;
 import space.dcce.commons.validators.NumericValidator;
 
 

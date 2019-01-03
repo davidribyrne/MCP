@@ -12,13 +12,10 @@ import org.crsh.plugin.Embedded;
 import org.crsh.plugin.PluginContext;
 import org.crsh.plugin.PluginDiscovery;
 import org.crsh.vfs.FS;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class MCPBootstrap extends Embedded
 {
-	private final static Logger logger = LoggerFactory.getLogger(MCPBootstrap.class);
 	private Map<String, Object> attributes;
 	private PluginDiscovery discovery;
 	private ClassLoader loader;

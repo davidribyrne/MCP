@@ -8,14 +8,11 @@ import org.crsh.plugin.PluginDiscovery;
 import org.crsh.shell.impl.command.CRaSHShellFactory;
 import org.crsh.telnet.TelnetPlugin;
 import org.crsh.telnet.term.processor.ProcessorIOHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import mcp.modules.GeneralOptions;
 
 public class MCPShellPluginDiscovery implements PluginDiscovery
 {
-	private final static Logger logger = LoggerFactory.getLogger(MCPShellPluginDiscovery.class);
 	private final List<CRaSHPlugin<?>> plugins;
 	
 	public MCPShellPluginDiscovery()

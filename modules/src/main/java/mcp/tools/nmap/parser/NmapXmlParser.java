@@ -105,7 +105,7 @@ public class NmapXmlParser
 			}
 			catch (NumberFormatException e)
 			{
-				
+				logger.warn("Invalid number format", e);
 			}
 		}
 
@@ -121,7 +121,7 @@ public class NmapXmlParser
 		}
 		catch (IOException e1)
 		{
-			logger.debug("Why did the canonical path fail?");
+			logger.debug("Why did the canonical path fail?", e1);
 			path = xmlResultsFile.getAbsolutePath();
 		}
 		

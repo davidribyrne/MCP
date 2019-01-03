@@ -113,7 +113,7 @@ public class NmapGeneralOptions extends Module
 				passed = true;
 			}
 		}
-		catch (NumberFormatException e)
+		catch (@SuppressWarnings("unused") NumberFormatException e)
 		{
 		}
 		if (!passed)

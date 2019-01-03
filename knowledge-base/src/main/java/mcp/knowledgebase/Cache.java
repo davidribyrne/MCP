@@ -1,18 +1,12 @@
 package mcp.knowledgebase;
 
 import java.lang.ref.SoftReference;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 
 public abstract class Cache<T>
 {
-	private final static Logger logger = LoggerFactory.getLogger(Cache.class);
 
 
 	protected final Object cacheLock = new Object();

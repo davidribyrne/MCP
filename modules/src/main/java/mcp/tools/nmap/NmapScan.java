@@ -18,7 +18,6 @@ import mcp.jobmanager.executors.JobCompleteCallback;
 import mcp.jobmanager.jobs.JobState;
 import mcp.modules.nmap.NmapGeneralOptions;
 import mcp.tools.nmap.parser.NmapXmlParser;
-import space.dcce.commons.general.CollectionUtils;
 import space.dcce.commons.general.FileUtils;
 import space.dcce.commons.general.UnexpectedException;
 import space.dcce.commons.netaddr.Addresses;
@@ -62,7 +61,7 @@ public class NmapScan implements JobCompleteCallback
 		{
 			content = FileUtils.readFileToString(outputFileName + ".xml");
 		}
-		catch (FileNotFoundException | NoSuchFileException e)
+		catch (@SuppressWarnings("unused") FileNotFoundException | NoSuchFileException e)
 		{
 			return ScanStatus.UNSTARTED;
 		}

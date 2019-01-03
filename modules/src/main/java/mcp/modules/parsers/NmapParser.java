@@ -5,14 +5,11 @@ import java.io.File;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import space.dcce.commons.cli.OptionContainer;
 
 public class NmapParser implements Parser
 {
-	private final static Logger logger = LoggerFactory.getLogger(NmapParser.class);
 	private final static NmapParser instance = new NmapParser();
 	
 	public static NmapParser getInstance()

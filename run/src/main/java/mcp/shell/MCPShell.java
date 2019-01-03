@@ -91,7 +91,7 @@ public class MCPShell
 		HelpDescriptor<Instance<MCPShell>> helpDescriptor = HelpDescriptor.create(descriptor);
 		InvocationMatcher<Instance<MCPShell>> matcher = helpDescriptor.matcher();
 		InvocationMatch<Instance<MCPShell>> match = matcher.parse("");
-		Object o = match.invoke(Util.wrap(this));
+		match.invoke(Util.wrap(this));
 	}
 
 

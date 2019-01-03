@@ -30,9 +30,9 @@ public class Scope
 
 	private Scope()
 	{
-		includeAddresses = new Addresses();
-		excludeAddresses = new Addresses();
-		routingTable = new Addresses();
+		includeAddresses = new Addresses("Included addresses");
+		excludeAddresses = new Addresses("Excluded addresses");
+		routingTable = new Addresses("Routing table");
 
 		// We'll assume everything is routable unless a table is provided
 		routingTable.add(new Range(0, 0xFFFFFFFF));
@@ -147,7 +147,10 @@ public class Scope
 //			sb.append(StringUtils.indentText(2, true, routingTable.toString()));
 
 			sb.append("\n\n\tTargeted addresses:\n");
-			sb.append(StringUtils.indentText(2, true, getTargetAddresses().toString(false)));
+			sb.append(StringUtils.indentText(2, true, "ranges: " + getTargetAddresses().toString(false)));
+			sb.append("\n");
+			sb.append(StringUtils.indentText(2, true, "cidrs: " + getTargetAddresses().getCIDRList(", ")));
+			
 
 			sb.append("\n\n\tUnroutable addresses:\n");
 			sb.append(StringUtils.indentText(2, true, unroutableAddresses.toString(false)));

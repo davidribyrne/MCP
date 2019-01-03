@@ -103,7 +103,7 @@ public class ScopeInitializer extends Module
 
 	private Addresses parseTargetFile(String filename, String description, Option option)
 	{
-		Addresses addresses = new Addresses();
+		Addresses addresses = new Addresses("Addresses from " + filename);
 		try
 		{
 			long start = System.currentTimeMillis();

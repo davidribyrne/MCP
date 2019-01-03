@@ -97,7 +97,7 @@ public class NmapScan implements JobCompleteCallback
 		String targetFile = outputFileName + TARGET_IP_FILE_SUFFIX;
 		try
 		{
-			FileUtils.writeToFile(targetFile, targets.getNmapList());
+			FileUtils.writeToFile(targetFile, targets.getCIDRList("\n"));
 		}
 		catch (FileNotFoundException e)
 		{

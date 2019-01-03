@@ -148,7 +148,7 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 
 	private Addresses intsToAddresses(Iterable<Integer> ints)
 	{
-		Addresses a = new Addresses();
+		Addresses a = new Addresses("Nmap subnet scan targets");
 		for (int i : ints)
 		{
 			try

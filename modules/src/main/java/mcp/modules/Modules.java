@@ -16,6 +16,7 @@ import mcp.modules.nmap.NmapIcmp;
 import mcp.modules.nmap.NmapSubNetScan;
 import mcp.modules.nmap.NmapTcp;
 import mcp.modules.nmap.NmapUdp;
+import mcp.modules.reporting.SimpleKbDumper;
 import mcp.modules.scope.ScopeInitializer;
 import mcp.options.MCPOptions;
 import space.dcce.commons.cli.OptionContainer;
@@ -85,16 +86,16 @@ public class Modules
 	}
 
 
-	public Module getModuleInstance(Class<? extends Module> clazz)
-	{
-		if (normalModules.containsKey(clazz))
-			return normalModules.get(clazz);
-
-		if (externalModules.containsKey(clazz))
-			return externalModules.get(clazz);
-
-		return null;
-	}
+//	public Module getModuleInstance(Class<? extends Module> clazz)
+//	{
+//		if (normalModules.containsKey(clazz))
+//			return normalModules.get(clazz);
+//
+//		if (externalModules.containsKey(clazz))
+//			return externalModules.get(clazz);
+//
+//		return null;
+//	}
 
 
 	private void populateCoreOptions()

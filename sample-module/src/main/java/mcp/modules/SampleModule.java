@@ -1,25 +1,26 @@
 package mcp.modules;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.events.events.McpCompleteEvent;
 import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
-import space.dcce.commons.cli.ModuleOption;
-import space.dcce.commons.cli.ModuleOptions;
+import space.dcce.commons.cli.Option;
+import space.dcce.commons.cli.OptionContainer;
+import space.dcce.commons.cli.OptionGroup;
 
 public class SampleModule extends ExternalModule implements McpStartListener
 {
 	final static Logger logger = LoggerFactory.getLogger(SampleModule.class);
 
-	private static ModuleOptions options;
-	private static ModuleOption testStringOption;
+	private static OptionGroup options;
+	private static Option testStringOption;
 	static 
 	{
-		options = new ModuleOptions("sample-module-options", "Quoted option string passed to sample module", "Sample Module");
-		testStringOption = new ModuleOption("testString", "Just a test string to repeat.", true, true, "", "string");
+		options = new OptionGroup("sample-module-options", "Description");
+		testStringOption = new Option("", "testString", "Just a test string to repeat.", true, true, "", "string");
 
 	}
 
@@ -35,16 +36,21 @@ public class SampleModule extends ExternalModule implements McpStartListener
 	public void initialize()
 	{
 		ExecutionScheduler.getInstance().registerListener(McpStartEvent.class, this);
-		ExecutionScheduler.getInstance().registerListener(McpCompleteEvent.class, this);
 	}
 
-	public void handleEvent(McpCompleteEvent reconEvent)
-	{
-		logger.info("MCP is all done - " + testStringOption.getValue());
-	}
+//	public void handleEvent(McpCompleteEvent reconEvent)
+//	{
+//		logger.info("MCP is all done - " + testStringOption.getValue());
+//	}
 
 	public void handleEvent(McpStartEvent event)
 	{
 		logger.info("MCP is starting - " + testStringOption.getValue());
+	}
+	
+
+	public static OptionContainer getOptions()
+	{
+		return options;
 	}
 }

@@ -53,7 +53,7 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 
 	}
 
-	private Map<Integer, List<Integer>> subnets;
+	private Map<Long, List<Long>> subnets;
 
 
 	static public OptionGroup getOptions()
@@ -78,18 +78,18 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 
 	private void sortIntoSubnets()
 	{
-		int[] allAddresses = Scope.instance.getTargetAddresses().getAllAddresses();
+		long[] allAddresses = Scope.instance.getTargetAddresses().getAllAddresses();
 		logger.trace("Sorting into subnets. This may take a while for large ranges");
 		int bitmask = 0xFFFFFFFF << (32 - mask);
-		for (int address : allAddresses)
+		for (long address : allAddresses)
 		{
-			int subnet = bitmask & address;
+			long subnet = bitmask & address;
 
 			if (!subnets.containsKey(subnet))
 			{
-				subnets.put(subnet, new LinkedList<Integer>());
+				subnets.put(subnet, new LinkedList<Long>());
 			}
-			List<Integer> subnetContents = subnets.get(subnet);
+			List<Long> subnetContents = subnets.get(subnet);
 			subnetContents.add(address);
 		}
 		logger.trace("Done sorting into subnets.");
@@ -100,13 +100,13 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 	{
 		logger.trace("Starting to prune active subnets");
 
-		for (Iterator<Integer> iterator = subnets.keySet().iterator(); iterator.hasNext();)
+		for (Iterator<Long> iterator = subnets.keySet().iterator(); iterator.hasNext();)
 		{
-			Integer subnet = iterator.next();
-			List<Integer> subnetAddresses = subnets.get(subnet);
+			Long subnet = iterator.next();
+			List<Long> subnetAddresses = subnets.get(subnet);
 
-			int lastIP = subnetAddresses.remove(0);
-			Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, IP4Utils.intToString(lastIP));
+			long lastIP = subnetAddresses.remove(0);
+			Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, IP4Utils.longToString(lastIP));
 			if (subnetAddresses.isEmpty() || (addressNode != null && KnowledgeBaseUtils.IsAddressActive(addressNode)))
 			{
 				iterator.remove();
@@ -120,18 +120,18 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 	private void runNextScan()
 	{
 		logger.trace("Starting subnet scan #" + ++count);
-		List<Integer> targets = new ArrayList<Integer>(subnets.size());
+		List<Long> targets = new ArrayList<Long>(subnets.size());
 		if (count > 1)
 		{
 			pruneActiveSubnets();
 		}
 
-		for (List<Integer> subnet : subnets.values())
+		for (List<Long> subnet : subnets.values())
 		{
 			targets.add(subnet.get(0));
 		}
 
-		SubnetScan pingScan = new SubnetScan("Subnet scan " + count, intsToAddresses(targets));
+		SubnetScan pingScan = new SubnetScan("Subnet scan " + count, longsToAddresses(targets));
 		pingScan.setResolve(false);
 		pingScan.addFlag(NmapFlag.MIN_PROBE_PARALLELIZATION, "1000");
 		pingScan.addFlag(NmapFlag.MAX_RETRIES, "2");
@@ -141,14 +141,14 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 	}
 
 
-	private Addresses intsToAddresses(Iterable<Integer> ints)
+	private Addresses longsToAddresses(Iterable<Long> longs)
 	{
 		Addresses a = new Addresses("Nmap subnet scan targets");
-		for (int i : ints)
+		for (long i : longs)
 		{
 			try
 			{
-				a.add(IP4Utils.intToAddress(i));
+				a.add(IP4Utils.longToAddress(i));
 			}
 			catch (InvalidIPAddressFormatException e)
 			{
@@ -164,7 +164,7 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 	{
 		if (enableSubnetScans.isEnabled())
 		{
-			subnets = new HashMap<Integer, List<Integer>>();
+			subnets = new HashMap<Long, List<Long>>();
 			sortIntoSubnets();
 			runNextScan();
 		}

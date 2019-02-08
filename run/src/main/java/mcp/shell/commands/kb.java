@@ -13,7 +13,8 @@ import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.Node;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.modules.Modules;
-import mcp.modules.SimpleKbDumper;
+import mcp.modules.reporting.SimpleKbDumper;
+import space.dcce.commons.general.NotImplementedException;
 
 
 @Usage("Knowledge Base interaction\n"
@@ -44,17 +45,18 @@ public class kb extends BaseCommand
 	@Named("dump")
 	public Object dump()
 	{
-		SimpleKbDumper dumper = (SimpleKbDumper) Modules.getInstance().getModuleInstance(SimpleKbDumper.class);
-		if (dumper != null)
-		{
-			return dumper.getKBDump();
-		}
-		else
-		{
-			String message = "Failed to get SimpleKbDumper instance.";
-			logger.error(message);
-			return message;
-		}
+//		SimpleKbDumper dumper = SimpleKbDumper
+//		if (dumper != null)
+//		{
+//			return dumper.getKBDump();
+//		}
+//		else
+//		{
+//			String message = "Failed to get SimpleKbDumper instance.";
+//			logger.error(message);
+//			return message;
+//		}
+		throw new NotImplementedException();
 	}
 
 

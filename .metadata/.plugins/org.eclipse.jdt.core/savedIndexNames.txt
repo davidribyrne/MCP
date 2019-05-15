@@ -1,1 +1,0 @@
-INDEX VERSION 1.131+D:\MCP\MCP\.metadata\.plugins\org.eclipse.jdt.core

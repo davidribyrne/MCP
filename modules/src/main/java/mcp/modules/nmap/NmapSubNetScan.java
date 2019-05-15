@@ -16,7 +16,7 @@ import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.jobmanager.jobs.JobState;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.KnowledgeBaseUtils;
-import mcp.knowledgebase.Node;
+import space.dcce.commons.node_database.Node;
 import mcp.knowledgebase.Scope;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.tools.nmap.NmapFlag;
@@ -106,7 +106,7 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 			List<Long> subnetAddresses = subnets.get(subnet);
 
 			long lastIP = subnetAddresses.remove(0);
-			Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, IP4Utils.longToString(lastIP));
+			Node addressNode = KnowledgeBase.INSTANCE.getNode(Network.IPV4_ADDRESS, IP4Utils.longToString(lastIP));
 			if (subnetAddresses.isEmpty() || (addressNode != null && KnowledgeBaseUtils.IsAddressActive(addressNode)))
 			{
 				iterator.remove();

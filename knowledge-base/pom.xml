@@ -9,26 +9,9 @@
 	<artifactId>knowledge-base</artifactId>
 	<name>MCP -- knowledge-base</name>
 	<dependencies>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>space.dcce</groupId>
-			<artifactId>commons-general</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>space.dcce</groupId>
-			<artifactId>commons-netaddr</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>mcp</groupId>
-			<artifactId>commons</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derby</artifactId>
-		</dependency>
+			<dependency>
+				<groupId>space.dcce</groupId>
+				<artifactId>commons-node-database</artifactId>
+			</dependency>
 	</dependencies>
 </project>

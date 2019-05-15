@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import mcp.events.events.NodeCreationEvent;
 import mcp.events.listeners.NodeCreationListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
-import mcp.knowledgebase.NodeType;
 import mcp.knowledgebase.nodeLibrary.Hostnames;
 import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.dns.client.DnsTransaction;
@@ -23,6 +22,7 @@ import space.dcce.commons.dns.messages.QuestionRecord;
 import space.dcce.commons.dns.records.RecordType;
 import space.dcce.commons.general.FileUtils;
 import space.dcce.commons.general.StringUtils;
+import space.dcce.commons.node_database.NodeType;
 
 public class CommonHostnames extends HostnameDiscoveryModule implements NodeCreationListener
 {

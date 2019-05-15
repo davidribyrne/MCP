@@ -3,7 +3,8 @@ package mcp.events.events;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import mcp.knowledgebase.Node;
+import space.dcce.commons.node_database.Node;
+
 
 
 public class NodeCreationEvent extends McpEvent

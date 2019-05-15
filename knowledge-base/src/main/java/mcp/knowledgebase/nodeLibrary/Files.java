@@ -1,6 +1,7 @@
 package mcp.knowledgebase.nodeLibrary;
 
-import mcp.knowledgebase.NodeType;
+import mcp.knowledgebase.KnowledgeBase;
+import space.dcce.commons.node_database.NodeType;
 
 public class Files
 {
@@ -8,7 +9,7 @@ public class Files
 //	public static final Node NETWORK_SERVICE_DESCRIPTION_REASON_UNKNOWN = KnowledgeBase.getInstance().getOrCreateNode(NETWORK_SERVICE_DESCRIPTION_REASON, "Unknown".getBytes());
 
 	
-	public static final NodeType PATH = NodeType.getByName("PATH", "Path");
+	public static final NodeType PATH = KnowledgeBase.INSTANCE.getByName("PATH", "Path");
 
 
 	private Files()

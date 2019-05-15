@@ -3,7 +3,7 @@ package mcp.events.listeners;
 import java.util.Collection;
 
 import mcp.events.events.NodeCreationEvent;
-import mcp.knowledgebase.NodeType;
+import space.dcce.commons.node_database.NodeType;
 
 
 

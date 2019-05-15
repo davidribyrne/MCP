@@ -7,10 +7,10 @@ import mcp.events.events.McpNormalExitEvent;
 import mcp.events.listeners.McpEventListener;
 import mcp.events.listeners.McpNormalExitListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
-import mcp.knowledgebase.Connection;
+import space.dcce.commons.node_database.Connection;
 import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.Node;
-import mcp.knowledgebase.NodeType;
+import space.dcce.commons.node_database.Node;
+import space.dcce.commons.node_database.NodeType;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.modules.Module;
 import space.dcce.commons.cli.Option;
@@ -68,7 +68,7 @@ public class SimpleKbDumper extends Module implements McpNormalExitListener
 		
 		private void dumpAllType(NodeType type)
 		{
-			for (Node node: KnowledgeBase.instance.getAllNodesByType(type))
+			for (Node node: KnowledgeBase.INSTANCE.getAllNodesByType(type))
 			{
 				dumpRootNode(node, 0);
 			}

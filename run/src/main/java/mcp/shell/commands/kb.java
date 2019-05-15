@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.knowledgebase.KnowledgeBase;
-import mcp.knowledgebase.Node;
+import space.dcce.commons.node_database.Node;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.modules.Modules;
 import mcp.modules.reporting.SimpleKbDumper;
@@ -69,7 +69,7 @@ public class kb extends BaseCommand
 		{
 			if ("addresses".equalsIgnoreCase(section))
 			{
-				for (Node address : KnowledgeBase.instance.getAllNodesByType(Network.IPV4_ADDRESS))
+				for (Node address : KnowledgeBase.INSTANCE.getAllNodesByType(Network.IPV4_ADDRESS))
 				{
 					sb.append(address.getValue()).append("\n");
 				}

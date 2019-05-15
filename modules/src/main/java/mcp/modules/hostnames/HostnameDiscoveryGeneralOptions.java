@@ -240,7 +240,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		{
 			for (String domain: FileUtils.readLines(knownDomainsPath))
 			{
-				KnowledgeBase.instance.getOrCreateNode(Hostnames.DOMAIN, domain);
+				KnowledgeBase.INSTANCE.getOrCreateNode(Hostnames.DOMAIN, domain);
 			}
 		}
 		catch (IOException e)
@@ -250,7 +250,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		}
 		for (String domain: knownDomainsOption.getValues())
 		{
-			KnowledgeBase.instance.getOrCreateNode(Hostnames.DOMAIN, domain);
+			KnowledgeBase.INSTANCE.getOrCreateNode(Hostnames.DOMAIN, domain);
 		}
 
 	}

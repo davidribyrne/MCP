@@ -1,12 +1,12 @@
 package mcp.knowledgebase;
 
-import mcp.knowledgebase.nodeLibrary.HostStatusReason;
-import mcp.knowledgebase.nodeLibrary.Hostnames;
-import mcp.knowledgebase.nodeLibrary.Network;
-import mcp.knowledgebase.nodeLibrary.Port;
+
+import mcp.knowledgebase.nodeLibrary.*;
 import space.dcce.commons.general.UnexpectedException;
 import space.dcce.commons.netaddr.InvalidIPAddressFormatException;
 import space.dcce.commons.netaddr.SimpleInetAddress;
+import space.dcce.commons.node_database.Node;
+import space.dcce.commons.node_database.NodeType;
 
 public class KnowledgeBaseUtils
 {
@@ -46,7 +46,7 @@ public class KnowledgeBaseUtils
 			{
 				throw new UnexpectedException("This shouldn't have happened since we precalculated the net range.", e);
 			}
-			Node addressNode = KnowledgeBase.instance.getNode(Network.IPV4_ADDRESS, address.toString());
+			Node addressNode = KnowledgeBase.INSTANCE.getNode(Network.IPV4_ADDRESS, address.toString());
 			if (addressNode == null)
 				continue;
 			

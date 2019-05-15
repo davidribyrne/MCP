@@ -34,7 +34,7 @@ public class MCP
 		try
 		{
 			String path = GeneralOptions.getWorkingDirectoryOption().getValue();
-			KnowledgeBase.instance.initializeStorage(path);
+			KnowledgeBase.INSTANCE.initializeStorage(path);
 		}
 		catch (FileNotFoundException e)
 		{

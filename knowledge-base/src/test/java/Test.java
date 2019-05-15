@@ -10,6 +10,6 @@ public class Test
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, IOException
 	{
-		KnowledgeBase.storage.createDb("AAAAAAA.db");
+		KnowledgeBase.INSTANCE.storage.createDb("AAAAAAA.db");
 	}
 }

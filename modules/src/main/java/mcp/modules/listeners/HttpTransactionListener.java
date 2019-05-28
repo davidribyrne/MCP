@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import mcp.commons.HttpTransaction;
 import mcp.modules.Module;
+import mcp.options.MCPOptions;
 import space.dcce.commons.cli.Option;
 import space.dcce.commons.cli.OptionContainer;
 import space.dcce.commons.cli.OptionGroup;
@@ -32,22 +33,19 @@ public class HttpTransactionListener extends Module
 	private InetAddress hostAddress;
 	private int port;
 
-	static
+	@Override
+	protected void initializeOptions()
 	{
-		enabledOption = new Option(null, "transaction-listener", "Enable transaction listener", false, false, "", "");
-		listenAddressOption = new Option(null, "transaction-listener-address", "IP address to listen on. THIS SERVICE MAY NOT BE SECURE. BE CAREFUL.", true, true,
+		group = MCPOptions.instance.addOptionGroup("HTTP Transaction Listener",
+				"Listens on a network port for serialized HTTP transactions to analyze");
+		
+		enabledOption = group.addOption(null, "transaction-listener", "Enable transaction listener", false, false, "", "");
+		listenAddressOption = group.addOption(null, "transaction-listener-address", "IP address to listen on. THIS SERVICE MAY NOT BE SECURE. BE CAREFUL.", true, true,
 				"127.0.0.1", "address|hostname");
 		listenAddressOption.addValidator(new IPAddressValidator(false, false));
 
-		portNumberOption = new Option(null, "transaction-listener-port", "TCP port to listen on.", true, true, "2063", "number");
+		portNumberOption = group.addOption(null, "transaction-listener-port", "TCP port to listen on.", true, true, "2063", "number");
 		portNumberOption.addValidator(new NumericValidator(false, 0, 65535));
-
-		group = new OptionGroup("HTTP Transaction Listener",
-				"Listens on a network port for serialized HTTP transactions to analyze");
-
-		group.addChild(enabledOption);
-		group.addChild(listenAddressOption);
-		group.addChild(portNumberOption);
 	}
 	
 	public HttpTransactionListener()

@@ -7,15 +7,16 @@ import space.dcce.commons.cli.GnuParser;
 import space.dcce.commons.cli.HelpFormatter;
 import space.dcce.commons.cli.Option;
 import space.dcce.commons.cli.OptionContainer;
-import space.dcce.commons.cli.Options;
+import space.dcce.commons.cli.OptionGroup;
+import space.dcce.commons.cli.RootOptions;
 import space.dcce.commons.cli.exceptions.ParseException;
 import space.dcce.commons.general.CollectionUtils;
 
 
 public class MCPOptions
 {
-	private static MCPOptions instance;
-	private Options options;
+	public final static MCPOptions instance = new MCPOptions();
+	private RootOptions rootOptions;
 	private boolean parsed = false;
 
 	private Option help;
@@ -23,9 +24,8 @@ public class MCPOptions
 
 	private MCPOptions()
 	{
-		options = new Options();
-		help = new Option("h", "help", "Print this message.");
-		options.addOptionContainer(help);
+		rootOptions = new RootOptions();
+		help = rootOptions.addOption("h", "help", "Print this message.");
 	}
 
 
@@ -33,7 +33,7 @@ public class MCPOptions
 	{
 		try
 		{
-			GnuParser.parse(options, args, false);
+			GnuParser.parse(rootOptions, args, false);
 			parsed = true;
 		}
 		catch (ParseException e)
@@ -57,29 +57,33 @@ public class MCPOptions
 		{
 			throw new IllegalStateException("Command line not parsed yet");
 		}
-		for (Option option : options.getAllOptions())
+		for (OptionContainer oc : rootOptions.getChildren())
 		{
-			StringBuilder sb = new StringBuilder();
-			sb.append("\t");
-			sb.append(option.getName());
-			if (option.isArgAccepted())
+			if (oc instanceof Option)
 			{
-				sb.append(" = '");
-				sb.append(CollectionUtils.joinObjects("', '", option.getValues()));
-				sb.append("'");
-			}
-			else
-			{
-				if (option.isEnabled())
+				Option option = (Option) oc;
+				StringBuilder sb = new StringBuilder();
+				sb.append("\t");
+				sb.append(option.getName());
+				if (option.isArgAccepted())
 				{
-					sb.append(" = true");
+					sb.append(" = '");
+					sb.append(CollectionUtils.joinObjects("', '", option.getValues()));
+					sb.append("'");
 				}
 				else
 				{
-					sb.append(" = false");
+					if (option.isEnabled())
+					{
+						sb.append(" = true");
+					}
+					else
+					{
+						sb.append(" = false");
+					}
 				}
+				lines.add(sb.toString());
 			}
-			lines.add(sb.toString());
 		}
 
 		return lines;
@@ -88,23 +92,27 @@ public class MCPOptions
 
 	private void printHelp()
 	{
-		System.out.println(HelpFormatter.makeHelp(80, "java -jar mcp.jar [options]", "", options, 3, ""));
+		System.out.println(HelpFormatter.makeHelp(80, "java -jar mcp.jar [options]", "", rootOptions, 3, ""));
 	}
 
 
-	public static MCPOptions getInstance()
+	public Option addOption(String shortOption, String longOption, String description)
 	{
-		if (instance == null)
-		{
-			instance = new MCPOptions();
-		}
-		return instance;
+		return rootOptions.addOption(shortOption, longOption, description);
 	}
 
 
-	public void addChild(OptionContainer option)
+	public Option addOption(String shortOption, String longOption, String description, boolean argAccepted, boolean argRequired, String defaultValue,
+			String argDescription)
 	{
-		options.addOptionContainer(option);
+		return rootOptions.addOption(shortOption, longOption, description, argAccepted, argRequired, defaultValue, argDescription);
 	}
+
+
+	public OptionGroup addOptionGroup(String name, String description)
+	{
+		return rootOptions.addOptionGroup(name, description);
+	}
+
 
 }

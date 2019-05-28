@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
 import mcp.modules.parsers.Parser;
 import mcp.modules.parsers.Parsers;
+import mcp.options.MCPOptions;
 import space.dcce.commons.cli.Option;
 import space.dcce.commons.cli.OptionContainer;
 import space.dcce.commons.cli.OptionGroup;
@@ -23,16 +24,17 @@ public class InputFileMonitor extends Module
 	private static Option inputFilePathOption;
 	private static Option forceReparseOption;
 	
-	static
+	@Override
+	protected void initializeOptions()
 	{
-		group = new OptionGroup("Input File Monitor", "Monitors a directory for files to parse");
-		inputFilePathOption = new Option(null, "inputFilePath", 
+		group = MCPOptions.instance.addOptionGroup("Input File Monitor", "Monitors a directory for files to parse");
+		inputFilePathOption = group.addOption(null, "inputFilePath", 
 				"Path to directory of scan result files. Files placed here will be automatically parsed.", 
 				true, true, "input-files", "directory");
-		group.addChild(inputFilePathOption);
-		forceReparseOption = new Option(null, "forceReparse", "Force a reparse of all input files.");
-		group.addChild(forceReparseOption);
+		forceReparseOption = group.addOption(null, "forceReparse", "Force a reparse of all input files.");
 	}
+	
+	
 	public InputFileMonitor()
 	{
 		super("Input file monitor");

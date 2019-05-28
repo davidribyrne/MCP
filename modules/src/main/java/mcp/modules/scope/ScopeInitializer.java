@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import mcp.commons.WorkingDirectories;
 import mcp.knowledgebase.Scope;
 import mcp.modules.Module;
+import mcp.options.MCPOptions;
 import space.dcce.commons.cli.Option;
 import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.general.FileUtils;
@@ -27,41 +28,44 @@ public class ScopeInitializer extends Module
 {
 
 	private final static Logger logger = LoggerFactory.getLogger(ScopeInitializer.class);
-	private final static ScopeInitializer instance = new ScopeInitializer();
 
-	private static OptionGroup group;
-	private static Option targetIPFile;
-	private static Option targetIP;
-	private static Option excludeIPFile;
-	private static Option excludeIP;
-	private static Option excludeUnroutable;
-	private static Option routingTableFile;
-	private static Option listScopeOption;
+	private OptionGroup group;
+	private Option targetIPFile;
+	private Option targetIP;
+	private Option excludeIPFile;
+	private Option excludeIP;
+	private Option excludeUnroutable;
+	private Option routingTableFile;
+	private Option listScopeOption;
 
-	static
+	@Override
+	protected void initializeOptions()
 	{
-		targetIPFile = new Option(null, "ipsFile",
+		
+		group = MCPOptions.instance.addOptionGroup("Scope Definition", "What IP addresses to include, what to exclude. All files are one address/CIDR/range per line.");
+
+		targetIPFile = group.addOption(null, "ipsFile",
 				"File that contains a list of IP addresses to target.", true, true, "ips.txt",
 				"filename");
-		targetIP = new Option(null, "target",
+		targetIP = group.addOption(null, "target",
 				"Manually add targeted addresses. This can be used multiple times.", true, true, null, "IP-address|CIDR|IP-range");
 		targetIP.setMultipleCalls(true);
-		excludeIPFile = new Option(null, "excludeIpsFile",
+		excludeIPFile = group.addOption(null, "excludeIpsFile",
 				"File that contains a list of IP addresses to exclude.", true, true,
 				"exclude-ips.txt",
 				"filename");
-		excludeIP = new Option(
+		excludeIP = group.addOption(
 				null,
 				"exclude",
 				"Manually exclude addresses. This allows a block of targets to be defined, but some of them to be excluded. It can be used multiple times.",
 				true, true, null, "IP-address|CIDR|IP-range");
 		excludeIP.setMultipleCalls(true);
-		excludeUnroutable = new Option("", "excludeUnroutable",
+		excludeUnroutable = group.addOption("", "excludeUnroutable",
 				"Block scanning of addresses that are not in the provided routing table (see --routingTableFile");
-		routingTableFile = new Option("", "routingTableFile", "File that contains a list of routable subnets in CIDR format.",
+		routingTableFile = group.addOption("", "routingTableFile", "File that contains a list of routable subnets in CIDR format.",
 				true, true, "routing-table.txt", "filename");
 
-		listScopeOption = new Option("l", "listScope", "Calculate and display the IP addresses in scope");
+		listScopeOption = group.addOption("l", "listScope", "Calculate and display the IP addresses in scope");
 
 
 		PathState targetPathState = new PathState();
@@ -77,14 +81,6 @@ public class ScopeInitializer extends Module
 		targetIP.addValidator(ipValidator);
 		excludeIP.addValidator(ipValidator);
 
-		group = new OptionGroup("Scope Definition", "What IP addresses to include, what to exclude. All files are one address/CIDR/range per line.");
-		group.addChild(targetIPFile);
-		group.addChild(targetIP);
-		group.addChild(excludeIPFile);
-		group.addChild(excludeIP);
-		group.addChild(excludeUnroutable);
-		group.addChild(routingTableFile);
-		group.addChild(listScopeOption);
 	}
 
 
@@ -94,10 +90,6 @@ public class ScopeInitializer extends Module
 	}
 
 
-	public static ScopeInitializer getInstance()
-	{
-		return instance;
-	}
 
 
 	private Addresses parseTargetFile(String filename, String description, Option option)
@@ -240,9 +232,4 @@ public class ScopeInitializer extends Module
 
 	}
 
-
-	public static OptionGroup getOptions()
-	{
-		return group;
-	}
 }

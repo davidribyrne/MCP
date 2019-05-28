@@ -11,8 +11,9 @@ import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.KnowledgeBase;
 import mcp.knowledgebase.nodeLibrary.Hostnames;
-import mcp.modules.GeneralOptions;
 import mcp.modules.Module;
+import mcp.modules.Modules;
+import mcp.options.MCPOptions;
 import space.dcce.commons.cli.Option;
 import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.dns.client.Resolver;
@@ -28,77 +29,78 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 {
 	private final static Logger logger = LoggerFactory.getLogger(HostnameDiscoveryGeneralOptions.class);
 
-	private static final HostnameDiscoveryGeneralOptions instance = new HostnameDiscoveryGeneralOptions();
-
-	private static OptionGroup group;
-	private static Option dnsServersOption;
-	private static Option publicDnsServersOption;
+	private OptionGroup group;
+	private Option dnsServersOption;
+	private Option publicDnsServersOption;
 	
-	private static Option enableHostnameDiscoveryOption;
+	private Option enableHostnameDiscoveryOption;
 	
-	private static Option testCommonHostnamesOption;
-	private static Option commonHostnamesFileOption;
-	private static Option autoAddDomainsOption;
-	private static Option maxAutoAddDomainOption;
-	private static Option autoAddSubDomainsOption;
-	private static Option maxAutoAddSubDomainOption;
+	private Option testCommonHostnamesOption;
+	private Option commonHostnamesFileOption;
+	private Option autoAddDomainsOption;
+	private Option maxAutoAddDomainOption;
+	private Option autoAddSubDomainsOption;
+	private Option maxAutoAddSubDomainOption;
 	
-	private static Option testSslCertsOption;
-	private static Option testRootPagesOption;
-	private static Option testZoneTransfersOption;
+	private Option testSslCertsOption;
+	private Option testRootPagesOption;
+	private Option testZoneTransfersOption;
 	
-	private static Option knownDomainsFileOption;
-	private static Option knownDomainsOption;
-	private static Option knownHostnamesFileOption;
-	private static Option knownHostnamesOption;
-	private static Option bannedDomainsOption;
+	private Option knownDomainsFileOption;
+	private Option knownDomainsOption;
+	private Option knownHostnamesFileOption;
+	private Option knownHostnamesOption;
+	private Option bannedDomainsOption;
 
 	private int maxAutoAddDomains;
 	private int maxAutoAddSubDomains;
 	
-	static
+	@Override
+	protected void initializeOptions()
 	{
-		dnsServersOption = new Option(null, "dnsServer", "DNS servers to use for hostname discovery. Seperate multiple values with commas.  "
+		group = MCPOptions.instance.addOptionGroup("Hostname discovery", "");
+
+		dnsServersOption = group.addOption(null, "dnsServer", "DNS servers to use for hostname discovery. Seperate multiple values with commas.  "
 				+ "If no servers are provided, an attempt will be made to detect the system servers. This feature isn't built into Java, "
 				+ "so unusual systems may fail.", 
 				true, true, null, "IP address");
-		publicDnsServersOption = new Option(null, "publicDnsServers", "Use a built-in pool of public DNS servers (Google, Level 3, etc).");
+		publicDnsServersOption = group.addOption(null, "publicDnsServers", "Use a built-in pool of public DNS servers (Google, Level 3, etc).");
 
 
-		enableHostnameDiscoveryOption = new Option("d", "hostnameDiscovery", "Enable typical hostname discovery options. Currently equivalent to "
+		enableHostnameDiscoveryOption = group.addOption("d", "hostnameDiscovery", "Enable typical hostname discovery options. Currently equivalent to "
 				+ "--testCommonHostnames --autoAddDomains --autoAddSubDomains --testSSLCerts --testRootPages --testZoneTransfers");
-		testCommonHostnamesOption = new Option(null, "testCommonHostnames", "Test a list of common hostnames against every known domain.");
-		commonHostnamesFileOption = new Option(null, "commonHostnamesFile", "Path to file with common hostnames to test. Each line is a seperate hostname. "
+		testCommonHostnamesOption = group.addOption(null, "testCommonHostnames", "Test a list of common hostnames against every known domain.");
+		commonHostnamesFileOption = group.addOption(null, "commonHostnamesFile", "Path to file with common hostnames to test. Each line is a seperate hostname. "
 				+ "Defaults to a built-in list.", 
 				true, true, "", "filename");
 		
-		autoAddDomainsOption = new Option(null, "autoAddDomains", "Automatically add domains to the master list as they are discovered. "
+		autoAddDomainsOption = group.addOption(null, "autoAddDomains", "Automatically add domains to the master list as they are discovered. "
 				+ "The master list of domains is tested for relevant enabled options; zone transfers, common hostnames, etc. This should "
 				+ "be used with caution, particulary in environments that host many domains.");
-		maxAutoAddDomainOption = new Option(null, "maxAutoAddDomains", "Limit the number of domains that are added automatically. This is "
+		maxAutoAddDomainOption = group.addOption(null, "maxAutoAddDomains", "Limit the number of domains that are added automatically. This is "
 				+ "important to prevent the list from ballooning.", true, true, "10", "n");
 		
-		autoAddSubDomainsOption = new Option(null, "autoAddSubDomains", "Automatically detect and add subdomains for existing domains.");
-		maxAutoAddSubDomainOption = new Option(null, "maxAutoAddSubDomains", "Limit the number of subdomains (per domain) that are added automatically.", 
+		autoAddSubDomainsOption = group.addOption(null, "autoAddSubDomains", "Automatically detect and add subdomains for existing domains.");
+		maxAutoAddSubDomainOption = group.addOption(null, "maxAutoAddSubDomains", "Limit the number of subdomains (per domain) that are added automatically.", 
 				true, true, "10", "n");
 		
-		testSslCertsOption = new Option(null, "testSSLCerts", "Request certificates from SSL/TLS services to discover hostnames.");
-		testRootPagesOption = new Option(null, "testRootPages", "Test hostnames in links discovered on a web server's root page.");
-		testZoneTransfersOption = new Option(null, "testZoneTransfers", "Request zone transfers for discovered domains from discovered or provided DNS servers.");
+		testSslCertsOption = group.addOption(null, "testSSLCerts", "Request certificates from SSL/TLS services to discover hostnames.");
+		testRootPagesOption = group.addOption(null, "testRootPages", "Test hostnames in links discovered on a web server's root page.");
+		testZoneTransfersOption = group.addOption(null, "testZoneTransfers", "Request zone transfers for discovered domains from discovered or provided DNS servers.");
 		
-		knownDomainsFileOption = new Option(null, "knownDomainsFile", "File that contains a list of known domains to include in hostname discovery. "
+		knownDomainsFileOption = group.addOption(null, "knownDomainsFile", "File that contains a list of known domains to include in hostname discovery. "
 				+ "One domain per line.", true, true, "known-domains.txt", "filename");
 
-		knownDomainsOption = new Option(null, "knownDomains", "Comma seperated list of known domains to include in hostname discovery.", 
+		knownDomainsOption = group.addOption(null, "knownDomains", "Comma seperated list of known domains to include in hostname discovery.", 
 				true, true, "", "domains");
 
-		knownHostnamesFileOption = new Option(null, "knownHostnamesFile", "File that contains a list of known hostnames to include in hostname discovery. "
+		knownHostnamesFileOption = group.addOption(null, "knownHostnamesFile", "File that contains a list of known hostnames to include in hostname discovery. "
 				+ "They are still tested. One hostname per line.", true, true, "known-hostnames.txt", "filename");
 
-		knownHostnamesOption = new Option(null, "knownHostnames", "Comma seperated list of known hostnames to include in hostname discovery. "
+		knownHostnamesOption = group.addOption(null, "knownHostnames", "Comma seperated list of known hostnames to include in hostname discovery. "
 				+ "They are still tested.", true, true, "", "hostnames");
 
-		bannedDomainsOption = new Option(null, "bannedDomains", "Comma seperated list of domains to exclude from brute force hostname discovery. This is useful for "
+		bannedDomainsOption = group.addOption(null, "bannedDomains", "Comma seperated list of domains to exclude from brute force hostname discovery. This is useful for "
 				+ "prventing discover against ISPs and hosting environments.", 
 				true, true, "cisco.com,pacbell.net,sprintlink.net,barracudanetworks.com,qwest.net,sumtotalsystems.com,savvis.net,akadns.net,"
 						+ ".net,akamaiedge.net,akamai.net,akamaitechnologies.com,speakeasy.net,.arpa,level3.net,bellsouth.net,swbell.net,"
@@ -123,24 +125,6 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 		maxAutoAddDomainOption.addValidator(countValidator);
 		maxAutoAddSubDomainOption.addValidator(countValidator);
 		
-		group = new OptionGroup("Hostname discovery", "");
-		group.addChild(dnsServersOption);
-		group.addChild(publicDnsServersOption);
-		group.addChild(enableHostnameDiscoveryOption);
-		group.addChild(testCommonHostnamesOption);
-		group.addChild(commonHostnamesFileOption);
-		group.addChild(autoAddDomainsOption);
-		group.addChild(maxAutoAddDomainOption);
-		group.addChild(autoAddSubDomainsOption);
-		group.addChild(maxAutoAddSubDomainOption);
-//		group.addChild(testSslCertsOption);
-//		group.addChild(testRootPagesOption);
-//		group.addChild(testZoneTransfersOption);
-		group.addChild(knownDomainsFileOption);
-		group.addChild(knownDomainsOption);
-		group.addChild(knownHostnamesFileOption);
-		group.addChild(knownHostnamesOption);
-		group.addChild(bannedDomainsOption);
 	}
 	
 	
@@ -172,7 +156,7 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 
 		
 		
-		if (GeneralOptions.getInstance().getBasicReconOption().isEnabled())
+		if (Modules.instance.getGeneralOptions().getBasicReconOption().isEnabled())
 		{
 			enableHostnameDiscoveryOption.forceEnabled();
 		}
@@ -255,15 +239,9 @@ public class HostnameDiscoveryGeneralOptions extends Module implements McpStartL
 
 	}
 
-	public static OptionGroup getOptions()
+	public OptionGroup getOptions()
 	{
 		return group;
-	}
-
-
-	public static HostnameDiscoveryGeneralOptions getInstance()
-	{
-		return instance;
 	}
 
 

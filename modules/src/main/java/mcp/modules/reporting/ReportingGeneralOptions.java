@@ -2,20 +2,14 @@ package mcp.modules.reporting;
 
 
 import mcp.modules.Module;
+import mcp.options.MCPOptions;
 import space.dcce.commons.cli.OptionGroup;
 
 
 public class ReportingGeneralOptions extends Module
 {
 
-
-	private static OptionGroup group;
-
-	static
-	{
-		group = new OptionGroup("Reporting options", "");
-
-	}
+	private OptionGroup group;
 
 	public ReportingGeneralOptions()
 	{
@@ -23,15 +17,20 @@ public class ReportingGeneralOptions extends Module
 	}
 
 
-	public static OptionGroup getOptions()
-	{
-		return group;
-	}
-
-
 	@Override
 	public void initialize()
 	{
+	}
+
+	@Override
+	protected void initializeOptions()
+	{
+		group = MCPOptions.instance.addOptionGroup("Reporting options", "");
 		
+	}
+
+	public OptionGroup getOptions()
+	{
+		return group;
 	}
 }

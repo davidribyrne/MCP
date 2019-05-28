@@ -19,6 +19,7 @@ import mcp.knowledgebase.KnowledgeBaseUtils;
 import space.dcce.commons.node_database.Node;
 import mcp.knowledgebase.Scope;
 import mcp.knowledgebase.nodeLibrary.Network;
+import mcp.modules.Modules;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
 import space.dcce.commons.cli.Option;
@@ -40,16 +41,16 @@ public class NmapSubNetScan extends NmapModule implements McpStartListener
 	private int mask;
 	int count = 0;
 
-	static
+	@Override
+	protected void initializeOptions()
 	{
-		group = new OptionGroup("Subnets", "Nmap subnet scans. If one active device is discovered in a subnet, the rest of the subnet is scanned.");
+		group = ((NmapGeneralOptions) Modules.instance.getModuleInstance(NmapGeneralOptions.class))
+				.getOptions().addOptionGroup("Subnets", "Nmap subnet scans. If one active device is discovered in a subnet, the rest of the subnet is scanned.");
 
-		enableSubnetScans = new Option(null, "subnetScan", "Run subnet scans.");
-		group.addChild(enableSubnetScans);
+		enableSubnetScans = group.addOption(null, "subnetScan", "Run subnet scans.");
 
-		subnetMask = new Option(null, "subnetMask", "Assumed subnet mask.", true, true, "24", "bits");
+		subnetMask = group.addOption(null, "subnetMask", "Assumed subnet mask.", true, true, "24", "bits");
 		subnetMask.addValidator(new NumericValidator(false, 1, 32));
-		group.addChild(subnetMask);
 
 	}
 

@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.commons.WorkingDirectories;
+import mcp.options.MCPOptions;
 import space.dcce.commons.cli.Option;
-import space.dcce.commons.cli.OptionContainer;
 import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.general.FileUtils;
 import space.dcce.commons.validators.NumericValidator;
@@ -23,39 +23,43 @@ public class GeneralOptions extends Module
 
 	private final static String SCAN_DATA_DIRECTORY = "scandata";
 	private final static String RESUME_DIRECTORY = "resume";
-	private final static GeneralOptions instance = new GeneralOptions();
-	private static OptionGroup group;
+	
+	
+	
+	private OptionGroup group;
 	private int verbose;
 	private boolean interactiveConsole;
 
 
-	private static Option verboseOption;
-	private static Option workingDirectoryOption;
-	// private Option continueAfterErrorOption;
-	private static Option basicReconOption;
-	private static Option trackAllData;
+	private Option verboseOption;
+	private Option workingDirectoryOption;
+	private Option basicReconOption;
+	private Option trackAllData;
 
-	private static Option threadCount;
-	private static OptionGroup interactiveOptions;
-	private static Option interactiveConsoleOption;
-	private static Option interactiveTelnetOption;
-	private static Option sudoPasswordOption;
+	private Option threadCount;
+	private OptionGroup interactiveOptions;
+	private Option interactiveConsoleOption;
+	private Option interactiveTelnetOption;
+	private Option sudoPasswordOption;
 
-	static
+	@Override
+	protected void initializeOptions()
 	{
-		verboseOption = new Option("v", "verbose", "Output verbosity (0-6).", true, false, "3", "n");
-		workingDirectoryOption = new Option(null, "workingDirectory", "Working directory for Recon Master.", true, true, ".",
+		group = MCPOptions.instance.addOptionGroup("General Options", "");
+
+		verboseOption = group.addOption("v", "verbose", "Output verbosity (0-6).", true, false, "3", "n");
+		workingDirectoryOption = group.addOption(null, "workingDirectory", "Working directory for Recon Master.", true, true, ".",
 				"directory path");
 		// continueAfterErrorOption = new Option(null, "continueAfterError", "Continue trying to run scans if something
 		// goes wrong.");
-		basicReconOption = new Option("b", "basicRecon", "Run with basic recon options. Equivalent to: "
+		basicReconOption = group.addOption("b", "basicRecon", "Run with basic recon options. Equivalent to: "
 				+ "--hostnameDiscovery --icmpEchoScan --topTcpScan "
 				+ "--udpPorts 53,67,68,69,111,123,135,137,138,139,161,162,445,500,514,520,631,1434,1604,4500,5353,10000");
-		threadCount = new Option("t", "threads", "Working thread count.", true, true, "3", "n");
-		trackAllData = new Option("", "trackall",
+		threadCount = group.addOption("t", "threads", "Working thread count.", true, true, "3", "n");
+		trackAllData = group.addOption("", "trackall",
 				"Track all data, even negative results (e.g., non-open ports). This may significantly increase resource use");
 		verboseOption.addValidator(new NumericValidator(false, 0, 6));
-		sudoPasswordOption = new Option("", "sudoPassword", "Password to use with sudo for programs that need root", true, true, "", "password");
+		sudoPasswordOption = group.addOption("", "sudoPassword", "Password to use with sudo for programs that need root", true, true, "", "password");
 
 
 		PathState workingDirState = new PathState();
@@ -65,27 +69,15 @@ public class GeneralOptions extends Module
 		workingDirectoryOption.addValidator(new PathValidator(workingDirState));
 
 
-		group = new OptionGroup("General Options", "");
-		group.addChild(verboseOption);
-		group.addChild(interactiveConsoleOption);
-		group.addChild(workingDirectoryOption);
-		// group.addChild(continueAfterErrorOption);
-		group.addChild(basicReconOption);
-		group.addChild(sudoPasswordOption);
-		group.addChild(threadCount);
-		group.addChild(trackAllData);
 
-		interactiveOptions = new OptionGroup("Interactive options", "");
-		interactiveConsoleOption = new Option("i", "interactive", "Run in interactive mode on the console.");
-		interactiveTelnetOption = new Option(null, "telnet", "Run interactive telnet server.", true, false, "2300", "port");
-		interactiveOptions.addChild(interactiveConsoleOption);
-		interactiveOptions.addChild(interactiveTelnetOption);
-		group.addChild(interactiveOptions);
+		interactiveOptions = MCPOptions.instance.addOptionGroup("Interactive options", "");
+		interactiveConsoleOption = interactiveOptions.addOption("i", "interactive", "Run in interactive mode on the console.");
+		interactiveTelnetOption = interactiveOptions.addOption(null, "telnet", "Run interactive telnet server.", true, false, "2300", "port");
 
 	}
 
 
-	private GeneralOptions()
+	public GeneralOptions()
 	{
 		super("General options");
 	}
@@ -132,19 +124,13 @@ public class GeneralOptions extends Module
 	}
 
 
-	public static GeneralOptions getInstance()
-	{
-		return instance;
-	}
-
-
 	public Option getBasicReconOption()
 	{
 		return basicReconOption;
 	}
 
 
-	public static OptionContainer getOptions()
+	public OptionGroup getOptions()
 	{
 		return group;
 	}
@@ -180,13 +166,13 @@ public class GeneralOptions extends Module
 	}
 
 
-	public static Option getWorkingDirectoryOption()
+	public Option getWorkingDirectoryOption()
 	{
 		return workingDirectoryOption;
 	}
 
 
-	public static Option getSudoPasswordOption()
+	public Option getSudoPasswordOption()
 	{
 		return sudoPasswordOption;
 	}

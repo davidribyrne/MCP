@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.events.events.McpNormalExitEvent;
-import mcp.events.listeners.McpEventListener;
 import mcp.events.listeners.McpNormalExitListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import space.dcce.commons.node_database.Connection;
@@ -13,9 +12,8 @@ import space.dcce.commons.node_database.Node;
 import space.dcce.commons.node_database.NodeType;
 import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.modules.Module;
+import mcp.modules.Modules;
 import space.dcce.commons.cli.Option;
-import space.dcce.commons.cli.OptionContainer;
-import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.general.StringUtils;
 
 
@@ -23,13 +21,12 @@ public class SimpleKbDumper extends Module implements McpNormalExitListener
 {
 	
 	private final static Logger logger = LoggerFactory.getLogger(SimpleKbDumper.class);
-	private static OptionGroup options;
-	private static Option dumpKBOption;
 
-	static
+	private Option dumpKBOption;
+
+	protected void initializeOptions()
 	{
-		dumpKBOption = new Option("d", "dumpKB", "Dump the knowledge base contents just before exit.");
-		ReportingGeneralOptions.getOptions().addChild(dumpKBOption);
+		dumpKBOption = ((ReportingGeneralOptions)Modules.instance.getModuleInstance(ReportingGeneralOptions.class)).getOptions().addOption("", "dumpKB", "Dump the knowledge base contents just before exit.");
 	}
 	
 	public SimpleKbDumper()
@@ -94,12 +91,6 @@ public class SimpleKbDumper extends Module implements McpNormalExitListener
 		return Dumper.getKBDump();
 	}
 	
-
-	
-	public static OptionContainer getOptions()
-	{
-		return options;
-	}
 
 	@Override
 	public void handleEvent(McpNormalExitEvent event)

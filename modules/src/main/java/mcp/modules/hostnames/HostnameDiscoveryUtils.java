@@ -12,6 +12,7 @@ import space.dcce.commons.node_database.Node;
 import mcp.knowledgebase.Scope;
 import mcp.knowledgebase.nodeLibrary.Hostnames;
 import mcp.knowledgebase.nodeLibrary.Network;
+import mcp.modules.Modules;
 import space.dcce.commons.dns.client.DnsTransaction;
 import space.dcce.commons.dns.client.Resolver;
 import space.dcce.commons.dns.exceptions.DnsClientConnectException;
@@ -127,18 +128,20 @@ public class HostnameDiscoveryUtils
 	 */
 	public static void registerDomainsInHostname(String hostname)
 	{
+		HostnameDiscoveryGeneralOptions hopt = (HostnameDiscoveryGeneralOptions) 
+				Modules.instance.getModuleInstance(HostnameDiscoveryGeneralOptions.class);
 		synchronized (autoRegisteredSubDomains)
 		{
 			String domain = DomainUtils.getDomain(hostname);
-			if (HostnameDiscoveryGeneralOptions.getInstance().getBannedDomainsOption().getValues().contains(domain))
+			if (hopt.getBannedDomainsOption().getValues().contains(domain))
 			{
 				logger.trace("Skipping registration of domain and sub-domains in " + hostname + " because " + 
 						domain + " is on the banned domain list.");
 				return;
 			}
-			if (HostnameDiscoveryGeneralOptions.getInstance().getAutoAddDomainsOption().isEnabled())
+			if (hopt.getAutoAddDomainsOption().isEnabled())
 			{
-				int limit = HostnameDiscoveryGeneralOptions.getInstance().getMaxAutoAddDomains();
+				int limit = hopt.getMaxAutoAddDomains();
 				if (autoRegisteredDomains < limit)
 				{
 					if (KnowledgeBase.INSTANCE.createNodeIfPossible(Hostnames.DOMAIN, domain))
@@ -150,9 +153,9 @@ public class HostnameDiscoveryUtils
 				}
 			}
 
-			if (HostnameDiscoveryGeneralOptions.getInstance().getAutoAddSubDomainsOption().isEnabled())
+			if (hopt.getAutoAddSubDomainsOption().isEnabled())
 			{
-				int limit = HostnameDiscoveryGeneralOptions.getInstance().getMaxAutoAddSubDomains();
+				int limit = hopt.getMaxAutoAddSubDomains();
 				int count = 0;
 				if (autoRegisteredSubDomains.containsKey(domain))
 				{

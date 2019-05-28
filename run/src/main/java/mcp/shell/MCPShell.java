@@ -40,7 +40,7 @@ import org.crsh.vfs.spi.url.ClassPathMountFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import mcp.modules.GeneralOptions;
+import mcp.modules.Modules;
 
 
 @Named("crash")
@@ -65,8 +65,8 @@ public class MCPShell
 
 	public static void setupShell()
 	{
-		interactiveConsole = GeneralOptions.getInstance().isInteractiveConsole();
-		interactiveTelnet = GeneralOptions.getInstance().getTelnetOption().isEnabled();
+		interactiveConsole = Modules.instance.getGeneralOptions().isInteractiveConsole();
+		interactiveTelnet = Modules.instance.getGeneralOptions().getTelnetOption().isEnabled();
 		if (interactiveConsole || interactiveTelnet)
 		{
 			instance = new MCPShell();

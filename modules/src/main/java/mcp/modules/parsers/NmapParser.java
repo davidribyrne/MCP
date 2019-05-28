@@ -10,12 +10,8 @@ import space.dcce.commons.cli.OptionContainer;
 
 public class NmapParser implements Parser
 {
-	private final static NmapParser instance = new NmapParser();
 	
-	public static NmapParser getInstance()
-	{
-		return instance;
-	}
+	private final static NmapParser instance = new NmapParser();
 	
 	@Override
 	public String toString()
@@ -68,5 +64,10 @@ public class NmapParser implements Parser
 	{
 		// TODO Auto-generated method stub
 		
+	}
+
+	public static NmapParser getInstance()
+	{
+		return instance;
 	}
 }

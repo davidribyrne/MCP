@@ -1,5 +1,6 @@
 package mcp.modules;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +17,9 @@ import mcp.modules.nmap.NmapIcmp;
 import mcp.modules.nmap.NmapSubNetScan;
 import mcp.modules.nmap.NmapTcp;
 import mcp.modules.nmap.NmapUdp;
+import mcp.modules.reporting.ReportingGeneralOptions;
 import mcp.modules.reporting.SimpleKbDumper;
 import mcp.modules.scope.ScopeInitializer;
-import mcp.options.MCPOptions;
-import space.dcce.commons.cli.OptionContainer;
-import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.general.UnexpectedException;
 
 
@@ -32,50 +31,98 @@ import space.dcce.commons.general.UnexpectedException;
  */
 public class Modules
 {
+	private final static Logger logger = LoggerFactory.getLogger(Modules.class);
+	public final static Modules instance = new Modules();
+
+	private final Map<Class<? extends Module>, Module> allModules;
+
+	private final Map<Class<? extends Module>, Module> optionsModules;
+	private final Map<Class<? extends Module>, Module> earlyInitModules;
 	private final Map<Class<? extends Module>, Module> normalModules;
 	private Map<Class<? extends ExternalModule>, ExternalModule> externalModules;
-	private static Class[] normalModuleClasses;
-	private static Class[] externalModuleClasses;
-	private final static Logger logger = LoggerFactory.getLogger(Modules.class);
+	
+	private Class[] optionsModuleClasses;
+	private Class[] earlyInitModuleClasses;
+	private Class[] normalModuleClasses;
+	private Class[] externalModuleClasses;
+	
 
-	static
-	{
-		normalModuleClasses = new Class[] {
-				CommonHostnames.class,
-				InputFileMonitor.class,
-				NmapIcmp.class,
-				NmapTcp.class,
-				NmapUdp.class,
-				NmapSubNetScan.class,
-				SimpleKbDumper.class,
-				HttpTransactionListener.class
-		};
-		externalModuleClasses = ExternalModuleLoader.getModuleClasses("");
-	}
-	// Instance must be below the other static code
-	private final static Modules instance = new Modules();
-
-
+	
 	private Modules()
 	{
+		// This array structure is used to set an explicit instantiation and initialization order
+		
+		optionsModuleClasses = new Class[] 
+		{
+			GeneralOptions.class,
+			NmapGeneralOptions.class,
+			HostnameDiscoveryGeneralOptions.class,
+			ReportingGeneralOptions.class
+		};
+		
+		earlyInitModuleClasses = new Class[] 
+		{
+			ScopeInitializer.class
+		};
+		
+		normalModuleClasses = new Class[] 
+		{
+			CommonHostnames.class,
+			InputFileMonitor.class,
+			NmapIcmp.class,
+			NmapTcp.class,
+			NmapUdp.class,
+			NmapSubNetScan.class,
+			SimpleKbDumper.class,
+			HttpTransactionListener.class
+		};
+		externalModuleClasses = ExternalModuleLoader.getModuleClasses("");
+		
+		allModules = new HashMap<Class<? extends Module>, Module>();
+		
+		optionsModules = new HashMap<Class<? extends Module>, Module>(optionsModuleClasses.length);
+		earlyInitModules = new HashMap<Class<? extends Module>, Module>(earlyInitModuleClasses.length);
 		normalModules = new HashMap<Class<? extends Module>, Module>(normalModuleClasses.length);
 		externalModules = new HashMap<Class<? extends ExternalModule>, ExternalModule>(1);
 
 	}
 
+	private Module instantiate(Class<? extends Module> clazz) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+	{
+		Constructor c = clazz.getDeclaredConstructor();
+		c.setAccessible(true);
+		Module m = (Module) c.newInstance();
+		allModules.put(clazz, m);
+		return m;
+	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void instantiateModules()
 	{
-		for (Class clazz : normalModuleClasses)
+		try
 		{
-			try
+			for (Class clazz : optionsModuleClasses)
 			{
-				normalModules.put(clazz, (Module) clazz.newInstance());
+				Module m = instantiate(clazz);
+				optionsModules.put(clazz, m);
 			}
-			catch (IllegalAccessException | InstantiationException e)
+
+			for (Class clazz : earlyInitModuleClasses)
 			{
-				throw new UnexpectedException(e);
+				Module m = instantiate(clazz);
+				earlyInitModules.put(clazz, m);
 			}
+			
+			for (Class clazz : normalModuleClasses)
+			{
+				Module m = instantiate(clazz);
+				normalModules.put(clazz, m);
+			}
+		}
+		catch (InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e)
+		{
+			logger.error("Problem instantiating modules", e);
+			throw new UnexpectedException("Problem instantiating modules", e);
 		}
 
 		/*
@@ -86,102 +133,43 @@ public class Modules
 	}
 
 
-//	public Module getModuleInstance(Class<? extends Module> clazz)
-//	{
-//		if (normalModules.containsKey(clazz))
-//			return normalModules.get(clazz);
-//
-//		if (externalModules.containsKey(clazz))
-//			return externalModules.get(clazz);
-//
-//		return null;
-//	}
-
-
-	private void populateCoreOptions()
+	public Module getModuleInstance(Class<? extends Module> clazz)
 	{
-		MCPOptions.getInstance().addChild(GeneralOptions.getOptions());
-		MCPOptions.getInstance().addChild(ScopeInitializer.getOptions());
-		MCPOptions.getInstance().addChild(NmapGeneralOptions.getOptions());
-		MCPOptions.getInstance().addChild(HostnameDiscoveryGeneralOptions.getOptions());
+		return allModules.get(clazz);
 	}
 
 
-	public void populateOptions()
-	{
-		populateCoreOptions();
-//		OptionGroup standardModulesOptionGroup = new OptionGroup("Standard Modules", "Standard Modules");
 
+	@SuppressWarnings("rawtypes")
+	public void initializeModules()
+	{
+
+		for (Class clazz : optionsModuleClasses)
+		{
+			// GeneralOptions has to be initialized earlier
+			if (clazz.equals(GeneralOptions.class))
+			{
+				continue;
+			}
+			optionsModules.get(clazz).initialize();
+		}
+		for (Class clazz : earlyInitModuleClasses)
+		{
+			earlyInitModules.get(clazz).initialize();
+		}
 		for (Class clazz : normalModuleClasses)
 		{
-			try
-			{
-				MCPOptions.getInstance().addChild((OptionContainer) clazz.getDeclaredMethod("getOptions").invoke(null));
-			}
-			catch (@SuppressWarnings("unused") NoSuchMethodException e)
-			{
-				logger.trace("Class " + clazz.getName() + " does not have a static getOptions method");
-			}
-			catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e)
-			{
-				throw new UnexpectedException(e);
-			}
+			normalModules.get(clazz).initialize();
 		}
-//		MCPOptions.getInstance().addChild(standardModulesOptionGroup);
-
-
-		/*
-		 * External modules are loaded after core options are processed
-		 */
-
-		OptionGroup externalModulesOptionGroup = new OptionGroup("External Modules", "");
-
 		for (Class clazz : externalModuleClasses)
 		{
-			try
-			{
-				externalModulesOptionGroup.addChild((OptionContainer) clazz.getDeclaredMethod("getOptions").invoke(null));
-			}
-			catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e)
-			{
-				throw new UnexpectedException(e);
-			}
+			externalModules.get(clazz).initialize();
 		}
-		MCPOptions.getInstance().addChild(externalModulesOptionGroup);
 	}
 
-
-
-	public void initializeCoreModules()
+	public GeneralOptions getGeneralOptions()
 	{
-		ScopeInitializer.getInstance().initialize();
-		NmapGeneralOptions.getInstance().initialize();
-	}
-
-
-	public void initializeOtherModules()
-	{
-		for (Module module : normalModules.values())
-		{
-			module.initialize();
-		}
-		for (Module module : externalModules.values())
-		{
-			module.initialize();
-
-		}
-		// NmapIcmp.getInstance().initialize();
-		// NmapTcp.getInstance().initialize();
-		// NmapUdp.getInstance().initialize();
-		// HostnameDiscoveryGeneralOptions.getInstance().initialize();
-		// CommonHostnames.getInstance().initialize();
-		// SimpleKbDumper.getInstance().initialize();
-	}
-
-
-	public static Modules getInstance()
-	{
-		return instance;
+		return (GeneralOptions) getModuleInstance(GeneralOptions.class);
 	}
 
 }

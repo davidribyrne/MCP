@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import mcp.modules.Module;
+import mcp.options.MCPOptions;
 import space.dcce.commons.cli.Option;
 import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.general.BooleanFormatException;
@@ -22,23 +23,25 @@ import space.dcce.commons.validators.Requirement;
 public class NmapGeneralOptions extends Module
 {
 	final static Logger logger = LoggerFactory.getLogger(NmapGeneralOptions.class);
-	private static final NmapGeneralOptions instance = new NmapGeneralOptions();
 
-	private static OptionGroup group;
-	private static Option nmapPath;
-	private static Option nmapSpeed;
-	private static Option nmapResume;
+	private OptionGroup group;
+	private Option nmapPath;
+	private Option nmapSpeed;
+	private Option nmapResume;
 
 	
 	private String nmapPathValue;
 	private byte speed;
 	private boolean resume;
 
-	static
+	@Override
+	protected void initializeOptions()
 	{
-		nmapPath = new Option(null, "nmapPath", "Path to nmap binary. Defaults to environment path.", true, true, null, "filepath");
-		nmapSpeed = new Option(null, "nmapSpeed", "Nmap speed.", true, true, "4", "0-5");
-		nmapResume = new Option(null, "nmapResume", "Attempt to resume previously aborted nmap scans.", true, true, "true", "true/false");
+		group = MCPOptions.instance.addOptionGroup("Nmap global options", "");
+
+		nmapPath = group.addOption(null, "nmapPath", "Path to nmap binary. Defaults to environment path.", true, true, null, "filepath");
+		nmapSpeed = group.addOption(null, "nmapSpeed", "Nmap speed.", true, true, "4", "0-5");
+		nmapResume = group.addOption(null, "nmapResume", "Attempt to resume previously aborted nmap scans.", true, true, "true", "true/false");
 
 		nmapSpeed.addValidator(new NumericValidator(false, 0, 5));
 		nmapResume.addValidator(new BooleanValidator(false));
@@ -48,10 +51,6 @@ public class NmapGeneralOptions extends Module
 		nmapPathState.exists = Requirement.MUST;
 		nmapPath.addValidator(new PathValidator(nmapPathState));
 
-		group = new OptionGroup("Nmap options", "");
-		group.addChild(nmapPath);
-		group.addChild(nmapSpeed);
-		group.addChild(nmapResume);
 
 	}
 
@@ -135,18 +134,12 @@ public class NmapGeneralOptions extends Module
 	}
 
 
-	public static NmapGeneralOptions getInstance()
-	{
-		return instance;
-	}
-
-
 	public boolean isResume()
 	{
 		return resume;
 	}
 
-	public static OptionGroup getOptions()
+	public OptionGroup getOptions()
 	{
 		return group;
 	}

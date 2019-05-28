@@ -106,7 +106,7 @@ public class ExternalModuleLoader
 	}
 
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Map<Class<? extends ExternalModule>, ExternalModule> loadModules(String path)
 	{
 		Map<Class<? extends ExternalModule>, ExternalModule> modules = new HashMap<Class<? extends ExternalModule>, ExternalModule>();

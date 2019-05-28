@@ -14,6 +14,7 @@ import mcp.events.events.NodeCreationEvent;
 import mcp.events.listeners.NodeCreationListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.nodeLibrary.Hostnames;
+import mcp.modules.Modules;
 import space.dcce.commons.cli.OptionGroup;
 import space.dcce.commons.dns.client.DnsTransaction;
 import space.dcce.commons.dns.exceptions.DnsClientConnectException;
@@ -30,14 +31,17 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 
 	private List<String> commonNames;
 	@SuppressWarnings("rawtypes")
-	private final Collection nodeTypes = Collections.singletonList(Hostnames.DOMAIN); 
+	private Collection nodeTypes; 
 
 	public CommonHostnames()
 	{
 		super("Common hostnames");
 	}
 
-
+	@Override
+	protected void initializeOptions()
+	{}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<NodeType> getMonitorNodeTypes()
@@ -49,7 +53,10 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 	@Override
 	public void initialize()
 	{
-		if (HostnameDiscoveryGeneralOptions.getInstance().getTestCommonHostnamesOption().isEnabled())
+		nodeTypes = Collections.singletonList(Hostnames.DOMAIN); 
+
+		if (((HostnameDiscoveryGeneralOptions)Modules.instance.getModuleInstance(HostnameDiscoveryGeneralOptions.class))
+				.getTestCommonHostnamesOption().isEnabled())
 		{
 			ExecutionScheduler.getInstance().registerListener(NodeCreationEvent.class, this);
 			loadHostnames();
@@ -58,9 +65,12 @@ public class CommonHostnames extends HostnameDiscoveryModule implements NodeCrea
 
 	private void loadHostnames()
 	{
-		if (HostnameDiscoveryGeneralOptions.getInstance().getCommonHostnamesFileOption().isValueSet(false))
+		HostnameDiscoveryGeneralOptions hopts = (HostnameDiscoveryGeneralOptions) 
+				Modules.instance.getModuleInstance(HostnameDiscoveryGeneralOptions.class);
+		if (hopts.getCommonHostnamesFileOption().isValueSet(false))
 		{
-			String filename = HostnameDiscoveryGeneralOptions.getInstance().getCommonHostnamesFileOption().getValue();
+			String filename = ((HostnameDiscoveryGeneralOptions)Modules.instance.getModuleInstance(HostnameDiscoveryGeneralOptions.class)).
+					getCommonHostnamesFileOption().getValue();
 			try
 			{
 				commonNames = StringUtils.trim(FileUtils.readConfigFileLines(filename));

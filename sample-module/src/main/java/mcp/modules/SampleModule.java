@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
+import mcp.options.MCPOptions;
 import space.dcce.commons.cli.Option;
 import space.dcce.commons.cli.OptionContainer;
 import space.dcce.commons.cli.OptionGroup;
@@ -17,10 +18,13 @@ public class SampleModule extends ExternalModule implements McpStartListener
 
 	private static OptionGroup options;
 	private static Option testStringOption;
-	static 
+
+
+	@Override
+	protected void initializeOptions()
 	{
-		options = new OptionGroup("sample-module-options", "Description");
-		testStringOption = new Option("", "testString", "Just a test string to repeat.", true, true, "", "string");
+		options = MCPOptions.instance.addOptionGroup("sample-module-options", "Description");
+		testStringOption = options.addOption("", "testString", "Just a test string to repeat.", true, true, "", "string");
 
 	}
 

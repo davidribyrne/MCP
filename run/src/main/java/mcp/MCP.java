@@ -1,6 +1,7 @@
 package mcp;
 
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -30,11 +31,14 @@ public class MCP
 
 	private MCP(String[] args)
 	{
-		setupOptions(args);
+		Modules.instance.instantiateModules();
+		MCPOptions.instance.parseCommandline(args);
+
+		GeneralOptions generalOptions = (GeneralOptions) Modules.instance.getModuleInstance(GeneralOptions.class);
 		try
 		{
-			String path = GeneralOptions.getWorkingDirectoryOption().getValue();
-			KnowledgeBase.INSTANCE.initializeStorage(path);
+			String path = generalOptions.getWorkingDirectoryOption().getValue();
+			KnowledgeBase.INSTANCE.initializeStorage(path + File.separator + "mcp.db");
 		}
 		catch (FileNotFoundException e)
 		{
@@ -53,12 +57,10 @@ public class MCP
 		}
 
 
-		Modules.getInstance().instantiateModules();
-		GeneralOptions.getInstance().initialize();
+		generalOptions.initialize();
 		MCPLogging.setupLogger();
 
-		Modules.getInstance().initializeCoreModules();
-		Modules.getInstance().initializeOtherModules();
+		Modules.instance.initializeModules();
 		ExecutionScheduler.getInstance().start();
 		MCPShell.setupShell();
 
@@ -86,12 +88,6 @@ public class MCP
 
 	}
 
-
-	private void setupOptions(String[] args)
-	{
-		Modules.getInstance().populateOptions();
-		MCPOptions.getInstance().parseCommandline(args);
-	}
 
 
 

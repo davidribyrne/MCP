@@ -50,7 +50,7 @@ import mcp.knowledgebase.nodeLibrary.Network;
 import mcp.knowledgebase.nodeLibrary.NetworkService;
 import mcp.knowledgebase.nodeLibrary.Port;
 import mcp.knowledgebase.nodeLibrary.SoftwareHardware;
-import mcp.modules.GeneralOptions;
+import mcp.modules.Modules;
 import space.dcce.commons.netaddr.MacUtils;
 
 
@@ -93,7 +93,7 @@ public class NMapXmlHandler extends DefaultHandler
 //		this.scanTime = scanTime;
 		// this.scanSource = source;
 		this.scanData = scanData;
-		trackAll = GeneralOptions.getInstance().getTrackAllData().isEnabled();
+		trackAll = Modules.instance.getGeneralOptions().getTrackAllData().isEnabled();
 	}
 
 

@@ -11,7 +11,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import mcp.commons.WorkingDirectories;
-import mcp.modules.GeneralOptions;
+import mcp.modules.Modules;
 import mcp.options.MCPOptions;
 
 
@@ -23,7 +23,7 @@ public class MCPLogging
 	static void setupLogger()
 	{
 		Level level;
-		switch (GeneralOptions.getInstance().getVerbose())
+		switch (Modules.instance.getGeneralOptions().getVerbose())
 		{
 			case 0:
 				level = Level.OFF;
@@ -89,7 +89,7 @@ public class MCPLogging
 
 
 		logger.debug("Running configuration:");
-		for (String line : MCPOptions.getInstance().getOptionSummary())
+		for (String line : MCPOptions.instance.getOptionSummary())
 		{
 			logger.debug(line);
 		}

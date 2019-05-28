@@ -9,7 +9,7 @@ import org.crsh.shell.impl.command.CRaSHShellFactory;
 import org.crsh.telnet.TelnetPlugin;
 import org.crsh.telnet.term.processor.ProcessorIOHandler;
 
-import mcp.modules.GeneralOptions;
+import mcp.modules.Modules;
 
 public class MCPShellPluginDiscovery implements PluginDiscovery
 {
@@ -18,7 +18,7 @@ public class MCPShellPluginDiscovery implements PluginDiscovery
 	public MCPShellPluginDiscovery()
 	{
 		plugins = new ArrayList<CRaSHPlugin<?>>();
-		if (GeneralOptions.getInstance().getTelnetOption().isEnabled())
+		if (Modules.instance.getGeneralOptions().getTelnetOption().isEnabled())
 		{
 			plugins.add(new TelnetPlugin());
 		}

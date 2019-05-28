@@ -4,7 +4,7 @@ import mcp.events.events.McpStartEvent;
 import mcp.events.listeners.McpStartListener;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.knowledgebase.Scope;
-import mcp.modules.GeneralOptions;
+import mcp.modules.Modules;
 import mcp.tools.nmap.NmapFlag;
 import mcp.tools.nmap.NmapScan;
 import space.dcce.commons.cli.Option;
@@ -14,28 +14,23 @@ import space.dcce.commons.cli.OptionGroup;
 public class NmapIcmp extends NmapModule implements McpStartListener
 {
 
-	static private OptionGroup group;
-	static private Option icmpEchoScan;
-	static private Option icmpMaskScan;
-	static private Option icmpTimeScan;
-	static private Option protocolScan;
+	private OptionGroup group;
+	private Option icmpEchoScan;
+	private Option icmpMaskScan;
+	private Option icmpTimeScan;
+	private Option protocolScan;
 
 
-	static
+	@Override
+	protected void initializeOptions()
 	{
-		icmpEchoScan = new Option(null, "icmpEchoScan", "Run nmap ICMP echo (ping) scan.");
-		icmpMaskScan = new Option(null, "icmpMaskScan", "Run nmap ICMP netmask scan.");
-		icmpTimeScan = new Option(null, "icmpTimeScan", "Run nmap ICMP timestamp scan.");
-		protocolScan = new Option(null, "protocolScan", "Run nmap IP protocol scans.");
-		
-		group = new OptionGroup("ICMP", "Nmap ICMP scans");
-		group.addChild(icmpEchoScan);
-		group.addChild(icmpMaskScan);
-		group.addChild(icmpTimeScan);
-		group.addChild(protocolScan);
+		group = ((NmapGeneralOptions) Modules.instance.getModuleInstance(NmapGeneralOptions.class))
+				.getOptions().addOptionGroup("ICMP", "Nmap ICMP scans");
 
-		NmapGeneralOptions.getOptions().addChild(group);
-
+		icmpEchoScan = group.addOption(null, "icmpEchoScan", "Run nmap ICMP echo (ping) scan.");
+		icmpMaskScan = group.addOption(null, "icmpMaskScan", "Run nmap ICMP netmask scan.");
+		icmpTimeScan = group.addOption(null, "icmpTimeScan", "Run nmap ICMP timestamp scan.");
+		protocolScan = group.addOption(null, "protocolScan", "Run nmap IP protocol scans.");
 	}
 	
 	static public OptionGroup getOptions()
@@ -55,7 +50,7 @@ public class NmapIcmp extends NmapModule implements McpStartListener
 	{
 		ExecutionScheduler.getInstance().registerListener(McpStartEvent.class, this);
 		
-		if (GeneralOptions.getInstance().getBasicReconOption().isEnabled())
+		if (Modules.instance.getGeneralOptions().getBasicReconOption().isEnabled())
 		{
 			icmpEchoScan.forceEnabled();
 		}

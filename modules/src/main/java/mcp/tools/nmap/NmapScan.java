@@ -16,6 +16,7 @@ import mcp.jobmanager.executors.CommandLineExecutor;
 import mcp.jobmanager.executors.ExecutionScheduler;
 import mcp.jobmanager.executors.JobCompleteCallback;
 import mcp.jobmanager.jobs.JobState;
+import mcp.modules.Modules;
 import mcp.modules.nmap.NmapGeneralOptions;
 import mcp.tools.nmap.parser.NmapXmlParser;
 import space.dcce.commons.general.FileUtils;
@@ -35,15 +36,18 @@ public class NmapScan implements JobCompleteCallback
 	private final static String TARGET_IP_FILE_SUFFIX = "--target-ips.txt";
 	private final static String CONSOLE_OUT_FILE_SUFFIX = "--stdout";
 	private final String jobName;
+	private String nmapPath;
 	final static Logger logger = LoggerFactory.getLogger(NmapScan.class);
 
 	
 	public NmapScan(String jobName, Addresses targets)
 	{
+		NmapGeneralOptions nopt = (NmapGeneralOptions) Modules.instance.getModuleInstance(NmapGeneralOptions.class);
 		this.jobName = jobName;
 		this.targets = targets;
-		speed = NmapGeneralOptions.getInstance().getSpeed();
-		resume = NmapGeneralOptions.getInstance().isResume();
+		speed = nopt.getSpeed();
+		resume = nopt.isResume();
+		nmapPath = nopt.getNmapPath();
 		flags = new ArrayList<FlagPair>();
 		outputFileName = WorkingDirectories.getScanDataDirectory() + "nmap-" + jobName.replaceAll("[^a-zA-Z0-9\\-]", "-");
 	}
@@ -107,8 +111,7 @@ public class NmapScan implements JobCompleteCallback
 			throw new UnexpectedException("Weird problem writing to nmap target file " + targetFile + ": " + e.getLocalizedMessage(), e);
 		}
 		List<String> arguments = generateCommandArguments(status);
-		CommandLineExecutor executor = new CommandLineExecutor("Nmap", jobName, NmapGeneralOptions.getInstance()
-				.getNmapPath(), arguments, WorkingDirectories.getWorkingDirectory(),
+		CommandLineExecutor executor = new CommandLineExecutor("Nmap", jobName, nmapPath, arguments, WorkingDirectories.getWorkingDirectory(),
 				outputFileName + CONSOLE_OUT_FILE_SUFFIX, outputFileName + CONSOLE_OUT_FILE_SUFFIX, true, 0);
 		executor.setCallback(this);
 		logger.trace("Starting execution for " + executor.toString());
